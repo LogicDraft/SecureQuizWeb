@@ -1,0 +1,126 @@
+You are a senior frontend developer and UX designer.
+
+Design and build a **modern onboarding + landing webpage** for a platform called **SecureQuiz**.
+
+---
+
+### 🎯 Goal
+
+When any user opens SecureQuiz:
+
+* First show a **clean, engaging introduction**
+* Explain:
+
+  * What SecureQuiz is
+  * Why it’s useful
+  * How to use it
+* Then guide them to:
+  👉 **Create / Host a Quiz**
+
+This platform is for **everyone** (students, teachers, creators, anyone), not just teachers.
+
+---
+
+### 🧩 Page Structure
+
+#### 1. Hero Section (Top)
+
+* Title:
+  👉 “SecureQuiz – Smart & Secure Quiz Platform”
+* Subtitle:
+  👉 “Create, host, and attempt quizzes with built-in security and real-time results.”
+* CTA Button:
+  👉 “Create a Quiz” (primary)
+  👉 “How it Works” (secondary)
+
+---
+
+#### 2. About Section
+
+Explain clearly:
+
+* What SecureQuiz does:
+
+  * Create quizzes easily
+  * Share with others
+  * Track results
+  * Prevent cheating (fullscreen tracking, tab switch detection)
+
+Use simple language (not technical)
+
+---
+
+#### 3. Features Section (Cards/Grid)
+
+Show features like:
+
+* 🔒 Secure Attempt Mode
+* 📊 Instant Results
+* 📱 Works on Mobile & Desktop
+* ⚡ Fast & Lightweight
+* 🧠 Smart Tracking (tab switch, fullscreen exit)
+
+---
+
+#### 4. How It Works (Step-by-Step)
+
+Make it super clear:
+
+1. Enter your details
+2. Add your quiz questions
+3. Generate quiz link
+4. Share with others
+5. View results instantly
+
+---
+
+#### 5. Call to Action Section
+
+* Big button:
+  👉 “Start Creating Your Quiz”
+
+
+#### 🎨 UI Design Guidelines
+
+* Style: **Modern + Premium**
+* Use:
+
+  * Gradient backgrounds
+  * Glassmorphism cards
+  * Soft shadows
+  * Rounded corners
+
+* Add:
+
+  * Smooth scroll animations
+  * Hover effects
+  * Subtle transitions
+
+---
+
+### 📱 Responsiveness
+
+* Must work perfectly on:
+
+  * Mobile
+  * Tablet
+  * Desktop
+
+---
+
+### ⚡ UX Requirements
+
+* Fast loading
+* Clear navigation
+* No clutter
+* Beginner-friendly explanation
+
+---
+
+
+### 💡 Goal
+
+Make the first impression feel like:
+👉 A **real SaaS product (like Quizizz/Kahoot)**
+👉 Clean, professional, and easy to understand
+👉 Any user should instantly know what to do next

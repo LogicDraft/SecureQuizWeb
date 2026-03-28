@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050508" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureQuiz — User Guide</title>
+  <meta name="description" content="Step-by-step user guide for creating, sharing, and managing quizzes in SecureQuiz." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="cursor"></div>
+
+  <header class="marketing-nav">
+    <a class="marketing-brand" href="home.html">SecureQuiz</a>
+    <nav class="marketing-links">
+      <a href="home.html#about">About</a>
+      <a href="home.html#features">Features</a>
+      <a href="home.html#how-it-works">How It Works</a>
+      <a href="setup.html">Setup Guide</a>
+    </nav>
+    <a href="create.html" class="btn-primary" style="text-decoration:none;">Create Quiz</a>
+  </header>
+
+  <div id="app">
+    <section class="screen active">
+      <div class="screen-inner landing-shell">
+        <div class="hero landing-hero" style="margin-top:0;text-align:left;max-width:980px;">
+          <div class="hero-eyebrow">Product User Guide</div>
+          <h1 style="font-size:clamp(2rem,5vw,3.8rem);">How to Use SecureQuiz</h1>
+          <p>This guide is for users of your platform and service, from starting a quiz to reviewing final results.</p>
+        </div>
+
+        <div class="card landing-card" style="max-width:980px;">
+          <h2 class="card-title">Full User Guide (Start to End)</h2>
+          <p class="card-subtitle">Use this complete flow to run a quiz from creation to final report.</p>
+          <div class="landing-steps" style="grid-template-columns:1fr;">
+            <article class="step-item">
+              <span class="step-index">1</span>
+              <div>
+                <h3>Open SecureQuiz Home</h3>
+                <p>Visit your hosted URL. Read the onboarding sections to understand how the platform works.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">2</span>
+              <div>
+                <h3>Go to Create Quiz</h3>
+                <p>Click Create Quiz from the top navigation or CTA button to open the quiz creator page.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">3</span>
+              <div>
+                <h3>Enter Quiz Details</h3>
+                <p>Fill quiz title, time limit, max tab switches, then add question text, options, and correct answer for each question.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">4</span>
+              <div>
+                <h3>Start Quiz and Generate Links</h3>
+                <p>Click Start Quiz. SecureQuiz creates a unique student link and dashboard link for that quiz.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">5</span>
+              <div>
+                <h3>Share Student Link</h3>
+                <p>Send only the generated student link. Students cannot open the quiz directly without this quiz ID link.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">6</span>
+              <div>
+                <h3>Student Attempt Flow</h3>
+                <p>Students open the shared link, enter details, complete the quiz, and submit. Security events are tracked during the attempt.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">7</span>
+              <div>
+                <h3>Track Live Results</h3>
+                <p>Open the dashboard link to monitor submissions, scores, timestamps, and integrity signals in real time.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">8</span>
+              <div>
+                <h3>End Quiz Session</h3>
+                <p>Once all users finish, keep the dashboard as your final report. Start a new quiz from creator whenever needed.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="card landing-card" style="max-width:980px;">
+          <h2 class="card-title">Quick User Checklist</h2>
+          <div class="landing-steps" style="grid-template-columns:1fr;">
+            <article class="step-item">
+              <span class="step-index">1</span>
+              <div>
+                <h3>Open from Home Page</h3>
+                <p>Start from the SecureQuiz home page and use the Create Quiz button.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">2</span>
+              <div>
+                <h3>Share Only Generated Student Link</h3>
+                <p>Do not share create or dashboard pages with participants. Share only the student quiz link.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-index">3</span>
+              <div>
+                <h3>Monitor Dashboard During Quiz</h3>
+                <p>Keep the dashboard open to track progress, scores, and integrity events in real time.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="card landing-card landing-cta" style="max-width:980px;">
+          <h2 class="card-title">Start Your Quiz Session</h2>
+          <p class="card-subtitle">Create and run your next quiz in minutes.</p>
+          <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
+            <a href="create.html" class="btn-primary" style="text-decoration:none;">Open Quiz Creator</a>
+            <a href="home.html" class="btn-secondary" style="text-decoration:none;">Back to Home</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="background.js"></script>
+</body>
+</html>

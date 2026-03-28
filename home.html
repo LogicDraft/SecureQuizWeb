@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050508" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureQuiz — Smart & Secure Quiz Platform</title>
+  <meta name="description" content="Create, host, and attempt quizzes with built-in security and real-time results." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="cursor"></div>
+
+  <header class="marketing-nav">
+    <a class="marketing-brand" href="home.html">SecureQuiz</a>
+    <nav class="marketing-links">
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="setup.html">Setup Guide</a>
+    </nav>
+    <a href="create.html" class="btn-primary" style="text-decoration:none;">Create Quiz</a>
+  </header>
+
+  <div id="app">
+    <section class="screen active">
+      <div class="screen-inner landing-shell">
+        <div class="hero landing-hero reveal-up" style="margin-top:0;text-align:left;max-width:1020px;">
+          <div class="hero-eyebrow">Modern Quiz SaaS Experience</div>
+          <h1 style="font-size:clamp(2.4rem,6vw,4.8rem);">SecureQuiz - Smart &amp; Secure Quiz Platform</h1>
+          <p>Create, host, and attempt quizzes with built-in security and real-time results.</p>
+
+          <div class="landing-actions" style="justify-content:flex-start;">
+            <a href="create.html" class="btn-primary" style="text-decoration:none;">Create a Quiz</a>
+            <a href="#how-it-works" class="btn-secondary" style="text-decoration:none;">How it Works</a>
+          </div>
+
+          <div class="hero-chip-row">
+            <span class="hero-chip">Invite-only student access</span>
+            <span class="hero-chip">Live dashboard analytics</span>
+            <span class="hero-chip">Anti-cheat tracking</span>
+          </div>
+        </div>
+
+        <div class="landing-proof reveal-up">
+          <span>Fast onboarding</span>
+          <span>Beginner friendly</span>
+          <span>Works on mobile + desktop</span>
+          <span>Share link in seconds</span>
+        </div>
+
+        <div id="about" class="card landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title">About SecureQuiz</h2>
+          <p class="card-subtitle">A beginner-friendly platform for anyone who wants to run or take quizzes quickly and securely.</p>
+
+          <div class="landing-about-grid">
+            <div class="notice-box" style="margin-bottom:0;">
+              <span class="notice-icon">INFO</span>
+              <span>Create quizzes in minutes with simple question and option inputs. No coding needed.</span>
+            </div>
+            <div class="notice-box" style="margin-bottom:0;">
+              <span class="notice-icon">LINK</span>
+              <span>Generate a quiz link instantly and share it with your audience, class, or team.</span>
+            </div>
+            <div class="notice-box" style="margin-bottom:0;">
+              <span class="notice-icon">RESULT</span>
+              <span>View submissions and scores in real time using the dashboard link.</span>
+            </div>
+            <div class="notice-box" style="margin-bottom:0;">
+              <span class="notice-icon">SAFE</span>
+              <span>Built-in monitoring helps discourage cheating through tab-switch and fullscreen tracking.</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="features" class="card landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title">Features</h2>
+          <p class="card-subtitle">Everything you need for secure, fast, and modern quiz experiences.</p>
+
+          <div class="features-grid" style="max-width:none;padding:0;margin:0;">
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon">LOCK</div>
+              <h3>Secure Attempt Mode</h3>
+              <p>Protect quiz sessions with anti-cheat tracking and secure flow controls.</p>
+            </article>
+
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon">CHART</div>
+              <h3>Instant Results</h3>
+              <p>Get submission data quickly and review performance through a live dashboard.</p>
+            </article>
+
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon">DEVICE</div>
+              <h3>Works on Mobile &amp; Desktop</h3>
+              <p>Responsive interface designed for phones, tablets, laptops, and desktops.</p>
+            </article>
+
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon">FAST</div>
+              <h3>Fast &amp; Lightweight</h3>
+              <p>Runs with minimal overhead for quick loading and smooth interaction.</p>
+            </article>
+
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon">TRACK</div>
+              <h3>Smart Tracking</h3>
+              <p>Tab switches and fullscreen exits are monitored during attempts for better integrity.</p>
+            </article>
+          </div>
+        </div>
+
+        <div id="how-it-works" class="card landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title">How to Use SecureQuiz</h2>
+          <p class="card-subtitle">Follow these steps to create, host, and share your quiz.</p>
+
+          <div class="landing-steps">
+            <article class="step-item">
+              <span class="step-index">1</span>
+              <div>
+                <h3>Enter Your Details</h3>
+                <p>Open the creator page and fill in basic quiz details like title and time limit.</p>
+              </div>
+            </article>
+
+            <article class="step-item">
+              <span class="step-index">2</span>
+              <div>
+                <h3>Add Quiz Questions</h3>
+                <p>Type questions, options, and select the correct answer for each one.</p>
+              </div>
+            </article>
+
+            <article class="step-item">
+              <span class="step-index">3</span>
+              <div>
+                <h3>Generate Quiz Link</h3>
+                <p>Press Start Quiz to generate a unique link for participants.</p>
+              </div>
+            </article>
+
+            <article class="step-item">
+              <span class="step-index">4</span>
+              <div>
+                <h3>Share with Others</h3>
+                <p>Send the student link to your class, audience, or team.</p>
+              </div>
+            </article>
+
+            <article class="step-item">
+              <span class="step-index">5</span>
+              <div>
+                <h3>View Results Instantly</h3>
+                <p>Open dashboard link to monitor submissions, scores, and integrity events in real time.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="card landing-card landing-cta reveal-up" style="max-width:980px;">
+          <h2 class="card-title">Ready to Start?</h2>
+          <p class="card-subtitle">Create your first secure quiz now and share it in seconds.</p>
+          <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
+            <a href="create.html" class="btn-primary" style="text-decoration:none;">Start Creating Your Quiz</a>
+            <a href="setup.html" class="btn-secondary" style="text-decoration:none;">Setup Guide</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="background.js"></script>
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const targetId = link.getAttribute("href");
+        const target = targetId ? document.querySelector(targetId) : null;
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18 });
+
+    document.querySelectorAll(".reveal-up").forEach((item) => observer.observe(item));
+  </script>
+</body>
+</html>

@@ -159,25 +159,16 @@ async function loadQuestions() {
   const quizId = getQuizIdFromUrl();
   state.quizId = quizId;
 
-  const loadedFromFirestore = await loadQuestionsFromFirestore(quizId);
-  if (loadedFromFirestore) return;
+  if (!quizId) {
+    state.accessBlocked = true;
+    state.accessBlockReason = "Quiz access is restricted. Ask your teacher for the shared quiz link and open it exactly as provided.";
+    return;
+  }
 
-  try {
-    const res = await fetch("questions.json");
-    if (!res.ok) throw new Error("HTTP error " + res.status);
-    const rawQuestions = await res.json();
-    QUESTION_BANK = normalizeQuestionBank(rawQuestions);
-    console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from questions.json`);
-  } catch (err) {
-    console.error("[SecureQuiz] Failed to load questions.json:", err);
-    if(document.getElementById("reg-error")) {
-      document.getElementById("reg-error").textContent =
-        "Failed to load quiz questions. Please ensure you are running this on a web server or contact the administrator.";
-      document.getElementById("reg-error").classList.remove("hidden");
-    }
-    if(document.getElementById("btn-start-quiz")) {
-      document.getElementById("btn-start-quiz").disabled = true;
-    }
+  const loadedFromFirestore = await loadQuestionsFromFirestore(quizId);
+  if (!loadedFromFirestore) {
+    state.accessBlocked = true;
+    state.accessBlockReason = "This quiz link is invalid or expired. Ask your teacher to share the latest student quiz link.";
   }
 }
 
@@ -220,6 +211,8 @@ const state = {
   lastReviewToken: null,
   submissionPersisted: false,
   quizId: "",
+  accessBlocked: false,
+  accessBlockReason: "",
 
   // Flags
   fullscreenMonitoringEnabled: true,
@@ -2304,8 +2297,25 @@ function init() {
     });
   }
 
+  if (state.accessBlocked) {
+    showRegError(state.accessBlockReason || "Quiz access is restricted. Use the teacher-provided quiz link.");
+    DOM.btnStart.disabled = true;
+    if (DOM.btnStartText) {
+      DOM.btnStartText.textContent = "Invite Link Required";
+      DOM.btnStartText.classList.remove("hidden");
+    }
+    if (DOM.btnStartSpinner) {
+      DOM.btnStartSpinner.classList.add("hidden");
+    }
+  }
+
   /* ── Registration Form Submit ── */
   DOM.btnStart.addEventListener("click", async () => {
+    if (state.accessBlocked) {
+      showRegError(state.accessBlockReason || "Quiz access is restricted. Use the teacher-provided quiz link.");
+      return;
+    }
+
     clearRegError();
 
     const usn   = DOM.inpUSN.value.trim().toUpperCase();
