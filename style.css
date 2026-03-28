@@ -651,7 +651,9 @@ a, button, input[type="text"], input[type="email"] {
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
-.form-group input {
+.form-group input,
+.form-group textarea,
+.form-group select {
   width: 100%;
   background: var(--field-bg);
   border: 1px solid var(--glass-border);
@@ -663,10 +665,79 @@ a, button, input[type="text"], input[type="email"] {
   transition: border-color var(--transition), box-shadow var(--transition);
   outline: none;
 }
-.form-group input::placeholder { color: var(--text-3); }
-.form-group input:focus {
+.form-group textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-3);
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.question-builder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.questions-list {
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.questions-empty {
+  background: var(--surface-1);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.question-item {
+  background: var(--surface-1);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.95rem;
+}
+
+.question-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.question-item-text {
+  margin: 0.4rem 0 0.55rem;
+  color: var(--text-1);
+  font-size: 0.92rem;
+}
+
+.question-item-options {
+  margin: 0;
+  padding-left: 1rem;
+  color: var(--text-2);
+  font-size: 0.88rem;
+}
+
+.question-item-answer {
+  margin-top: 0.55rem;
+  color: var(--success);
+  font-size: 0.85rem;
+}
+
+.question-remove-btn {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
 }
 
 /* ─── Notice Box ─── */

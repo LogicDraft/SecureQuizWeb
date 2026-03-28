@@ -72,13 +72,13 @@
           <p class="card-subtitle">Enter your details to begin the quiz.</p>
 
           <div class="form-group">
-            <label for="inp-usn">Student ID / USN <span style="color:var(--danger);font-size:0.85em;">*</span></label>
-            <input type="text" id="inp-usn" placeholder="e.g. 1AY25AI000" autocomplete="off" />
+            <label for="inp-name">Full Name <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="text" id="inp-name" placeholder="e.g. John Doe" autocomplete="off" />
           </div>
 
           <div class="form-group">
-            <label for="inp-email">College Email <span style="color:var(--danger);font-size:0.85em;">*</span></label>
-            <input type="email" id="inp-email" placeholder="example@acharya.ac.in" autocomplete="off" />
+            <label for="inp-usn">Student ID / USN <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="text" id="inp-usn" placeholder="e.g. 1AY25AI000" autocomplete="off" />
           </div>
 
           <div id="reg-error" class="error-msg hidden"></div>
@@ -257,7 +257,7 @@
             <div class="r-stat"><span class="r-label">Device</span><span id="r-device" class="r-value">—</span></div>
           </div>
 
-          <p id="result-note" class="result-note">Detailed results will be available in Google Sheets.</p>
+          <p id="result-note" class="result-note">Your results have been recorded.</p>
           <div class="result-actions">
             <button id="btn-review-answers" class="btn-primary" disabled>Review Answers</button>
             <button id="btn-retry-submit" class="btn-secondary hidden" type="button">Retry Submission</button>
@@ -357,6 +357,6 @@
     </section>
 
   <script src="background.js"></script>
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

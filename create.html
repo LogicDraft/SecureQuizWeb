@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050508" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SecureQuiz — Create Quiz</title>
+  <meta name="description" content="Create a new secure quiz and generate a shareable link for students." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="cursor"></div>
+
+  <div id="app">
+    <section class="screen active">
+      <div class="screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
+
+        <div class="hero">
+          <div class="hero-eyebrow">Teacher Portal</div>
+          <h1>Create Quiz</h1>
+        </div>
+
+        <div class="card" style="max-width: 640px;" id="create-card">
+          <h2 class="card-title">New Quiz</h2>
+          <p class="card-subtitle">Fill in the details below and publish your quiz.</p>
+
+          <div class="form-group">
+            <label for="inp-title">Quiz Title <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="text" id="inp-title" placeholder="e.g. Midterm Physics" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-time">Time Limit (minutes) <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="number" id="inp-time" placeholder="e.g. 30" min="1" max="180" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-violations">Max Tab Switches Allowed</label>
+            <input type="number" id="inp-violations" placeholder="e.g. 5" min="1" max="20" value="5" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-question-text">Question Text <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <textarea id="inp-question-text" rows="3" placeholder="Enter the question"></textarea>
+          </div>
+
+          <div class="question-builder-grid">
+            <div class="form-group">
+              <label for="inp-opt-1">Option A <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+              <input type="text" id="inp-opt-1" placeholder="Enter option A" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-2">Option B <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+              <input type="text" id="inp-opt-2" placeholder="Enter option B" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-3">Option C</label>
+              <input type="text" id="inp-opt-3" placeholder="Enter option C" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-4">Option D</label>
+              <input type="text" id="inp-opt-4" placeholder="Enter option D" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inp-correct-answer">Correct Answer <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <select id="inp-correct-answer">
+              <option value="0">Option A</option>
+              <option value="1">Option B</option>
+              <option value="2">Option C</option>
+              <option value="3">Option D</option>
+            </select>
+          </div>
+
+          <button id="btn-add-question" class="btn-secondary btn-full" style="margin-bottom:1rem;">+ Add Question</button>
+
+          <div class="notice-box">
+            <span class="notice-icon">📌</span>
+            <span>Added Questions: <strong id="questions-count">0</strong>. Add at least one question to publish the quiz.</span>
+          </div>
+
+          <div id="questions-list" class="questions-list"></div>
+
+          <div class="form-group">
+            <label for="inp-questions">Generated Questions JSON (auto-created)</label>
+            <textarea id="inp-questions" rows="8" readonly placeholder="Questions JSON preview will appear here"></textarea>
+          </div>
+
+          <div id="create-error" class="error-msg hidden"></div>
+
+          <button id="btn-publish" class="btn-primary btn-full">
+            <span id="btn-publish-text">Publish Quiz →</span>
+            <span id="btn-publish-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <div id="result-section" class="card hidden" style="max-width: 640px;">
+          <h2 class="card-title" style="color:var(--success);">Quiz Published!</h2>
+          <p class="card-subtitle">Share these links with your students.</p>
+
+          <div class="form-group">
+            <label>Student Quiz Link</label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="inp-quiz-link" readonly style="flex:1;" />
+              <button id="btn-copy-quiz" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Dashboard Link</label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="inp-dashboard-link" readonly style="flex:1;" />
+              <button id="btn-copy-dash" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;margin-top:1rem;">
+            <button id="btn-new-quiz" class="btn-secondary btn-full">Create Another Quiz</button>
+            <a id="btn-go-dashboard" href="#" class="btn-primary btn-full" style="text-decoration:none;text-align:center;">View Dashboard →</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <script src="background.js"></script>
+  <script type="module" src="create.js"></script>
+</body>
+</html>
