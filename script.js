@@ -234,6 +234,7 @@ const DOM = {
   btnProceed:   document.getElementById("btn-proceed-quiz"),
 
   // Registration
+  inpName:  document.getElementById("inp-name"),
   inpUSN:   document.getElementById("inp-usn"),
   inpEmail: document.getElementById("inp-email"),
   regError: document.getElementById("reg-error"),
@@ -2289,6 +2290,12 @@ function init() {
     });
   }
 
+  if (DOM.inpName) {
+    DOM.inpName.addEventListener("input", () => {
+      persistAppState();
+    });
+  }
+
   if (DOM.inpEmail) {
     DOM.inpEmail.addEventListener("input", () => {
       syncRegistrationDraftFromDom();
@@ -2317,16 +2324,20 @@ function init() {
 
     clearRegError();
 
-    const usn   = DOM.inpUSN.value.trim().toUpperCase();
-    const email = DOM.inpEmail.value.trim().toLowerCase();
+    const enteredName = DOM.inpName ? DOM.inpName.value.trim() : "";
+    const usn = DOM.inpUSN ? DOM.inpUSN.value.trim().toUpperCase() : "";
+    const email = DOM.inpEmail ? DOM.inpEmail.value.trim().toLowerCase() : "";
 
-    // 1. USN must be provided (primary key)
+    // 1. Name and USN must be provided
+    if (!enteredName) return showRegError("Please enter your full name.");
     if (!usn)  return showRegError("Please enter your Student ID / USN.");
 
-    // 2. Email must be provided and end with @acharya.ac.in
-    if (!email) return showRegError("Please enter your college email address.");
-    if (!email.endsWith("@acharya.ac.in")) {
-      return showRegError("Please use your college email ending with @acharya.ac.in");
+    // 2. Email is optional; validate only when field exists and value is provided.
+    if (DOM.inpEmail && email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        return showRegError("Please enter a valid email address.");
+      }
     }
 
     // Duplicate attempt check
@@ -2336,20 +2347,18 @@ function init() {
       );
     }
 
-    // Store student info — name from registry, USN is primary key
+    // Store student info using entered values (no external registry dependency).
     DOM.btnStartText.classList.add("hidden");
     DOM.btnStartSpinner.classList.remove("hidden");
     DOM.btnStart.disabled = true;
 
     try {
-      const student = await validateStudent(usn);
-      if (!student) {
-        showRegError(`USN "${usn}" is not registered for this quiz. Please check and try again.`);
-        return;
-      }
-
-      state.student = { name: student.name, usn: student.usn, email };
-      state.registrationDraft = { usn: student.usn, email };
+      state.student = {
+        name: enteredName,
+        usn,
+        email: email || `${usn.toLowerCase()}@securequiz.local`,
+      };
+      state.registrationDraft = { usn, email };
       state.submissionReview = null;
       state.lastReviewToken = null;
       state.instructionsAccepted = false;
@@ -2359,8 +2368,8 @@ function init() {
       setupQuestions();
       showScreen(DOM.screenInst);
     } catch (err) {
-      console.error("[SecureQuiz] Failed to validate student:", err);
-      showRegError("Unable to validate your USN right now. Please try again or contact the administrator.");
+      console.error("[SecureQuiz] Failed to start quiz:", err);
+      showRegError("Unable to start the quiz right now. Please try again.");
     } finally {
       DOM.btnStartText.classList.remove("hidden");
       DOM.btnStartSpinner.classList.add("hidden");
