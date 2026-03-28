@@ -1,12 +1,4 @@
-import { db } from "./firebase-config.js";
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { supabase } from "./supabase-config.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 const QUIZ_ID = (urlParams.get("quizId") || "").trim();
@@ -36,12 +28,6 @@ function escapeText(val) {
 
 function formatDate(val) {
   if (!val) return "--";
-  if (typeof val === "object" && typeof val.toDate === "function") {
-    return val.toDate().toLocaleString("en-IN", {
-      day: "2-digit", month: "short", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    });
-  }
   const d = new Date(val);
   if (Number.isNaN(d.getTime())) return "--";
   return d.toLocaleString("en-IN", {
@@ -76,17 +62,27 @@ function renderRows(submissions) {
   }
 
   DOM.rows.innerHTML = submissions.map((sub, idx) => {
-    const name = escapeText(sub.studentName || "Unknown");
-    const usn = escapeText(sub.studentId || "--");
-    const score = Number.isFinite(sub.score) ? sub.score : 0;
-    const total = Number.isFinite(sub.totalQuestions) ? sub.totalQuestions : 0;
-    const logs = sub.proctorLogs || {};
-    const tabs = Number(logs.tabSwitches || 0);
-    const fs = Number(logs.fullscreenExits || 0);
-    const ss = Number(logs.screenshotAttempts || 0);
+    const name = escapeText(sub.student_name || sub.studentName || "Unknown");
+    const usn = escapeText(sub.student_id || sub.studentId || "--");
+
+    const scoreFromText = typeof sub.score_text === "string" && sub.score_text.includes("/")
+      ? sub.score_text.split("/").map((item) => Number.parseInt(item, 10))
+      : [];
+    const score = Number.isFinite(sub.score_correct) ? sub.score_correct
+      : Number.isFinite(sub.scoreCorrect) ? sub.scoreCorrect
+      : Number.isFinite(scoreFromText[0]) ? scoreFromText[0]
+      : 0;
+    const total = Number.isFinite(sub.score_total) ? sub.score_total
+      : Number.isFinite(sub.scoreTotal) ? sub.scoreTotal
+      : Number.isFinite(scoreFromText[1]) ? scoreFromText[1]
+      : 0;
+
+    const tabs = Number(sub.tab_switches ?? sub.tabSwitches ?? 0);
+    const fs = Number(sub.fullscreen_exits ?? sub.fullscreenExits ?? 0);
+    const ss = Number(sub.screenshot_attempts ?? sub.screenshotAttempts ?? 0);
     const device = escapeText(sub.device || "--");
-    const autoSubmit = sub.autoSubmit;
-    const submittedAt = formatDate(sub.submittedAt || sub.timestamp);
+    const autoSubmit = Boolean(sub.auto_submit ?? sub.autoSubmit);
+    const submittedAt = formatDate(sub.created_at || sub.submitted_at_iso || sub.submittedAt || sub.timestamp);
 
     const tabsCls = getViolationClass(tabs);
     const fsCls = getViolationClass(fs);
@@ -126,29 +122,46 @@ async function init() {
   DOM.quizId.textContent = QUIZ_ID;
 
   try {
-    const quizSnap = await getDoc(doc(db, "quizzes", QUIZ_ID));
-    if (!quizSnap.exists()) {
+    const { data: quizData, error: quizError } = await supabase
+      .from("quizzes")
+      .select("id, title")
+      .eq("id", QUIZ_ID)
+      .single();
+
+    if (quizError || !quizData) {
       DOM.subtitle.textContent = "Quiz not found";
       showError("Quiz not found. The quiz may have been deleted or the link is incorrect.");
       return;
     }
 
-    const quizData = quizSnap.data();
     const title = quizData.title || "Untitled Quiz";
     DOM.quizTitle.textContent = title;
     DOM.subtitle.textContent = `Live submissions for "${title}"`;
     document.title = `Dashboard — ${title} | SecureQuiz`;
 
-    const submissionsRef = collection(db, "quizzes", QUIZ_ID, "submissions");
-    const q = query(submissionsRef, orderBy("submittedAt", "desc"));
+    const loadSubmissions = async () => {
+      const { data: submissions, error: submissionsError } = await supabase
+        .from("submissions")
+        .select("*")
+        .eq("quiz_id", QUIZ_ID)
+        .order("created_at", { ascending: false });
 
-    onSnapshot(q, (snapshot) => {
-      const subs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderRows(subs);
-    }, (err) => {
-      console.error("[SecureQuiz] Dashboard listener error:", err);
-      showError("Failed to load submissions: " + err.message);
-    });
+      if (submissionsError) throw submissionsError;
+      renderRows(submissions || []);
+    };
+
+    await loadSubmissions();
+
+    supabase
+      .channel(`submissions-${QUIZ_ID}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "submissions", filter: `quiz_id=eq.${QUIZ_ID}` },
+        () => {
+          void loadSubmissions();
+        }
+      )
+      .subscribe();
 
   } catch (err) {
     console.error("[SecureQuiz] Dashboard init error:", err);

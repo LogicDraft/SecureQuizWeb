@@ -25,14 +25,7 @@
 /* ─────────────────────────────────────────────────────────────────
    1. CONFIGURATION — Edit these values before deploying
 ───────────────────────────────────────────────────────────────────*/
-import { db } from "./firebase-config.js";
-import {
-  doc,
-  getDoc,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { supabase } from "./supabase-config.js";
 
 const CONFIG = {
   // ⚠️  Paste your Google Apps Script Web App URL here after deploying
@@ -129,28 +122,33 @@ function applyQuizRuntimeConfig(quizData) {
   }
 }
 
-async function loadQuestionsFromFirestore(quizId) {
+async function loadQuestionsFromSupabase(quizId) {
   if (!quizId) return false;
 
   try {
-    const snapshot = await getDoc(doc(db, "quizzes", quizId));
-    if (!snapshot.exists()) {
-      console.warn(`[SecureQuiz] quizId '${quizId}' not found in Firestore. Falling back to local questions.json`);
+    const { data, error } = await supabase
+      .from("quizzes")
+      .select("id, title, config, questions")
+      .eq("id", quizId)
+      .single();
+
+    if (error || !data) {
+      console.warn(`[SecureQuiz] quizId '${quizId}' not found in Supabase.`);
       return false;
     }
 
-    const quizData = snapshot.data() || {};
+    const quizData = data || {};
     if (!Array.isArray(quizData.questions) || quizData.questions.length === 0) {
-      console.warn(`[SecureQuiz] quizId '${quizId}' has no valid questions array. Falling back to local questions.json`);
+      console.warn(`[SecureQuiz] quizId '${quizId}' has no valid questions array.`);
       return false;
     }
 
     QUESTION_BANK = normalizeQuestionBank(quizData.questions);
     applyQuizRuntimeConfig(quizData);
-    console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from Firestore quiz '${quizId}'.`);
+    console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from Supabase quiz '${quizId}'.`);
     return true;
   } catch (error) {
-    console.error("[SecureQuiz] Failed loading Firestore quiz:", error);
+    console.error("[SecureQuiz] Failed loading Supabase quiz:", error);
     return false;
   }
 }
@@ -165,8 +163,8 @@ async function loadQuestions() {
     return;
   }
 
-  const loadedFromFirestore = await loadQuestionsFromFirestore(quizId);
-  if (!loadedFromFirestore) {
+  const loadedFromSupabase = await loadQuestionsFromSupabase(quizId);
+  if (!loadedFromSupabase) {
     state.accessBlocked = true;
     state.accessBlockReason = "This quiz link is invalid or expired. Ask your teacher to share the latest student quiz link.";
   }
@@ -950,7 +948,7 @@ function buildLocalReviewPayload() {
   };
 }
 
-async function persistSubmissionToFirestore({
+async function persistSubmissionToSupabase({
   timestamp,
   isAutoSubmit,
   device,
@@ -960,25 +958,26 @@ async function persistSubmissionToFirestore({
   if (!state.quizId) return false;
 
   const submissionPayload = {
-    studentName: state.student.name,
-    studentId: state.student.usn,
+    quiz_id: state.quizId,
+    student_name: state.student.name,
+    student_id: state.student.usn,
     email: state.student.email,
     device,
-    autoSubmit: isAutoSubmit,
-    tabSwitches: state.tabSwitchCount,
-    fullscreenExits: state.fullscreenExitCount,
-    screenshotAttempts: state.screenshotAttempts,
-    suspiciousEvents: state.suspiciousEvents,
+    auto_submit: isAutoSubmit,
+    tab_switches: state.tabSwitchCount,
+    fullscreen_exits: state.fullscreenExitCount,
+    screenshot_attempts: state.screenshotAttempts,
+    suspicious_events: state.suspiciousEvents,
     answers: localReview.reviewAnswers,
-    scoreCorrect: localReview.scoreCorrect,
-    scoreTotal: localReview.scoreTotal,
-    scoreText: `${localReview.scoreCorrect}/${localReview.scoreTotal}`,
-    reviewToken,
-    submittedAtISO: timestamp,
-    createdAt: serverTimestamp(),
+    score_correct: localReview.scoreCorrect,
+    score_total: localReview.scoreTotal,
+    score_text: `${localReview.scoreCorrect}/${localReview.scoreTotal}`,
+    review_token: reviewToken,
+    submitted_at_iso: timestamp,
   };
 
-  await addDoc(collection(db, "quizzes", state.quizId, "submissions"), submissionPayload);
+  const { error } = await supabase.from("submissions").insert(submissionPayload);
+  if (error) throw error;
   return true;
 }
 
@@ -1927,10 +1926,10 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
   // Display result screen immediately (don't block on network)
   showResultScreen(total, device);
 
-  // Primary persistence path for SaaS mode: write attempt to Firestore.
+  // Primary persistence path for SaaS mode: write attempt to Supabase.
   // Apps Script remains as compatibility fallback for legacy deployments.
   try {
-    const savedToFirestore = await persistSubmissionToFirestore({
+    const savedToSupabase = await persistSubmissionToSupabase({
       timestamp,
       isAutoSubmit,
       device,
@@ -1938,7 +1937,7 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
       localReview,
     });
 
-    if (savedToFirestore) {
+    if (savedToSupabase) {
       applySubmissionResult({
         status: "success",
         scoreCorrect: localReview.scoreCorrect,
@@ -1948,8 +1947,8 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
       }, total, device);
       DOM.resultNote.textContent = "Submission stored in SecureQuiz cloud. You can now review answers.";
     }
-  } catch (firestoreError) {
-    console.warn("[SecureQuiz] Firestore submission write failed, falling back to Apps Script flow.", firestoreError);
+  } catch (supabaseError) {
+    console.warn("[SecureQuiz] Supabase submission write failed, falling back to Apps Script flow.", supabaseError);
   }
 
   // Primary path: JSON POST to the Apps Script Web App.
