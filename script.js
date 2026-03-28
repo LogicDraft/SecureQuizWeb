@@ -949,6 +949,28 @@ function buildLocalReviewPayload() {
   };
 }
 
+async function fetchSubmissionFromSupabase(reviewToken) {
+  if (!reviewToken) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("submissions")
+      .select("*")
+      .eq("review_token", reviewToken)
+      .single();
+
+    if (error) {
+      console.error("[SecureQuiz] Failed to fetch submission from Supabase:", error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("[SecureQuiz] Error in fetchSubmissionFromSupabase:", error);
+    return null;
+  }
+}
+
 async function persistSubmissionToSupabase({
   timestamp,
   isAutoSubmit,
@@ -980,6 +1002,37 @@ async function persistSubmissionToSupabase({
   const { error } = await supabase.from("submissions").insert(submissionPayload);
   if (error) throw error;
   return true;
+}
+
+async function waitForSubmissionInSupabase(reviewToken) {
+  if (!reviewToken) return null;
+
+  const deadline = Date.now() + CONFIG.RESULT_LOOKUP_TIMEOUT_MS;
+  let lastError = null;
+
+  while (Date.now() < deadline) {
+    try {
+      const submission = await fetchSubmissionFromSupabase(reviewToken);
+      if (submission) {
+        return submission;
+      }
+    } catch (error) {
+      lastError = error;
+      console.error("[SecureQuiz] Supabase submission lookup error:", error);
+    }
+
+    const timeRemaining = deadline - Date.now();
+    if (timeRemaining <= 0) break;
+
+    await delay(Math.min(CONFIG.RESULT_LOOKUP_INTERVAL_MS, timeRemaining));
+  }
+
+  if (lastError) {
+    // throw lastError;
+    console.warn("[SecureQuiz] Final Supabase lookup failed.", lastError);
+  }
+
+  return null;
 }
 
 async function waitForSubmissionReview(usn, reviewToken) {
@@ -1155,6 +1208,23 @@ async function resolveSubmissionState(responseData, total, device, reviewToken =
     device,
     responseStatus: responseData && responseData.status ? responseData.status : null,
   });
+
+  // Supabase-first lookup
+  if (reviewToken) {
+    const supabaseSubmission = await waitForSubmissionInSupabase(reviewToken);
+    if (supabaseSubmission) {
+      console.log("[SecureQuiz] Found submission in Supabase.", supabaseSubmission);
+      const reviewAnswers = Array.isArray(supabaseSubmission.answers) ? supabaseSubmission.answers : [];
+      applySubmissionResult({
+        scoreCorrect: supabaseSubmission.score_correct,
+        scoreTotal: supabaseSubmission.score_total,
+        reviewAnswers: reviewAnswers,
+        timestamp: supabaseSubmission.submitted_at_iso,
+        score: supabaseSubmission.score_text,
+      }, total, device);
+      return;
+    }
+  }
 
   if (responseData && isOutdatedSubmitEndpointResponse(responseData)) {
     applySubmissionFallbackState(
@@ -1939,6 +2009,7 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
     });
 
     if (savedToSupabase) {
+      state.submissionPersisted = true;
       applySubmissionResult({
         status: "success",
         scoreCorrect: localReview.scoreCorrect,
@@ -1950,6 +2021,13 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
     }
   } catch (supabaseError) {
     console.warn("[SecureQuiz] Supabase submission write failed, falling back to Apps Script flow.", supabaseError);
+  }
+
+  // Legacy Apps Script fallback path.
+  // Only run when Supabase persistence did not complete successfully.
+  if (state.submissionPersisted) {
+    console.log("[SecureQuiz] Supabase submission confirmed. Skipping legacy Apps Script fallback.");
+    return;
   }
 
   // Primary path: JSON POST to the Apps Script Web App.
