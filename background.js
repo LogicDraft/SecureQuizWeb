@@ -2,7 +2,14 @@
    background.js — Interactive Canvas Background & Cursor
 ───────────────────────────────────────────────────────────────────*/
 function initCanvasBackground(options = {}) {
-  const { disabled = false } = options;
+  const {
+    disabled = false,
+    disableCursor = (
+      (typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches)
+      || (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0)
+      || ("ontouchstart" in window)
+    ),
+  } = options;
 
   if (typeof window.__secureQuizBackgroundCleanup === "function") {
     window.__secureQuizBackgroundCleanup();
@@ -14,7 +21,7 @@ function initCanvasBackground(options = {}) {
   if (!canvas || !cursor) return null;
 
   canvas.hidden = !!disabled;
-  cursor.hidden = !!disabled;
+  cursor.hidden = !!disabled || !!disableCursor;
   cursor.style.opacity = "0";
   cursor.classList.remove("hover");
 
@@ -212,21 +219,29 @@ function initCanvasBackground(options = {}) {
 
   updateCanvasSize();
 
-  window.addEventListener("mousemove", updateCursor);
+  if (!disableCursor) {
+    window.addEventListener("mousemove", updateCursor);
+  }
   window.addEventListener("resize", updateCanvasSize);
   window.addEventListener("securequiz:themechange", handleThemeChange);
-  document.body.addEventListener("mouseover", handleMouseOver);
-  document.body.addEventListener("mouseout", handleMouseOut);
+  if (!disableCursor) {
+    document.body.addEventListener("mouseover", handleMouseOver);
+    document.body.addEventListener("mouseout", handleMouseOut);
+  }
 
   function cleanup() {
     disposed = true;
     cancelAnimationFrame(drawFrameId);
     cancelAnimationFrame(cursorFrameId);
-    window.removeEventListener("mousemove", updateCursor);
+    if (!disableCursor) {
+      window.removeEventListener("mousemove", updateCursor);
+    }
     window.removeEventListener("resize", updateCanvasSize);
     window.removeEventListener("securequiz:themechange", handleThemeChange);
-    document.body.removeEventListener("mouseover", handleMouseOver);
-    document.body.removeEventListener("mouseout", handleMouseOut);
+    if (!disableCursor) {
+      document.body.removeEventListener("mouseover", handleMouseOver);
+      document.body.removeEventListener("mouseout", handleMouseOut);
+    }
     cursor.style.opacity = "0";
     cursor.classList.remove("hover");
   }
@@ -234,7 +249,9 @@ function initCanvasBackground(options = {}) {
   window.__secureQuizBackgroundCleanup = cleanup;
 
   draw();
-  smoothCursor();
+  if (!disableCursor) {
+    smoothCursor();
+  }
 
   return cleanup;
 }
