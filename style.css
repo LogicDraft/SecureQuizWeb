@@ -491,6 +491,21 @@ a, button, input[type="text"], input[type="email"] {
   max-width: 480px;
 }
 
+.screen.active .card {
+  animation: pageCardRise 0.45s ease both;
+}
+
+@keyframes pageCardRise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Custom internal scrollbar for cards */
 .card::-webkit-scrollbar {
   width: 6px;

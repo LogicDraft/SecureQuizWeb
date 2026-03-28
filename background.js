@@ -195,13 +195,13 @@ function initCanvasBackground(options = {}) {
   }
 
   function handleMouseOver(event) {
-    if (event.target.closest("button, .btn, input, .option-btn, .nav-dot, a")) {
+    if (event.target.closest("button, .btn, input, textarea, select, .option-btn, .nav-dot, a")) {
       cursor.classList.add("hover");
     }
   }
 
   function handleMouseOut(event) {
-    if (event.target.closest("button, .btn, input, .option-btn, .nav-dot, a")) {
+    if (event.target.closest("button, .btn, input, textarea, select, .option-btn, .nav-dot, a")) {
       cursor.classList.remove("hover");
     }
   }
@@ -237,4 +237,14 @@ function initCanvasBackground(options = {}) {
   smoothCursor();
 
   return cleanup;
+}
+
+window.initCanvasBackground = initCanvasBackground;
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initCanvasBackground({ disabled: document.body.classList.contains("ambient-effects-off") });
+  });
+} else {
+  initCanvasBackground({ disabled: document.body.classList.contains("ambient-effects-off") });
 }

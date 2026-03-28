@@ -14,7 +14,6 @@ const DOM = {
   btnAddQuestion: document.getElementById("btn-add-question"),
   questionsList: document.getElementById("questions-list"),
   questionsCount: document.getElementById("questions-count"),
-  inpQuestions: document.getElementById("inp-questions"),
   btnPublish: document.getElementById("btn-publish"),
   btnPublishText: document.getElementById("btn-publish-text"),
   btnPublishSpinner: document.getElementById("btn-publish-spinner"),
@@ -65,7 +64,6 @@ function clearQuestionDraft() {
 }
 
 function syncQuestionsJsonPreview() {
-  DOM.inpQuestions.value = JSON.stringify(questionBuilderState.questions, null, 2);
   DOM.questionsCount.textContent = String(questionBuilderState.questions.length);
 }
 
@@ -198,27 +196,17 @@ DOM.btnPublish.addEventListener("click", async () => {
   const title = DOM.inpTitle.value.trim();
   const timeLimit = parseInt(DOM.inpTime.value, 10);
   const maxViolations = parseInt(DOM.inpViolations.value, 10) || 5;
-  const questionsRaw = DOM.inpQuestions.value.trim();
 
   if (!title) return showError("Please enter a quiz title.");
   if (!timeLimit || timeLimit < 1) return showError("Please enter a valid time limit in minutes.");
-  if (!questionBuilderState.questions.length && !questionsRaw) {
+  if (!questionBuilderState.questions.length) {
     return showError("Please add at least one question.");
   }
   if (!isFirebaseConfigured()) {
     return showError("Firebase is not configured. Update firebase-config.js with real project credentials, then publish again.");
   }
 
-  let questions;
-  if (questionBuilderState.questions.length) {
-    questions = [...questionBuilderState.questions];
-  } else {
-    try {
-      questions = JSON.parse(questionsRaw);
-    } catch (e) {
-      return showError("Invalid JSON: " + e.message);
-    }
-  }
+  const questions = [...questionBuilderState.questions];
 
   if (!Array.isArray(questions) || questions.length === 0) {
     return showError("Questions must be a non-empty JSON array.");
