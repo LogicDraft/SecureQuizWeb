@@ -3,13 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#050508" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SecureQuiz — Teacher Dashboard</title>
-  <meta name="description" content="Monitor quiz submissions and integrity events in real time." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SecureQuiz — Dashboard</title>
+  <meta name="description" content="Teacher dashboard to view student submissions and proctoring logs." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .dashboard-page { min-height: 100vh; }
+    .dashboard-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .dashboard-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+    }
+    .dashboard-table-wrap {
+      overflow-x: auto;
+      margin: 0 -0.5rem;
+      padding: 0 0.5rem;
+    }
+    table.dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    table.dashboard-table thead th {
+      text-align: left;
+      padding: 0.7rem 0.8rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      border-bottom: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+    table.dashboard-table tbody td {
+      padding: 0.7rem 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    table.dashboard-table tbody tr {
+      transition: background 0.2s;
+    }
+    table.dashboard-table tbody tr:hover {
+      background: rgba(255,255,255,0.03);
+    }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .score-badge.good {
+      background: rgba(16,185,129,0.12);
+      color: var(--success);
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+    .score-badge.ok {
+      background: rgba(245,158,11,0.12);
+      color: var(--warning);
+      border: 1px solid rgba(245,158,11,0.3);
+    }
+    .score-badge.bad {
+      background: rgba(244,63,94,0.12);
+      color: var(--danger);
+      border: 1px solid rgba(244,63,94,0.3);
+    }
+    .integrity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+    }
+    .integrity-pill.clean {
+      background: rgba(16,185,129,0.1);
+      color: var(--success);
+    }
+    .integrity-pill.flagged {
+      background: rgba(244,63,94,0.12);
+      color: var(--danger);
+    }
+    .auto-submit-tag {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(244,63,94,0.15);
+      color: var(--danger);
+      border: 1px solid rgba(244,63,94,0.25);
+    }
+    .violation-cell {
+      font-size: 0.82rem;
+      color: var(--text-2);
+    }
+    .violation-cell .warn { color: var(--warning); }
+    .violation-cell .danger { color: var(--danger); }
+    .time-cell {
+      color: var(--text-3);
+      font-size: 0.8rem;
+    }
+    .dashboard-empty {
+      text-align: center;
+      padding: 2.5rem 1rem !important;
+      color: var(--text-3);
+    }
+    .dashboard-empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .dashboard-empty h3 { font-size: 1rem; color: var(--text-2); margin-bottom: 0.3rem; }
+    .dashboard-empty p { font-size: 0.85rem; }
+    .dash-live-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: live-pulse 1.5s infinite;
+      margin-right: 0.3rem;
+      vertical-align: middle;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -46,21 +178,32 @@
             <table class="dashboard-table" aria-label="Quiz submissions table">
               <thead>
                 <tr>
-                  <th>Student</th>
+                  <th>#</th>
+                  <th>Student Name</th>
+                  <th>Student ID</th>
                   <th>Score</th>
-                  <th>Submitted At</th>
-                  <th>Integrity</th>
+                  <th>Tab Switches</th>
+                  <th>FS Exits</th>
+                  <th>Screenshots</th>
+                  <th>Device</th>
                   <th>Status</th>
+                  <th>Submitted At</th>
                 </tr>
               </thead>
               <tbody id="submission-rows">
                 <tr>
-                  <td colspan="5" class="dashboard-empty">No submissions yet.</td>
+                  <td colspan="10" class="dashboard-empty">
+                    <div class="dashboard-empty-icon">📋</div>
+                    <h3>No submissions yet</h3>
+                    <p>Share the quiz link with students. Submissions will appear here in real-time.</p>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
+        <a href="create.html" style="display:inline-block;margin-top:1.5rem;color:var(--accent);text-decoration:none;font-size:0.88rem;">← Create a new quiz</a>
       </div>
     </section>
   </main>

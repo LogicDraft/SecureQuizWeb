@@ -33,6 +33,14 @@ const questionBuilderState = {
   questions: [],
 };
 
+function isFirebaseConfigured() {
+  const options = db && db.app && db.app.options ? db.app.options : {};
+  const required = [options.apiKey, options.projectId, options.appId];
+  if (required.some((value) => !value || typeof value !== "string")) return false;
+
+  return required.every((value) => !/^YOUR_/i.test(value));
+}
+
 function showError(msg) {
   DOM.createError.textContent = msg;
   DOM.createError.classList.remove("hidden");
@@ -197,6 +205,9 @@ DOM.btnPublish.addEventListener("click", async () => {
   if (!questionBuilderState.questions.length && !questionsRaw) {
     return showError("Please add at least one question.");
   }
+  if (!isFirebaseConfigured()) {
+    return showError("Firebase is not configured. Update firebase-config.js with real project credentials, then publish again.");
+  }
 
   let questions;
   if (questionBuilderState.questions.length) {
@@ -252,7 +263,13 @@ DOM.btnPublish.addEventListener("click", async () => {
     DOM.resultSection.classList.remove("hidden");
   } catch (err) {
     console.error("[SecureQuiz] Failed to publish quiz:", err);
-    showError("Failed to publish quiz: " + err.message);
+    if (err && (err.code === "permission-denied" || err.code === "unauthenticated")) {
+      showError("Publish blocked by Firestore rules. Allow write access to quizzes collection for your app.");
+    } else if (err && err.code === "invalid-argument") {
+      showError("Publish failed due to invalid quiz data. Check question fields and try again.");
+    } else {
+      showError("Failed to publish quiz: " + (err.message || "Unknown error"));
+    }
   } finally {
     setLoading(false);
   }
