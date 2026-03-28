@@ -25,6 +25,15 @@
 /* ─────────────────────────────────────────────────────────────────
    1. CONFIGURATION — Edit these values before deploying
 ───────────────────────────────────────────────────────────────────*/
+import { db } from "./firebase-config.js";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 const CONFIG = {
   // ⚠️  Paste your Google Apps Script Web App URL here after deploying
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbylYb8OizYN_4kPzD3aLTThICqRSN85vSsYFFhBpxeROQGO_WrmLs6bztrGe9q0wIXAIQ/exec",
@@ -81,16 +90,83 @@ const THEME_MEDIA_QUERY = typeof window.matchMedia === "function"
 ───────────────────────────────────────────────────────────────────*/
 let QUESTION_BANK = []; // populated by loadQuestions() at startup
 
+function getQuizIdFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get("quizId") || "").trim();
+  } catch (_error) {
+    return "";
+  }
+}
+
+function normalizeQuestionBank(rawQuestions = []) {
+  return rawQuestions.map((question, index) => ({
+    ...question,
+    id: question.id || `q${String(index + 1).padStart(3, "0")}`,
+    options: Array.isArray(question.options) ? [...question.options] : [],
+  }));
+}
+
+function applyQuizRuntimeConfig(quizData) {
+  if (!quizData || typeof quizData !== "object") return;
+
+  if (typeof quizData.title === "string" && quizData.title.trim()) {
+    CONFIG.QUIZ_TITLE = quizData.title.trim();
+  }
+
+  if (quizData.config && typeof quizData.config === "object") {
+    const maxViolations = Number.parseInt(quizData.config.maxViolations, 10);
+    if (Number.isFinite(maxViolations) && maxViolations > 0) {
+      CONFIG.MAX_TAB_SWITCHES = maxViolations;
+    }
+
+    const timeLimitMinutes = Number.parseInt(quizData.config.timeLimit, 10);
+    if (Number.isFinite(timeLimitMinutes) && timeLimitMinutes > 0) {
+      const questionCount = Math.max(1, QUESTION_BANK.length);
+      const derivedPerQuestion = Math.max(15, Math.floor((timeLimitMinutes * 60) / questionCount));
+      CONFIG.SECONDS_PER_QUESTION = derivedPerQuestion;
+    }
+  }
+}
+
+async function loadQuestionsFromFirestore(quizId) {
+  if (!quizId) return false;
+
+  try {
+    const snapshot = await getDoc(doc(db, "quizzes", quizId));
+    if (!snapshot.exists()) {
+      console.warn(`[SecureQuiz] quizId '${quizId}' not found in Firestore. Falling back to local questions.json`);
+      return false;
+    }
+
+    const quizData = snapshot.data() || {};
+    if (!Array.isArray(quizData.questions) || quizData.questions.length === 0) {
+      console.warn(`[SecureQuiz] quizId '${quizId}' has no valid questions array. Falling back to local questions.json`);
+      return false;
+    }
+
+    QUESTION_BANK = normalizeQuestionBank(quizData.questions);
+    applyQuizRuntimeConfig(quizData);
+    console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from Firestore quiz '${quizId}'.`);
+    return true;
+  } catch (error) {
+    console.error("[SecureQuiz] Failed loading Firestore quiz:", error);
+    return false;
+  }
+}
+
 async function loadQuestions() {
+  const quizId = getQuizIdFromUrl();
+  state.quizId = quizId;
+
+  const loadedFromFirestore = await loadQuestionsFromFirestore(quizId);
+  if (loadedFromFirestore) return;
+
   try {
     const res = await fetch("questions.json");
     if (!res.ok) throw new Error("HTTP error " + res.status);
     const rawQuestions = await res.json();
-    QUESTION_BANK = rawQuestions.map((question, index) => ({
-      ...question,
-      id: question.id || `q${String(index + 1).padStart(3, "0")}`,
-      options: Array.isArray(question.options) ? [...question.options] : [],
-    }));
+    QUESTION_BANK = normalizeQuestionBank(rawQuestions);
     console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from questions.json`);
   } catch (err) {
     console.error("[SecureQuiz] Failed to load questions.json:", err);
@@ -143,6 +219,7 @@ const state = {
   lastSubmissionTimestamp: null,
   lastReviewToken: null,
   submissionPersisted: false,
+  quizId: "",
 
   // Flags
   fullscreenMonitoringEnabled: true,
@@ -857,6 +934,59 @@ async function submitQuizViaFormPost(payload) {
       finish(() => reject(error));
     }
   });
+}
+
+function buildLocalReviewPayload() {
+  const reviewAnswers = state.questions.map((q, idx) => {
+    const studentAnswer = state.answers[idx] || "NOT ANSWERED";
+    const correctAnswer = q.answer || "";
+    return {
+      questionId: q.id,
+      question: q.q,
+      studentAnswer,
+      correctAnswer,
+      isCorrect: Boolean(correctAnswer) && studentAnswer === correctAnswer,
+    };
+  });
+
+  const scoreCorrect = reviewAnswers.reduce((sum, item) => sum + (item.isCorrect ? 1 : 0), 0);
+  return {
+    scoreCorrect,
+    scoreTotal: state.questions.length,
+    reviewAnswers,
+  };
+}
+
+async function persistSubmissionToFirestore({
+  timestamp,
+  isAutoSubmit,
+  device,
+  reviewToken,
+  localReview,
+}) {
+  if (!state.quizId) return false;
+
+  const submissionPayload = {
+    studentName: state.student.name,
+    studentId: state.student.usn,
+    email: state.student.email,
+    device,
+    autoSubmit: isAutoSubmit,
+    tabSwitches: state.tabSwitchCount,
+    fullscreenExits: state.fullscreenExitCount,
+    screenshotAttempts: state.screenshotAttempts,
+    suspiciousEvents: state.suspiciousEvents,
+    answers: localReview.reviewAnswers,
+    scoreCorrect: localReview.scoreCorrect,
+    scoreTotal: localReview.scoreTotal,
+    scoreText: `${localReview.scoreCorrect}/${localReview.scoreTotal}`,
+    reviewToken,
+    submittedAtISO: timestamp,
+    createdAt: serverTimestamp(),
+  };
+
+  await addDoc(collection(db, "quizzes", state.quizId, "submissions"), submissionPayload);
+  return true;
 }
 
 async function waitForSubmissionReview(usn, reviewToken) {
@@ -1765,6 +1895,7 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
   const device   = state.deviceType || getDeviceType();
   const timestamp = new Date().toISOString();
   const reviewToken = existingReviewToken || createReviewToken();
+  const localReview = buildLocalReviewPayload();
   state.lastSubmissionTimestamp = timestamp;
   state.lastReviewToken = reviewToken;
   persistAppState();
@@ -1802,6 +1933,31 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
 
   // Display result screen immediately (don't block on network)
   showResultScreen(total, device);
+
+  // Primary persistence path for SaaS mode: write attempt to Firestore.
+  // Apps Script remains as compatibility fallback for legacy deployments.
+  try {
+    const savedToFirestore = await persistSubmissionToFirestore({
+      timestamp,
+      isAutoSubmit,
+      device,
+      reviewToken,
+      localReview,
+    });
+
+    if (savedToFirestore) {
+      applySubmissionResult({
+        status: "success",
+        scoreCorrect: localReview.scoreCorrect,
+        scoreTotal: localReview.scoreTotal,
+        reviewAnswers: localReview.reviewAnswers,
+        timestamp,
+      }, total, device);
+      DOM.resultNote.textContent = "Submission stored in SecureQuiz cloud. You can now review answers.";
+    }
+  } catch (firestoreError) {
+    console.warn("[SecureQuiz] Firestore submission write failed, falling back to Apps Script flow.", firestoreError);
+  }
 
   // Primary path: JSON POST to the Apps Script Web App.
   // If the browser or Apps Script blocks the readable response, we fall back
@@ -1859,7 +2015,9 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
       }
     }
 
-    await resolveSubmissionState(responseData, total, device, reviewToken);
+    if (responseData || !state.submissionPersisted) {
+      await resolveSubmissionState(responseData, total, device, reviewToken);
+    }
 
     console.log("[SecureQuiz] Submission flow completed.");
   } catch (err) {
