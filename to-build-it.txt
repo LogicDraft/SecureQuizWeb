@@ -1,0 +1,78 @@
+
+In this model, a teacher creates a quiz, generates a unique link, and sends it out. Students click the link, log in, and take the quiz independently at their own pace (with all your strict anti-cheat features running). The results then funnel back to the teacher's private dashboard.
+
+Here is the architectural plan and the exact prompt you can use to build this **Asynchronous SaaS Model**.
+
+### Step 1: The "Async Host" Flow
+
+**For the Teacher:**
+1. Teacher visits `yourwebsite.com/create`.
+2. They fill out a form: Quiz Title, Time Limit, Max Tab Switches, and paste their questions (or use a simple UI to add them).
+3. They click "Publish Quiz".
+4. The system generates a permanent URL (e.g., `yourwebsite.com/quiz?id=aB3x9Z`).
+5. They share this link with students.
+6. The teacher can visit `yourwebsite.com/dashboard?id=aB3x9Z` anytime to see a table of student submissions and cheat logs.
+
+**For the Student:**
+1. Student clicks the teacher's link.
+2. The site automatically reads the `?id=` from the URL and fetches the correct questions from the database.
+3. Student enters Name and ID, takes the test independently, and submits.
+
+### Step 2: Database Structure (Firebase Firestore)
+
+Instead of temporary "rooms", we create permanent "quizzes".
+
+* **Collection: `quizzes`**
+    * Document ID: `aB3x9Z` (The unique Quiz ID)
+    * `title`: "Midterm Physics"
+    * `config`: `{ timeLimit: 60, maxViolations: 5 }`
+    * `questions`: `[ { q: "...", options: [...], answer: "..." } ]`
+* **Sub-Collection: `quizzes/aB3x9Z/submissions`**
+    * Document ID: (Auto-generated or Student USN)
+    * `studentName`: "John Doe"
+    * `studentId`: "1AY25AI001"
+    * `score`: 85
+    * `proctorLogs`: `{ tabSwitches: 2, fullscreenExits: 0 }`
+    * `submittedAt`: (Timestamp)
+
+---
+
+### Step 3: The Prompt to Build It
+
+Copy and paste this prompt into your AI coding assistant. It instructs the AI to build the "Google Forms" style system using your existing dark glassmorphism theme.
+
+```text
+Act as a Senior Full-Stack Developer. I have an existing frontend Vanilla JS quiz application called "SecureQuiz" with a premium dark glassmorphism UI. I want to transition it into an asynchronous SaaS platform (similar to Google Forms) using Firebase Firestore (V9 Web SDK). 
+
+I DO NOT want a live Kahoot-style game. I want a system where a teacher creates a quiz, gets a unique URL, and students take it independently.
+
+Please provide the complete HTML, CSS, and JS for this new architecture.
+
+### 1. Database Architecture (Firestore)
+- Collection: `quizzes` -> Doc ID: random string (e.g. "aB3x9Z"). Fields: `title`, `config` (time limit, max violations), `questions` (array), `createdAt`.
+- Sub-collection: `quizzes/{quizId}/submissions` -> Fields: `studentName`, `studentId`, `score`, `proctorLogs` (tab switches, etc.), `submittedAt`.
+
+### 2. The Teacher "Create" Page (`create.html` & `create.js`)
+- A beautiful dark-themed form to input: Quiz Title, Time Limit (minutes), and a text area to paste the JSON array of questions.
+- A "Publish Quiz" button.
+- When clicked, save to Firestore, and display a shareable link: `mysite.com/index.html?quizId=[ID]`.
+- Also display a link to the dashboard: `mysite.com/dashboard.html?quizId=[ID]`.
+
+### 3. The Student App (`index.html` & `script.js`)
+- Update my existing student app. On page load, read `quizId` from `window.location.search`.
+- If no `quizId` exists, show an error: "Invalid Quiz Link".
+- If it exists, fetch the quiz from Firestore. Update the welcome screen with the `title` and configure the timer based on `config.timeLimit`.
+- The login form just asks for "Name" and "Student ID". No hardcoded student registry.
+- When the student submits (or is auto-submitted), grade the answers against the fetched data, and push the results to the `quizzes/{quizId}/submissions` sub-collection.
+
+### 4. The Teacher Dashboard (`dashboard.html` & `dashboard.js`)
+- Reads the `quizId` from the URL.
+- Sets up an `onSnapshot` listener on the `submissions` sub-collection.
+- Displays a clean data table showing: Student Name, ID, Score, Tab Switches, Fullscreen Exits, and Timestamp. 
+
+### Constraints
+- Strictly Vanilla JS and standard DOM manipulation. No React/Vue.
+- Use Firebase V9 Modular syntax.
+- Maintain the dark glassmorphism CSS theme across all new pages.
+```
+

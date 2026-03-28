@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050508" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SecureQuiz — Quiz Platform</title>
+  <meta name="description" content="A secure online quiz platform with anti-cheating features for students and teachers." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="cursor"></div>
+  <!-- ═══════════════════════════════════════════
+       OVERLAY: Fullscreen Exit Warning
+  ═══════════════════════════════════════════ -->
+  <div id="overlay-fullscreen" class="overlay hidden" role="alertdialog" aria-modal="true" aria-label="Fullscreen Warning">
+    <div class="overlay-card">
+      <div class="overlay-icon">⚠️</div>
+      <h2>Fullscreen Required</h2>
+      <p id="fullscreen-msg">You exited fullscreen mode. This action has been logged. Please return to fullscreen to continue the quiz.</p>
+      <button id="btn-return-fullscreen" class="btn-primary">Return to Fullscreen</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       OVERLAY: Tab Switch Warning
+  ═══════════════════════════════════════════ -->
+  <div id="overlay-tabswitch" class="overlay hidden" role="alertdialog" aria-modal="true" aria-label="Tab Switch Warning">
+    <div class="overlay-card warning">
+      <div class="overlay-icon">🚨</div>
+      <h2>Tab Switch Detected!</h2>
+      <p id="tabswitch-msg">You switched tabs or minimized the window. This has been recorded.</p>
+      <button id="btn-dismiss-tabswitch" class="btn-primary">I Understand</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       OVERLAY: Submit Confirmation
+  ═══════════════════════════════════════════ -->
+  <div id="overlay-submit" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Submit Confirmation">
+    <div class="overlay-card">
+      <div class="overlay-icon">📋</div>
+      <h2>Submit Quiz?</h2>
+      <p id="submit-unanswered-msg">Are you sure you want to submit? You cannot change answers after submission.</p>
+      <div class="overlay-actions">
+        <button id="btn-cancel-submit" class="btn-secondary">Go Back</button>
+        <button id="btn-confirm-submit" class="btn-primary">Yes, Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN APP WRAPPER
+  ═══════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- ─── SCREEN 1: Registration ─── -->
+    <section id="screen-registration" class="screen active">
+      <div class="screen-inner">
+        <!-- HERO SECTION (Replaces Logo) -->
+        <div class="hero">
+          <div class="hero-eyebrow">Anti-Cheat Quiz Platform</div>
+          <h1>SecureQuiz</h1>
+        </div>
+
+        <div class="card" id="reg-card">
+          <h2 class="card-title">Student Login</h2>
+          <p class="card-subtitle">Enter your details to begin the quiz.</p>
+
+          <div class="form-group">
+            <label for="inp-usn">Student ID / USN <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="text" id="inp-usn" placeholder="e.g. 1AY25AI000" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-email">College Email <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="email" id="inp-email" placeholder="example@acharya.ac.in" autocomplete="off" />
+          </div>
+
+          <div id="reg-error" class="error-msg hidden"></div>
+
+          <div class="notice-box">
+            <span class="notice-icon">📌</span>
+            <span>Your USN is validated securely by the backend. Use your college email (<strong>@acharya.ac.in</strong>). Tab switching, fullscreen exit, and copy/paste are monitored and logged.</span>
+          </div>
+
+          <button id="btn-start-quiz" class="btn-primary btn-full">
+            <span id="btn-start-text">Start Quiz →</span>
+            <span id="btn-start-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <!-- HOW IT WORKS SECTION -->
+        <div class="section-header">
+          <div class="section-eyebrow">How It Works</div>
+          <h2>Secure Examination Protocol</h2>
+          <p>Powered by advanced web APIs to ensure absolute academic integrity through strict environmental monitoring.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Lockdown Mode</h3>
+            <p>Once started, the exam uses strict fullscreen enforcement on supported desktops. On mobile devices, rules may adapt to avoid false violations.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">👁️</div>
+            <h3>Tab Monitoring</h3>
+            <p>Our Neural Engine monitors OS-level visibility changes. Switching tabs, opening new windows, or minimizing the browser will trigger a hard violation.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Auto-Submission</h3>
+            <p>To preserve integrity, crossing the threshold of 5 security violations immediately locks and submits your paper with all recorded inputs.</p>
+          </div>
+        </div>
+        <!-- END HOW IT WORKS -->
+
+      </div>
+    </section>
+
+    <!-- ─── SCREEN 2: Instructions ─── -->
+    <section id="screen-instructions" class="screen hidden">
+      <div class="screen-inner">
+        <div class="card glass-card scrollable-card" id="inst-card">
+          <h2 class="card-title">Read Carefully</h2>
+          <p class="card-subtitle">Please review the rules before starting.</p>
+          
+          <ul class="instruction-list">
+            <li>
+              <span class="icon">🚫</span>
+              <span class="inst-text"><b>Do not Switch Tabs.</b> Switching Tabs will be Recorded.</span>
+            </li>
+            <li>
+              <span class="icon">⏱️</span>
+              <span class="inst-text"><b>The Timer is Strict.</b> Unanswered questions will be auto-submitted if time runs out.</span>
+            </li>
+            <li>
+              <span class="icon">📸</span>
+              <span class="inst-text"><b>Screenshots & Exiting Fullscreen</b> Strictly Prohibited.</span>
+            </li>
+            <li>
+              <span class="icon">⚠️</span>
+              <span class="inst-text">If you Switch Tabs <b>5 or more Times</b> Quiz will Auto-submit Immediately.</span>
+            </li>
+          </ul>
+
+          <div class="agreement-box">
+            <label class="checkbox-container">
+              <input type="checkbox" id="chk-agree">
+              <span class="checkmark"></span>
+              <span class="agree-text">I agree to the terms and conditions</span>
+            </label>
+          </div>
+
+          <button id="btn-proceed-quiz" class="btn-primary btn-full locked" disabled>
+            Start Quiz 🚀
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SCREEN 3: Quiz ─── -->
+    <section id="screen-quiz" class="screen hidden">
+      <div class="quiz-header">
+        <div class="quiz-meta">
+          <span id="quiz-student-name" class="student-badge">Student</span>
+          <span id="quiz-progress-label" class="progress-label">Question 1 of 10</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+          <div class="quiz-timer-wrap">
+            <span class="timer-icon">⏱</span>
+            <span id="quiz-timer" class="quiz-timer">60</span>s
+          </div>
+          <button id="btn-submit-quiz" class="btn-submit btn-sm btn-submit-top">Submit Quiz</button>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar-track">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width:0%"></div>
+      </div>
+
+      <!-- Timer Bar -->
+      <div class="timer-bar-track">
+        <div id="timer-bar-fill" class="timer-bar-fill"></div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="quiz-body">
+        <div class="card question-card" id="question-card">
+          <p class="question-number" id="question-number">Q1</p>
+          <p class="question-text" id="question-text">Loading question…</p>
+          <div class="options-list" id="options-list">
+            <!-- Options injected by JS -->
+          </div>
+        </div>
+
+        <div class="quiz-nav">
+          <button id="btn-prev" class="btn-secondary" disabled>← Previous</button>
+          <div class="nav-dots" id="nav-dots"></div>
+          <button id="btn-next" class="btn-primary">Next →</button>
+        </div>
+
+
+      </div>
+
+      <!-- Proctoring Status Bar -->
+      <div class="proctor-bar">
+        <span id="stat-tabs" class="proctor-stat">🔁 Tabs: 0</span>
+        <span id="stat-fs" class="proctor-stat">📺 FS Exits: 0</span>
+        <span id="stat-ss" class="proctor-stat">📸 Screenshots: 0</span>
+      </div>
+    </section>
+
+    <!-- ─── SCREEN 4: Result ─── -->
+    <section id="screen-result" class="screen hidden">
+      <div class="screen-inner">
+        <div id="result-card" class="result-card card">
+          <div id="result-icon" class="result-icon">🎉</div>
+          <h2 id="result-title" class="result-title">Quiz Submitted!</h2>
+          <p id="result-subtitle" class="result-subtitle">Your response has been recorded.</p>
+
+          <div id="result-fetching" class="result-fetching hidden" aria-live="polite">
+            <div class="result-fetching-visual" aria-hidden="true">
+              <span class="result-fetching-ring"></span>
+              <span class="result-fetching-ring delay"></span>
+              <span class="result-fetching-core"></span>
+            </div>
+            <div class="result-fetching-copy">
+              <strong>Fetching score from data</strong>
+              <span>This usually takes a few seconds. Please stay on this screen.</span>
+            </div>
+          </div>
+
+          <div class="score-ring-wrap">
+            <svg class="score-ring" viewBox="0 0 120 120">
+              <circle class="score-ring-bg" cx="60" cy="60" r="50" />
+              <circle id="score-ring-fill" class="score-ring-progress" cx="60" cy="60" r="50"
+                      stroke-dasharray="314" stroke-dashoffset="314" />
+            </svg>
+            <div id="result-ring-loader" class="result-ring-loader hidden" aria-hidden="true"></div>
+            <div class="score-center">
+              <span id="result-score-num" class="score-num">0</span>
+              <span id="result-score-total" class="score-total">/10</span>
+            </div>
+          </div>
+
+          <div class="result-stats">
+            <div class="r-stat"><span class="r-label">Tab Switches</span><span id="r-tabs" class="r-value">0</span></div>
+            <div class="r-stat"><span class="r-label">Fullscreen Exits</span><span id="r-fs" class="r-value">0</span></div>
+            <div class="r-stat"><span class="r-label">Screenshot Attempts</span><span id="r-ss" class="r-value">0</span></div>
+            <div class="r-stat"><span class="r-label">Device</span><span id="r-device" class="r-value">—</span></div>
+          </div>
+
+          <p id="result-note" class="result-note">Detailed results will be available in Google Sheets.</p>
+          <div class="result-actions">
+            <button id="btn-review-answers" class="btn-primary" disabled>Review Answers</button>
+            <button id="btn-retry-submit" class="btn-secondary hidden" type="button">Retry Submission</button>
+            <button id="btn-exit-fullscreen" class="btn-secondary">Exit Fullscreen</button>
+          </div>
+        </div>
+
+        <div class="report-shell card">
+          <div class="report-shell-head">
+            <div>
+              <div class="section-eyebrow">Report Shell</div>
+              <h3 class="report-shell-title">Quiz Performance Report</h3>
+              <p class="report-shell-subtitle">Your marks card appears here automatically once grading is complete.</p>
+            </div>
+          </div>
+
+          <article id="pdf-report-card" class="marks-card is-pending" aria-label="Quiz performance report">
+            <div class="marks-card-orb orb-a" aria-hidden="true"></div>
+            <div class="marks-card-orb orb-b" aria-hidden="true"></div>
+
+            <div class="marks-card-head">
+              <div class="marks-card-brand">
+                <div class="marks-card-kicker">Quiz Performance Report</div>
+                <h3 id="report-student-name" class="marks-card-student">Student Name</h3>
+                <p id="report-student-id" class="marks-card-id">USN: --</p>
+                <div class="marks-card-meta">
+                  <div class="marks-pill">
+                    <span class="marks-pill-icon">QZ</span>
+                    <div>
+                      <span class="marks-pill-label">Quiz Title</span>
+                      <strong id="report-quiz-title">Quantum Quiz</strong>
+                    </div>
+                  </div>
+                  <div class="marks-pill">
+                    <span class="marks-pill-icon">DT</span>
+                    <div>
+                      <span class="marks-pill-label">Date &amp; Time</span>
+                      <strong id="report-generated-at">--</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="marks-score-panel">
+                <div class="marks-score-label">Score</div>
+                <div id="report-score" class="marks-score-value">--</div>
+                <div id="report-score-caption" class="marks-score-caption">Waiting for grading...</div>
+                <div id="report-status" class="marks-status-pill">Awaiting live grading</div>
+              </div>
+            </div>
+
+            <div class="marks-metrics-grid">
+              <div class="marks-metric-card">
+                <span class="marks-metric-icon total">QT</span>
+                <span class="marks-metric-label">Total Questions</span>
+                <strong id="report-total-questions" class="marks-metric-value">0</strong>
+              </div>
+              <div class="marks-metric-card">
+                <span class="marks-metric-icon attempted">AT</span>
+                <span class="marks-metric-label">Attempted Questions</span>
+                <strong id="report-attempted" class="marks-metric-value">0</strong>
+              </div>
+              <div class="marks-metric-card">
+                <span class="marks-metric-icon correct">OK</span>
+                <span class="marks-metric-label">Correct Answers</span>
+                <strong id="report-correct" class="marks-metric-value">--</strong>
+              </div>
+              <div class="marks-metric-card">
+                <span class="marks-metric-icon wrong">WA</span>
+                <span class="marks-metric-label">Wrong Answers</span>
+                <strong id="report-wrong" class="marks-metric-value">--</strong>
+              </div>
+            </div>
+
+            <div class="marks-card-footer">
+              <div class="marks-watermark">Generated by Secure Quiz</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-review" class="screen hidden">
+      <div class="screen-inner review-screen-inner">
+        <div class="card review-card">
+          <div class="review-header">
+            <div>
+              <div class="section-eyebrow">Post-Submission Review</div>
+              <h2 class="card-title">Review Answers</h2>
+              <p id="review-summary" class="card-subtitle">Your graded answers will appear here after submission.</p>
+            </div>
+            <button id="btn-close-review" class="btn-secondary">← Back to Results</button>
+          </div>
+          <div id="review-container" class="review-container"></div>
+        </div>
+      </div>
+    </section>
+
+  <script src="background.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

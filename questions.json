@@ -1,0 +1,102 @@
+[
+  {
+    "id": "q001",
+    "q": "Who developed the C programming language?",
+    "options": [
+      "Dennis Ritchie",
+      "Bjarne Stroustrup",
+      "James Gosling",
+      "Guido van Rossum"
+    ]
+  },
+  {
+    "id": "q002",
+    "q": "Which keyword is used to declare a variable in C?",
+    "options": [
+      "var",
+      "int",
+      "define",
+      "declare"
+    ]
+  },
+  {
+    "id": "q003",
+    "q": "Which symbol is used to end a statement in C?",
+    "options": [
+      ".",
+      ":",
+      ";",
+      ","
+    ]
+  },
+  {
+    "id": "q004",
+    "q": "Which header file is required for printf() function?",
+    "options": [
+      "stdlib.h",
+      "stdio.h",
+      "math.h",
+      "string.h"
+    ]
+  },
+  {
+    "id": "q005",
+    "q": "What is the correct format specifier for int?",
+    "options": [
+      "%f",
+      "%c",
+      "%d",
+      "%s"
+    ]
+  },
+  {
+    "id": "q006",
+    "q": "Which data type is used to store decimal values?",
+    "options": [
+      "int",
+      "char",
+      "float",
+      "void"
+    ]
+  },
+  {
+    "id": "q007",
+    "q": "What is the size of char in C?",
+    "options": [
+      "1 byte",
+      "2 bytes",
+      "4 bytes",
+      "8 bytes"
+    ]
+  },
+  {
+    "id": "q008",
+    "q": "Which operator is used for assignment?",
+    "options": [
+      "==",
+      "=",
+      "!=",
+      "<="
+    ]
+  },
+  {
+    "id": "q009",
+    "q": "Which operator is used to compare two values?",
+    "options": [
+      "=",
+      "==",
+      "+",
+      "*"
+    ]
+  },
+  {
+    "id": "q010",
+    "q": "Which of the following is a loop in C?",
+    "options": [
+      "for",
+      "repeat",
+      "loop",
+      "iterate"
+    ]
+  }
+]
