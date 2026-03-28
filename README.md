@@ -42,11 +42,12 @@ This project is built to be blisteringly fast and easily hostable anywhere, requ
 ├── script.js            # (Student) Handles quiz logic, timer, and anti-cheat
 │
 ├── create.html          # (Teacher) Interface to build and publish quizzes
-├── create.js            # (Teacher) Pushes quiz data to Firestore and generates URLs
+├── create.js            # (Teacher) Pushes quiz data to Supabase and generates URLs
 │
 ├── dashboard.html       # (Teacher) Analytics table for student submissions
-├── dashboard.js         # (Teacher) Fetches and displays real-time Firestore data
+├── dashboard.js         # (Teacher) Fetches and displays real-time Supabase data
 │
-├── firebase-config.js   # (Shared) Firebase initialization and API keys
+├── supabase-config.js   # (Shared) Supabase client initialization and keys
+├── supabase-schema.sql  # (Setup) SQL schema/policies for quizzes and submissions
 ├── style.css            # (Shared) Global dark glassmorphism stylesheet
 └── README.md            # Project documentation

@@ -1163,7 +1163,7 @@ async function resolveSubmissionState(responseData, total, device, reviewToken =
         title: "Backend Update Required",
         note: "The current Google Apps Script deployment is responding, but it is not saving submission rows.",
         status: "Apps Script redeploy required",
-        caption: "Deploy the updated google-apps-script.js as a new Web App version and keep access set to Anyone.",
+        caption: "Redeploy your backend endpoint and verify write permissions for quiz submissions.",
       }
     );
     return;
@@ -1234,7 +1234,7 @@ async function resolveSubmissionState(responseData, total, device, reviewToken =
         title: "Submission Not Confirmed",
         note: "A backend timeout occurred before Google Sheets returned a stored submission row.",
         status: "Backend timeout",
-        caption: "If you just updated google-apps-script.js, publish it again as a new Web App deployment.",
+        caption: "If you updated backend logic, redeploy it and verify the endpoint URL in configuration.",
       }
     );
   }
