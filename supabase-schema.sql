@@ -38,6 +38,10 @@ create index if not exists idx_submissions_created_at on public.submissions(crea
 alter table public.quizzes enable row level security;
 alter table public.submissions enable row level security;
 
+grant usage on schema public to anon, authenticated;
+grant select, insert on table public.quizzes to anon, authenticated;
+grant select, insert on table public.submissions to anon, authenticated;
+
 -- Basic policies for browser-based public access (quick start)
 -- Tighten these for production if you add auth.
 do $$

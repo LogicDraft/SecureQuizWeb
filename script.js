@@ -809,6 +809,21 @@ function createReviewToken() {
   return `review_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
+function buildSupabaseErrorMessage(error, operation, tableName = "submissions") {
+  const code = error && error.code ? String(error.code) : "UNKNOWN";
+  const base = error && error.message ? error.message : "Unknown Supabase error.";
+
+  if (["42501", "PGRST301", "PGRST116"].includes(code)) {
+    return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run the SQL in supabase-schema.sql to create policies and grants for anon/authenticated roles.`;
+  }
+
+  if (code === "23503") {
+    return `Supabase ${operation} failed due to invalid quiz link (foreign-key mismatch on quiz_id). Open quiz using the exact generated student URL.`;
+  }
+
+  return `Supabase ${operation} failed (${code}): ${base}`;
+}
+
 async function fetchLatestSubmissionReview(usn, reviewToken) {
   const query = new URLSearchParams({
     action: "getLatestSubmission",
@@ -1000,7 +1015,9 @@ async function persistSubmissionToSupabase({
   };
 
   const { error } = await supabase.from("submissions").insert(submissionPayload);
-  if (error) throw error;
+  if (error) {
+    throw new Error(buildSupabaseErrorMessage(error, "insert", "submissions"));
+  }
   return true;
 }
 
@@ -1671,18 +1688,16 @@ function checkAutoSubmit() {
   const snapshot = loadPersistedAppState();
   if (!snapshot) return false;
 
-  if (!snapshot.student || !snapshot.student.usn) {
-    state.currentScreen = "registration";
-    state.registrationDraft = snapshot.registrationDraft && typeof snapshot.registrationDraft === "object"
-      ? {
-          usn: String(snapshot.registrationDraft.usn || "").trim().toUpperCase(),
-          email: String(snapshot.registrationDraft.email || "").trim().toLowerCase(),
-        }
-      : { usn: "", email: "" };
-    state.instructionsAccepted = Boolean(snapshot.instructionsAccepted);
-    fillRegistrationDraft(state.registrationDraft);
-    showScreen(DOM.screenReg);
-    return true;
+  const savedScreen = normalizeScreenKey(snapshot.currentScreen);
+  const isActiveQuizSession = savedScreen === "quiz"
+    && Boolean(snapshot.quizStarted)
+    && !Boolean(snapshot.submitted)
+    && Boolean(snapshot.student && snapshot.student.usn);
+
+  // Only restore on active quiz attempts. All other screens should refresh normally.
+  if (!isActiveQuizSession) {
+    localStorage.removeItem(CONFIG.APP_STATE_KEY);
+    return false;
   }
 
   const restored = applySerializedState(snapshot);
@@ -2021,6 +2036,9 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
     }
   } catch (supabaseError) {
     console.warn("[SecureQuiz] Supabase submission write failed, falling back to Apps Script flow.", supabaseError);
+    if (DOM.resultNote) {
+      DOM.resultNote.textContent = `Supabase write failed: ${supabaseError.message}. Trying backup flow...`;
+    }
   }
 
   // Legacy Apps Script fallback path.
@@ -2112,6 +2130,11 @@ function showResultScreen(total, device) {
   state.submitted = true;
   state.submissionReview = null;
   state.submissionPersisted = false;
+
+  // Safeguard: once result view is shown, clear any saved in-progress draft
+  // so refresh/re-entry cannot revive stale quiz position.
+  clearStateFromLocalStorage();
+
   showScreen(DOM.screenResult);
   setResultFetchingState(true);
   setRetryButtonState(false, "Retry Submission", true);

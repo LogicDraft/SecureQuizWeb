@@ -12,6 +12,17 @@ const DOM = {
   rows: document.getElementById("submission-rows"),
 };
 
+function buildSupabaseDashboardError(error, operation, tableName) {
+  const code = error && error.code ? String(error.code) : "UNKNOWN";
+  const message = error && error.message ? error.message : "Unknown error";
+
+  if (["42501", "PGRST301", "PGRST116"].includes(code)) {
+    return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run supabase-schema.sql to enable RLS policies and grants for anon/authenticated roles.`;
+  }
+
+  return `Supabase ${operation} failed on '${tableName}' (${code}): ${message}`;
+}
+
 function showError(msg) {
   DOM.error.textContent = msg;
   DOM.error.classList.remove("hidden");
@@ -128,7 +139,13 @@ async function init() {
       .eq("id", QUIZ_ID)
       .single();
 
-    if (quizError || !quizData) {
+    if (quizError) {
+      DOM.subtitle.textContent = "Quiz lookup failed";
+      showError(buildSupabaseDashboardError(quizError, "select", "quizzes"));
+      return;
+    }
+
+    if (!quizData) {
       DOM.subtitle.textContent = "Quiz not found";
       showError("Quiz not found. The quiz may have been deleted or the link is incorrect.");
       return;
@@ -146,7 +163,9 @@ async function init() {
         .eq("quiz_id", QUIZ_ID)
         .order("created_at", { ascending: false });
 
-      if (submissionsError) throw submissionsError;
+      if (submissionsError) {
+        throw new Error(buildSupabaseDashboardError(submissionsError, "select", "submissions"));
+      }
       renderRows(submissions || []);
     };
 
