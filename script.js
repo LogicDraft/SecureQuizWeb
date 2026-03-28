@@ -817,6 +817,14 @@ function buildSupabaseErrorMessage(error, operation, tableName = "submissions") 
     return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run the SQL in supabase-schema.sql to create policies and grants for anon/authenticated roles.`;
   }
 
+  if (["42703", "PGRST204"].includes(code)) {
+    return `Supabase ${operation} failed because '${tableName}' schema is outdated (code: ${code}). Run supabase-schema.sql to add the latest columns.`;
+  }
+
+  if (code === "22P02") {
+    return `Supabase ${operation} failed due to invalid quiz_id format (code: ${code}). Open the quiz only from the generated student link.`;
+  }
+
   if (code === "23503") {
     return `Supabase ${operation} failed due to invalid quiz link (foreign-key mismatch on quiz_id). Open quiz using the exact generated student URL.`;
   }
@@ -1014,11 +1022,61 @@ async function persistSubmissionToSupabase({
     submitted_at_iso: timestamp,
   };
 
-  const { error } = await supabase.from("submissions").insert(submissionPayload);
-  if (error) {
-    throw new Error(buildSupabaseErrorMessage(error, "insert", "submissions"));
+  const compactPayload = {
+    quiz_id: state.quizId,
+    student_name: state.student.name,
+    student_id: state.student.usn,
+    email: state.student.email,
+    device,
+    auto_submit: isAutoSubmit,
+    tab_switches: state.tabSwitchCount,
+    fullscreen_exits: state.fullscreenExitCount,
+    screenshot_attempts: state.screenshotAttempts,
+    score_correct: localReview.scoreCorrect,
+    score_total: localReview.scoreTotal,
+    score_text: `${localReview.scoreCorrect}/${localReview.scoreTotal}`,
+    submitted_at_iso: timestamp,
+  };
+
+  const minimalPayload = {
+    quiz_id: state.quizId,
+    student_name: state.student.name,
+    student_id: state.student.usn,
+    email: state.student.email,
+    submitted_at_iso: timestamp,
+  };
+
+  const attempts = [
+    { label: "full", payload: submissionPayload },
+    { label: "compact", payload: compactPayload },
+    { label: "minimal", payload: minimalPayload },
+  ];
+
+  let lastError = null;
+
+  for (const attempt of attempts) {
+    const { error } = await supabase.from("submissions").insert(attempt.payload);
+    if (!error) {
+      if (attempt.label !== "full") {
+        console.warn(`[SecureQuiz] Supabase submissions insert succeeded via ${attempt.label} compatibility payload.`);
+      }
+      return true;
+    }
+
+    lastError = error;
+    console.warn(`[SecureQuiz] Supabase submissions insert failed for ${attempt.label} payload:`, error);
+
+    // Permission and relation errors won't be fixed by trying smaller payloads.
+    if (["42501", "PGRST301", "PGRST116", "22P02", "23503"].includes(String(error.code || ""))) {
+      break;
+    }
   }
-  return true;
+
+  if (lastError) {
+    throw new Error(buildSupabaseErrorMessage(lastError, "insert", "submissions"));
+  }
+
+  throw new Error("Supabase insert failed for unknown reason.");
 }
 
 async function waitForSubmissionInSupabase(reviewToken) {
@@ -1818,6 +1876,16 @@ function clearStateFromLocalStorage(usn = state.student.usn) {
   } catch (_) {}
 }
 
+function clearRefreshRecoveryStorage(usn = state.student.usn) {
+  clearStateFromLocalStorage(usn);
+  try {
+    localStorage.removeItem(CONFIG.APP_STATE_KEY);
+  } catch (_) {}
+  try {
+    sessionStorage.removeItem(CONFIG.SESSION_KEY);
+  } catch (_) {}
+}
+
 function markSubmissionAsStored(timestamp = state.lastSubmissionTimestamp) {
   state.submissionPersisted = true;
 
@@ -1958,6 +2026,11 @@ function openSubmitDialog() {
 
 function confirmSubmit(isAuto = false) {
   if (state.submitted) return;
+
+  // Once submit is confirmed, clear all refresh-recovery storage so
+  // reloading cannot restore stale in-progress quiz data.
+  clearRefreshRecoveryStorage();
+
   state.submitted = true;
   clearInterval(state.timerInterval);
   submitQuizData(isAuto);
@@ -2131,11 +2204,17 @@ function showResultScreen(total, device) {
   state.submissionReview = null;
   state.submissionPersisted = false;
 
-  // Safeguard: once result view is shown, clear any saved in-progress draft
-  // so refresh/re-entry cannot revive stale quiz position.
-  clearStateFromLocalStorage();
+  // Safeguard: once result view is shown, aggressively clear all
+  // refresh-recovery storage for this attempt.
+  clearRefreshRecoveryStorage();
 
   showScreen(DOM.screenResult);
+
+  // showScreen persists APP_STATE; remove it again so result refresh is always clean.
+  try {
+    localStorage.removeItem(CONFIG.APP_STATE_KEY);
+  } catch (_) {}
+
   setResultFetchingState(true);
   setRetryButtonState(false, "Retry Submission", true);
 
