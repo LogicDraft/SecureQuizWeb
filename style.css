@@ -740,6 +740,112 @@ a, button, input[type="text"], input[type="email"] {
   font-size: 0.78rem;
 }
 
+/* ─── Teacher Dashboard ─── */
+.dashboard-page {
+  min-height: 100vh;
+}
+
+.dashboard-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-meta-item {
+  background: var(--surface-1);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.meta-label {
+  color: var(--text-2);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dashboard-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+}
+
+.dashboard-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 0.8rem 0.9rem;
+  border-bottom: 1px solid var(--glass-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.dashboard-table th {
+  background: var(--surface-1);
+  color: var(--text-2);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.dashboard-empty {
+  color: var(--text-2);
+  text-align: center;
+}
+
+.student-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.student-cell span {
+  color: var(--text-2);
+  font-size: 0.82rem;
+}
+
+.integrity-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--text-2);
+  font-size: 0.82rem;
+}
+
+.dash-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.dash-pill.success {
+  background: rgba(16,185,129,0.12);
+  color: #6ee7b7;
+  border-color: rgba(16,185,129,0.3);
+}
+
+.dash-pill.danger {
+  background: rgba(244,63,94,0.12);
+  color: #fda4af;
+  border-color: rgba(244,63,94,0.35);
+}
+
 /* ─── Notice Box ─── */
 .notice-box {
   background: var(--surface-accent);
@@ -1714,6 +1820,8 @@ a, button, input[type="text"], input[type="email"] {
   .review-item-header { flex-direction: column; }
   .review-option { flex-direction: column; align-items: flex-start; }
   .review-option-flags { justify-content: flex-start; }
+  .question-builder-grid,
+  .dashboard-meta { grid-template-columns: 1fr; }
 }
 
 /* ─── Scrollbar ─── */

@@ -68,24 +68,49 @@ function renderQuestionsList() {
     return;
   }
 
-  DOM.questionsList.innerHTML = questionBuilderState.questions
-    .map((question, index) => {
-      const options = question.options
-        .map((opt) => `<li>${opt}</li>`)
-        .join("");
-      return `
-        <article class="question-item">
-          <div class="question-item-head">
-            <strong>Q${index + 1}.</strong>
-            <button type="button" class="btn-secondary question-remove-btn" data-index="${index}">Remove</button>
-          </div>
-          <p class="question-item-text">${question.q}</p>
-          <ul class="question-item-options">${options}</ul>
-          <p class="question-item-answer"><strong>Correct:</strong> ${question.answer}</p>
-        </article>
-      `;
-    })
-    .join("");
+  DOM.questionsList.innerHTML = "";
+
+  questionBuilderState.questions.forEach((question, index) => {
+    const article = document.createElement("article");
+    article.className = "question-item";
+
+    const head = document.createElement("div");
+    head.className = "question-item-head";
+
+    const title = document.createElement("strong");
+    title.textContent = `Q${index + 1}.`;
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "btn-secondary question-remove-btn";
+    removeButton.dataset.index = String(index);
+    removeButton.textContent = "Remove";
+
+    head.appendChild(title);
+    head.appendChild(removeButton);
+
+    const questionText = document.createElement("p");
+    questionText.className = "question-item-text";
+    questionText.textContent = question.q;
+
+    const optionsList = document.createElement("ul");
+    optionsList.className = "question-item-options";
+    question.options.forEach((opt) => {
+      const li = document.createElement("li");
+      li.textContent = opt;
+      optionsList.appendChild(li);
+    });
+
+    const answer = document.createElement("p");
+    answer.className = "question-item-answer";
+    answer.textContent = `Correct: ${question.answer}`;
+
+    article.appendChild(head);
+    article.appendChild(questionText);
+    article.appendChild(optionsList);
+    article.appendChild(answer);
+    DOM.questionsList.appendChild(article);
+  });
 
   syncQuestionsJsonPreview();
 }
