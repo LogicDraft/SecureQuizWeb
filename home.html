@@ -13,16 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body class="marketing-page">
-  <script src="theme.js"></script>
-  <button class="btn-theme-switch" title="Toggle Theme">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>
-    Switch UI
-  </button>
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
-
   <header class="marketing-nav">
     <a class="marketing-brand" href="home.html">SecureQuiz</a>
     <nav class="marketing-links">
@@ -38,6 +28,7 @@
     <section class="screen active">
       <div class="screen-inner landing-shell">
         <div class="landing-hero-grid">
+         <div class="landing-hero-grid">
           <div class="hero landing-hero landing-hero-copy reveal-up" style="margin-top:0;text-align:left;max-width:none;">
             <div class="hero-eyebrow">Secure Quiz Operations Deck</div>
             <h1 style="font-size:clamp(2.6rem,6vw,5rem);">Create, launch, and monitor secure quizzes without losing speed.</h1>
@@ -47,7 +38,6 @@
               <a href="create.html" class="btn-primary" style="text-decoration:none;">Create a Quiz</a>
               <a href="#how-it-works" class="btn-secondary" style="text-decoration:none;">See the Flow</a>
             </div>
-          </div>
         </div>
 
         <div id="about" class="card landing-card reveal-up" style="max-width:1020px;">
@@ -259,7 +249,6 @@
     </section>
   </div>
 
-  <script src="background.js"></script>
   <script>
     document.querySelectorAll('a[href^="#"]').forEach((link) => {
       link.addEventListener("click", (event) => {

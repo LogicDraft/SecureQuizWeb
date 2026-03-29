@@ -194,18 +194,15 @@
   </style>
 </head>
 <body>
-  <script src="theme.js"></script>
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
-
-  <main class="dashboard-page">
-    <section class="screen active">
-      <div class="screen-inner dashboard-screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
-        <div class="hero" style="margin-top:0;">
-          <div class="hero-eyebrow">Quiz Analytics</div>
-          <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
-          <p id="dash-subtitle">Loading quiz details...</p>
-        </div>
+  <div id="app">
+    <main class="dashboard-page">
+      <section class="screen active">
+        <div class="screen-inner dashboard-screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
+          <div class="hero" style="margin-top:0;">
+            <div class="hero-eyebrow">Quiz Analytics</div>
+            <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
+            <p id="dash-subtitle">Loading quiz details...</p>
+          </div>
 
         <!-- Auth Card -->
         <div class="card" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
@@ -303,7 +300,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="background.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
