@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#050508" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SecureQuiz — Create Quiz</title>
   <meta name="description" content="Create a new secure quiz and generate a shareable link for students." />
   <link rel="stylesheet" href="style.css" />
@@ -91,10 +91,10 @@
 
   <div id="app">
     <section class="screen active">
-      <div class="screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
+      <div class="screen-inner creator-screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
 
-        <div class="hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; margin-bottom: 2rem;">
-          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <div class="hero creator-hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; margin-bottom: 2rem;">
+          <div class="creator-hero-topbar" style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <div class="hero-eyebrow" style="margin: 0;">Creator Portal</div>
             <a href="home.html" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">Back to Home</a>
           </div>
@@ -121,7 +121,7 @@
 
         <!-- Account Card (Personal Dashboard) -->
         <div class="card hidden" style="max-width: 900px; margin: 0 auto; margin-bottom: 2rem;" id="account-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div class="creator-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h2 class="card-title" style="margin: 0;">Creator Account</h2>
             <button type="button" id="btn-account-logout" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
           </div>
@@ -137,7 +137,7 @@
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div class="creator-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <div>
               <h2 class="card-title" style="margin: 0; font-size: 1.4rem;">My Quizzes</h2>
               <p class="card-subtitle" style="margin: 0; font-size: 0.9rem;" id="account-subtitle">Select a quiz to view analytics.</p>
@@ -151,7 +151,7 @@
         </div>
 
         <div class="card hidden" style="max-width: 640px;" id="create-card">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
+          <div class="creator-create-header" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
             <h2 style="margin:0; font-size:1.4rem;">New Quiz</h2>
             <div style="display: flex; gap: 0.8rem;">
               <button type="button" id="btn-back-account" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Back to Account</button>
@@ -230,7 +230,7 @@
 
           <div class="form-group">
             <label>Student Quiz Link</label>
-            <div style="display:flex;gap:0.5rem;">
+            <div class="link-copy-row" style="display:flex;gap:0.5rem;">
               <input type="text" id="inp-quiz-link" readonly style="flex:1;" />
               <button type="button" id="btn-copy-quiz" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
             </div>
@@ -238,13 +238,13 @@
 
           <div class="form-group">
             <label>Dashboard Link</label>
-            <div style="display:flex;gap:0.5rem;">
+            <div class="link-copy-row" style="display:flex;gap:0.5rem;">
               <input type="text" id="inp-dashboard-link" readonly style="flex:1;" />
               <button type="button" id="btn-copy-dash" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
             </div>
           </div>
 
-          <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <div class="creator-result-actions" style="display:flex;gap:1rem;margin-top:1rem;">
             <button type="button" id="btn-new-quiz" class="btn-secondary btn-full">Create Another Quiz</button>
             <button type="button" id="btn-go-account" class="btn-primary btn-full">Back to Account</button>
           </div>

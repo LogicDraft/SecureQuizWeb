@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="marketing-page">
   <script src="theme.js"></script>
   <button class="btn-theme-switch" title="Toggle Theme">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -37,69 +37,181 @@
   <div id="app">
     <section class="screen active">
       <div class="screen-inner landing-shell">
-        <div class="hero landing-hero reveal-up" style="margin-top:0;text-align:left;max-width:1020px;">
-          <div class="hero-eyebrow">Modern Quiz SaaS Experience</div>
-          <h1 style="font-size:clamp(2.4rem,6vw,4.8rem);">SecureQuiz - Smart &amp; Secure Quiz Platform</h1>
-          <p>Create, host, and attempt quizzes with built-in security and real-time results.</p>
+        <div class="landing-hero-grid">
+          <div class="hero landing-hero landing-hero-copy reveal-up" style="margin-top:0;text-align:left;max-width:none;">
+            <div class="hero-eyebrow">Secure Quiz Operations Deck</div>
+            <h1 style="font-size:clamp(2.6rem,6vw,5rem);">Create, launch, and monitor secure quizzes without losing speed.</h1>
+            <p class="hero-subline">SecureQuiz combines creator setup, participant flow, and live analytics into one modern interface that feels deliberate on both desktop and mobile.</p>
 
-          <div class="landing-actions" style="justify-content:flex-start;">
-            <a href="create.html" class="btn-primary" style="text-decoration:none;">Create a Quiz</a>
-            <a href="#how-it-works" class="btn-secondary" style="text-decoration:none;">How it Works</a>
+            <div class="landing-actions" style="justify-content:flex-start;">
+              <a href="create.html" class="btn-primary" style="text-decoration:none;">Create a Quiz</a>
+              <a href="#how-it-works" class="btn-secondary" style="text-decoration:none;">See the Flow</a>
+            </div>
+
+            <div class="hero-chip-row">
+              <span class="hero-chip">Creator login with saved quiz history</span>
+              <span class="hero-chip">One student link plus one dashboard link</span>
+              <span class="hero-chip">Tab-switch and fullscreen event tracking</span>
+            </div>
           </div>
 
-          <div class="hero-chip-row">
-            <span class="hero-chip">Invite-only access</span>
-            <span class="hero-chip">Live dashboard analytics</span>
-            <span class="hero-chip">Anti-cheat tracking</span>
+          <aside class="card hero-stage reveal-up">
+            <div class="hero-stage-top">
+              <div>
+                <span class="hero-stage-label">Live Session Preview</span>
+                <h2 class="hero-stage-title">Physics Midterm / Room A</h2>
+              </div>
+              <div class="hero-stage-status">
+                <span class="hero-stage-dot"></span>
+                Session armed
+              </div>
+            </div>
+
+            <div class="hero-stage-screen">
+              <div class="hero-stage-row">
+                <span>Share Mode</span>
+                <strong>Student link + analytics dashboard</strong>
+              </div>
+
+              <div class="hero-stage-steps">
+                <div class="hero-stage-step">
+                  <span class="hero-stage-step-index">1</span>
+                  <div class="hero-stage-step-copy">
+                    <strong>Build the quiz</strong>
+                    <span>Enter details, questions, and the correct answers in one clean flow.</span>
+                  </div>
+                  <span class="hero-stage-step-time">Draft</span>
+                </div>
+
+                <div class="hero-stage-step">
+                  <span class="hero-stage-step-index">2</span>
+                  <div class="hero-stage-step-copy">
+                    <strong>Share the student link</strong>
+                    <span>Participants land on the right quiz immediately without extra steps.</span>
+                  </div>
+                  <span class="hero-stage-step-time">Launch</span>
+                </div>
+
+                <div class="hero-stage-step">
+                  <span class="hero-stage-step-index">3</span>
+                  <div class="hero-stage-step-copy">
+                    <strong>Track results live</strong>
+                    <span>Watch submissions, scores, and integrity events update in the dashboard.</span>
+                  </div>
+                  <span class="hero-stage-step-time">Monitor</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-stage-metrics">
+              <div class="hero-stage-metric">
+                <span class="metric-label">Build</span>
+                <strong class="metric-value">4 steps</strong>
+              </div>
+              <div class="hero-stage-metric">
+                <span class="metric-label">Share</span>
+                <strong class="metric-value">2 links</strong>
+              </div>
+              <div class="hero-stage-metric">
+                <span class="metric-label">Review</span>
+                <strong class="metric-value">Live logs</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="landing-proof-grid reveal-up">
+          <article class="card proof-card">
+            <span class="proof-value">1 link</span>
+            <span class="proof-label">Gets students into the correct quiz without extra navigation.</span>
+          </article>
+          <article class="card proof-card">
+            <span class="proof-value">Live view</span>
+            <span class="proof-label">See submissions, scores, and integrity events while the session runs.</span>
+          </article>
+          <article class="card proof-card">
+            <span class="proof-value">Mobile ready</span>
+            <span class="proof-label">The UI now scales more cleanly from phones to larger screens.</span>
+          </article>
+          <article class="card proof-card">
+            <span class="proof-value">Fast launch</span>
+            <span class="proof-label">Creators can move from blank slate to shareable quiz in one sitting.</span>
+          </article>
+        </div>
+
+        <div id="about" class="card landing-card reveal-up" style="max-width:1020px;">
+          <div class="landing-section-heading">
+            <span class="section-kicker">Why It Works</span>
+            <h2 class="card-title">Run the whole session from one calm control surface.</h2>
+            <p class="card-subtitle">SecureQuiz is designed to reduce friction for creators while still making the attempt experience feel structured and protected.</p>
+          </div>
+
+          <div class="story-grid">
+            <div class="story-copy">
+              <p>Instead of splitting the workflow across several tools, SecureQuiz keeps quiz creation, student access, and reporting connected. That makes it easier to launch quickly, explain the process clearly, and stay confident while the session is live.</p>
+
+              <div class="story-stats">
+                <div class="story-stat">
+                  <strong>Creator-first</strong>
+                  <span>Login, manage, and publish from a single account area.</span>
+                </div>
+                <div class="story-stat">
+                  <strong>Participant-safe</strong>
+                  <span>Students get a clean flow without extra admin overhead.</span>
+                </div>
+                <div class="story-stat">
+                  <strong>Review-ready</strong>
+                  <span>Scores and integrity signals stay visible during the run.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="story-list">
+              <article class="notice-box story-item">
+                <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div>
+                <div>
+                  <strong>Launch without setup friction</strong>
+                  <span>Create quizzes in minutes with direct inputs for titles, time, options, and answers.</span>
+                </div>
+              </article>
+
+              <article class="notice-box story-item">
+                <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M19 9l-5 5-4-4-3 3"></path></svg></div>
+                <div>
+                  <strong>Watch the room in real time</strong>
+                  <span>Open the dashboard to track submissions, score movement, and suspicious activity while students are still attempting.</span>
+                </div>
+              </article>
+
+              <article class="notice-box story-item">
+                <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                <div>
+                  <strong>Keep integrity guardrails visible</strong>
+                  <span>Fullscreen exits and tab switches are recorded so the creator has better context when reviewing a result.</span>
+                </div>
+              </article>
+            </div>
           </div>
         </div>
 
-        <div class="landing-proof reveal-up">
-          <span>Fast onboarding</span>
-          <span>Beginner friendly</span>
-          <span>Works on mobile + desktop</span>
-          <span>Share link in seconds</span>
-        </div>
-
-        <div id="about" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">About SecureQuiz</h2>
-          <p class="card-subtitle">A beginner-friendly platform for anyone who wants to run or take quizzes quickly and securely.</p>
-
-          <div class="landing-about-grid">
-            <div class="notice-box" style="margin-bottom:0;">
-              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
-              <span>Create quizzes in minutes with simple question and option inputs. No coding needed.</span>
-            </div>
-            <div class="notice-box" style="margin-bottom:0;">
-              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
-              <span>Generate a quiz link instantly and share it with your audience, class, or team.</span>
-            </div>
-            <div class="notice-box" style="margin-bottom:0;">
-              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
-              <span>View submissions and scores in real time using the dashboard link.</span>
-            </div>
-            <div class="notice-box" style="margin-bottom:0;">
-              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
-              <span>Built-in monitoring helps discourage cheating through tab-switch and fullscreen tracking.</span>
-            </div>
+        <div id="features" class="card landing-card reveal-up" style="max-width:1020px;">
+          <div class="landing-section-heading">
+            <span class="section-kicker">Feature Set</span>
+            <h2 class="card-title">Everything needed for a polished secure quiz session.</h2>
+            <p class="card-subtitle">The product is tuned for quick creation, easy sharing, and confident monitoring instead of bloated admin flow.</p>
           </div>
-        </div>
-
-        <div id="features" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">Features</h2>
-          <p class="card-subtitle">Everything you need for secure, fast, and modern quiz experiences.</p>
 
           <div class="features-grid" style="max-width:none;padding:0;margin:0;">
             <article class="feature-card" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
               <h3>Secure Attempt Mode</h3>
-              <p>Protect quiz sessions with anti-cheat tracking and secure flow controls.</p>
+              <p>Keep attempts structured with anti-cheat tracking and clear flow controls for participants.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
-              <h3>Instant Results</h3>
-              <p>Get submission data quickly and review performance through a live dashboard.</p>
+              <h3>Live Dashboard Reporting</h3>
+              <p>Review submission volume, participant scores, and integrity flags without leaving the session.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
@@ -111,70 +223,125 @@
             <article class="feature-card" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
               <h3>Fast &amp; Lightweight</h3>
-              <p>Runs with minimal overhead for quick loading and smooth interaction.</p>
+              <p>Runs with minimal overhead so creators and participants can get moving quickly.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
               <h3>Smart Tracking</h3>
-              <p>Tab switches and fullscreen exits are monitored during attempts for better integrity.</p>
+              <p>Tab switches and fullscreen exits are monitored during attempts for better review context.</p>
+            </article>
+
+            <article class="feature-card" style="padding:1.4rem;">
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+              <h3>Creator Workspace</h3>
+              <p>Sign in, view prior quizzes, and start new ones from a dedicated creator portal.</p>
             </article>
           </div>
         </div>
 
-        <div id="how-it-works" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">How to Use SecureQuiz</h2>
-          <p class="card-subtitle">Follow these steps to create, host, and share your quiz.</p>
+        <div class="card landing-card reveal-up" style="max-width:1020px;">
+          <div class="landing-section-heading">
+            <span class="section-kicker">Built For</span>
+            <h2 class="card-title">A better fit for educators, student communities, and internal teams.</h2>
+            <p class="card-subtitle">The product is flexible enough for different types of quiz sessions while keeping the same clean operational flow.</p>
+          </div>
+
+          <div class="audience-grid">
+            <article class="feature-card audience-card">
+              <span class="audience-tag">Educators</span>
+              <h3>Run timed assessments with less setup stress.</h3>
+              <p>Move from question entry to a shareable student experience without needing a complicated LMS-style dashboard.</p>
+              <ul class="audience-list">
+                <li>Useful for class tests, revision quizzes, and lab checks</li>
+                <li>Live visibility while students are still attempting</li>
+                <li>Clear record of integrity-related events</li>
+              </ul>
+            </article>
+
+            <article class="feature-card audience-card">
+              <span class="audience-tag">Student Clubs</span>
+              <h3>Host lightweight competitions and selection rounds.</h3>
+              <p>Keep the quiz experience polished for participants while organizers track progress and scoring in the background.</p>
+              <ul class="audience-list">
+                <li>Fast to share during hackathons or club events</li>
+                <li>Works well for live rounds or short online screenings</li>
+                <li>Clean enough for quick onboarding with new users</li>
+              </ul>
+            </article>
+
+            <article class="feature-card audience-card">
+              <span class="audience-tag">Internal Teams</span>
+              <h3>Use quizzes for onboarding, readiness checks, or knowledge reviews.</h3>
+              <p>Give trainers and team leads a simple way to run structured assessments without building a custom portal.</p>
+              <ul class="audience-list">
+                <li>One dashboard for results and participant monitoring</li>
+                <li>Easy link sharing for remote or hybrid sessions</li>
+                <li>Better clarity when reviewing unusual attempt behavior</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div id="how-it-works" class="card landing-card reveal-up" style="max-width:1020px;">
+          <div class="landing-section-heading">
+            <span class="section-kicker">How It Flows</span>
+            <h2 class="card-title">From draft to live session in a straight line.</h2>
+            <p class="card-subtitle">Each step is designed to feel short, clear, and predictable for both the creator and the participant.</p>
+          </div>
 
           <div class="landing-steps">
             <article class="step-item">
               <span class="step-index">1</span>
               <div>
-                <h3>Enter Your Details</h3>
-                <p>Open the creator page and fill in basic quiz details like title and time limit.</p>
+                <h3>Open the creator workspace</h3>
+                <p>Sign in, start a new quiz, and set the basics like title, time limit, and allowed violations.</p>
               </div>
             </article>
 
             <article class="step-item">
               <span class="step-index">2</span>
               <div>
-                <h3>Add Quiz Questions</h3>
-                <p>Type questions, options, and select the correct answer for each one.</p>
+                <h3>Build each question cleanly</h3>
+                <p>Add options, mark the correct answer, and continue until the question set is ready to publish.</p>
               </div>
             </article>
 
             <article class="step-item">
               <span class="step-index">3</span>
               <div>
-                <h3>Generate Quiz Link</h3>
-                <p>Press Start Quiz to generate a unique link for participants.</p>
+                <h3>Generate the launch links</h3>
+                <p>Publish once and get the participant link plus the dashboard link for live review.</p>
               </div>
             </article>
 
             <article class="step-item">
               <span class="step-index">4</span>
               <div>
-                <h3>Share with Others</h3>
-                <p>Send the participant link to your class, audience, or team.</p>
+                <h3>Share only the participant view</h3>
+                <p>Send the student link to the audience while keeping the dashboard open separately for yourself.</p>
               </div>
             </article>
 
             <article class="step-item">
               <span class="step-index">5</span>
               <div>
-                <h3>View Results Instantly</h3>
-                <p>Open dashboard link to monitor submissions, scores, and integrity events in real time.</p>
+                <h3>Monitor scores and integrity live</h3>
+                <p>Use the dashboard to watch submissions arrive, compare scores, and review integrity signals as they happen.</p>
               </div>
             </article>
           </div>
         </div>
 
-        <div class="card landing-card landing-cta reveal-up" style="max-width:980px;">
-          <h2 class="card-title">Ready to Start?</h2>
-          <p class="card-subtitle">Create your first secure quiz now and share it in seconds.</p>
-          <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
+        <div class="card landing-card landing-cta reveal-up" style="max-width:1020px;">
+          <div class="landing-section-heading" style="text-align:center;">
+            <span class="section-kicker" style="justify-content:center;">Launch Now</span>
+            <h2 class="card-title">Ready to turn the idea into a real quiz session?</h2>
+            <p class="card-subtitle">Start with the creator workspace, publish the quiz, and keep the dashboard open while the session runs.</p>
+          </div>
+          <div class="cta-actions" style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
             <a href="create.html" class="btn-primary" style="text-decoration:none;">Start Creating Your Quiz</a>
-            <a href="setup.html" class="btn-secondary" style="text-decoration:none;">Setup Guide</a>
+            <a href="setup.html" class="btn-secondary" style="text-decoration:none;">Open Setup Guide</a>
           </div>
         </div>
       </div>

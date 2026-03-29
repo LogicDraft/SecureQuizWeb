@@ -361,6 +361,21 @@ body.minimal-theme .btn-theme-switch {
   box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
 }
 
+body.marketing-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body.marketing-page .screen {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+body.marketing-page .screen-inner {
+  min-height: 0;
+}
+
 /* Global Mobile Compatibility Fixes */
 @media (max-width: 768px) {
   .marketing-nav {
@@ -460,5 +475,336 @@ body.minimal-theme .btn-theme-switch {
     width: 100% !important;
     justify-content: center !important;
     margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .screen {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  body.marketing-page .screen {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .screen-inner {
+    min-height: 100dvh;
+    padding: 1.1rem 1rem 1.5rem !important;
+    gap: 1rem !important;
+  }
+
+  body.marketing-page .screen-inner {
+    min-height: 0;
+  }
+
+  .card,
+  .feature-card,
+  .question-card,
+  .overlay-card,
+  .result-card,
+  .review-card,
+  .marks-card,
+  .quiz-card {
+    width: 100%;
+  }
+
+  .card,
+  .feature-card,
+  .question-card,
+  .overlay-card,
+  .result-card,
+  .review-card,
+  .marks-card {
+    padding: 1.25rem !important;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px !important;
+  }
+
+  .hero {
+    width: 100%;
+    margin-top: 0 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+  }
+
+  .hero p,
+  .card-subtitle,
+  .section-header p {
+    max-width: 100%;
+  }
+
+  .section-header {
+    margin: 2.5rem 0 1.25rem;
+  }
+
+  .features-grid {
+    padding: 0 !important;
+    gap: 1rem !important;
+  }
+
+  .feature-card {
+    padding: 1.25rem !important;
+  }
+
+  .landing-shell {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.8rem !important;
+    gap: 1rem !important;
+  }
+
+  .landing-proof {
+    justify-content: flex-start !important;
+  }
+
+  .landing-proof span,
+  .hero-chip {
+    max-width: 100%;
+  }
+
+  .cta-actions {
+    width: 100%;
+    flex-direction: column !important;
+  }
+
+  .cta-actions .btn-primary,
+  .cta-actions .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .quiz-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 0.9rem 1rem !important;
+  }
+
+  .quiz-meta {
+    justify-content: flex-start;
+    gap: 0.65rem;
+  }
+
+  .progress-label {
+    width: 100%;
+  }
+
+  .quiz-header-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .quiz-timer-wrap {
+    justify-content: center;
+    flex: 1 1 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    background: var(--surface-1);
+    border: 1px solid var(--glass-border);
+  }
+
+  .btn-submit-top {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .quiz-body {
+    padding: 1rem !important;
+  }
+
+  .question-card {
+    padding: 1.25rem !important;
+  }
+
+  .question-text {
+    font-size: 1rem !important;
+    margin-bottom: 1rem;
+  }
+
+  .option-btn {
+    align-items: flex-start;
+    padding: 0.85rem 0.95rem;
+  }
+
+  .quiz-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .quiz-nav .btn-primary,
+  .quiz-nav .btn-secondary {
+    flex: 1 1 calc(50% - 0.4rem);
+    min-width: 140px;
+  }
+
+  .nav-dots {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .proctor-bar {
+    justify-content: flex-start;
+    padding: 0.75rem 1rem 1rem;
+    gap: 0.6rem;
+  }
+
+  .proctor-stat {
+    flex: 1 1 calc(50% - 0.6rem);
+    min-width: 140px;
+  }
+
+  .result-card {
+    max-width: 100%;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .review-screen-inner {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .review-card {
+    max-height: none !important;
+  }
+
+  .review-header,
+  .review-item-header {
+    flex-direction: column !important;
+  }
+
+  .review-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .review-option-flags {
+    justify-content: flex-start;
+  }
+
+  .export-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .dashboard-meta {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    width: 100%;
+  }
+
+  .dashboard-meta-item,
+  .export-btn {
+    width: 100%;
+  }
+
+  .creator-screen-inner,
+  .dashboard-screen-inner {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.75rem !important;
+  }
+
+  .creator-hero-topbar,
+  .creator-card-header,
+  .creator-section-header,
+  .creator-create-header,
+  .dashboard-toolbar,
+  .dashboard-overview-header,
+  .link-copy-row,
+  .creator-result-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .dashboard-toolbar > div {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .creator-hero-topbar .btn-secondary,
+  .creator-card-header .btn-secondary,
+  .creator-section-header .btn-primary,
+  .creator-create-header .btn-secondary,
+  .dashboard-toolbar .btn-secondary,
+  .dashboard-overview-header .btn-primary,
+  .link-copy-row .btn-secondary,
+  .creator-result-actions .btn-primary,
+  .creator-result-actions .btn-secondary {
+    width: 100%;
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  .dashboard-table-wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  table.dashboard-table {
+    min-width: 760px;
+  }
+
+  .quiz-card h3 {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: initial !important;
+  }
+
+  .quiz-card-meta {
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .marketing-nav {
+    align-items: stretch !important;
+  }
+
+  .marketing-brand {
+    max-width: calc(100% - 0.5rem);
+  }
+
+  .landing-proof span,
+  .hero-chip,
+  .quiz-nav .btn-primary,
+  .quiz-nav .btn-secondary,
+  .proctor-stat {
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .landing-proof span,
+  .hero-chip {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .option-btn {
+    font-size: 0.9rem;
   }
 }
