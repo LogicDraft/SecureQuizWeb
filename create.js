@@ -1,6 +1,24 @@
 import { supabase, isSupabaseConfigured } from "./supabase-config.js";
 
 const DOM = {
+  loginCard: document.getElementById("login-card"),
+  authError: document.getElementById("auth-error"),
+  btnGoogleLogin: document.getElementById("btn-google-login"),
+
+  accountCard: document.getElementById("account-card"),
+  btnAccountLogout: document.getElementById("btn-account-logout"),
+  btnShowCreate: document.getElementById("btn-show-create"),
+  profileName: document.getElementById("profile-name"),
+  profileEmail: document.getElementById("profile-email"),
+  profileInitials: document.getElementById("profile-initials"),
+  profileAvatar: document.getElementById("profile-avatar"),
+  quizzesGrid: document.getElementById("quizzes-grid"),
+  accountSubtitle: document.getElementById("account-subtitle"),
+
+  createCard: document.getElementById("create-card"),
+  btnBackAccount: document.getElementById("btn-back-account"),
+  createError: document.getElementById("create-error"),
+
   inpTitle: document.getElementById("inp-title"),
   inpTime: document.getElementById("inp-time"),
   inpViolations: document.getElementById("inp-violations"),
@@ -16,43 +34,20 @@ const DOM = {
   btnPublish: document.getElementById("btn-publish"),
   btnPublishText: document.getElementById("btn-publish-text"),
   btnPublishSpinner: document.getElementById("btn-publish-spinner"),
-  createError: document.getElementById("create-error"),
-  accountCard: document.getElementById("account-card"),
-  createCard: document.getElementById("create-card"),
+
   resultSection: document.getElementById("result-section"),
-  profileName: document.getElementById("profile-name"),
-  profileEmail: document.getElementById("profile-email"),
-  profileAvatar: document.getElementById("profile-avatar"),
-  accountSubtitle: document.getElementById("account-subtitle"),
-  myQuizzesGrid: document.getElementById("my-quizzes-grid"),
-  btnOpenCreate: document.getElementById("btn-open-create"),
-  btnBackAccount: document.getElementById("btn-back-account"),
   inpQuizLink: document.getElementById("inp-quiz-link"),
   inpDashLink: document.getElementById("inp-dashboard-link"),
   btnCopyQuiz: document.getElementById("btn-copy-quiz"),
   btnCopyDash: document.getElementById("btn-copy-dash"),
   btnNewQuiz: document.getElementById("btn-new-quiz"),
-  btnGoDash: document.getElementById("btn-go-dashboard"),
-  authError: document.getElementById("auth-error"),
-  btnGoogleLogin: document.getElementById("btn-google-login"),
-  loginCard: document.getElementById("login-card"),
-  createCard: document.getElementById("create-card"),
-  successCard: document.getElementById("success-card"),
-
-  // Account overview nodes
-  btnAccountLogout: document.getElementById("btn-account-logout"),
-  btnShowCreate: document.getElementById("btn-show-create"),
-  btnCancelCreate: document.getElementById("btn-cancel-create"),
-  accountCard: document.getElementById("account-card"),
-  profileName: document.getElementById("profile-name"),
-  profileEmail: document.getElementById("profile-email"),
-  profileInitials: document.getElementById("profile-initials"),
-  profileAvatar: document.getElementById("profile-avatar"),
-  quizzesGrid: document.getElementById("quizzes-grid"),
-  accountSubtitle: document.getElementById("account-subtitle"),
+  btnGoAccount: document.getElementById("btn-go-account"),
 };
 
-let currentUser = null;
+const state = {
+  currentUser: null,
+  questions: [],
+};
 
 function showLoginView() {
   DOM.loginCard.classList.remove("hidden");
@@ -82,6 +77,26 @@ function showResultView() {
   DOM.resultSection.classList.remove("hidden");
 }
 
+function showAuthError(msg) {
+  DOM.authError.textContent = msg;
+  DOM.authError.classList.remove("hidden");
+}
+
+function showError(msg) {
+  DOM.createError.textContent = msg;
+  DOM.createError.classList.remove("hidden");
+}
+
+function clearError() {
+  DOM.createError.classList.add("hidden");
+}
+
+function setLoading(loading) {
+  DOM.btnPublish.disabled = loading;
+  DOM.btnPublishText.classList.toggle("hidden", loading);
+  DOM.btnPublishSpinner.classList.toggle("hidden", !loading);
+}
+
 function escapeText(val) {
   return String(val ?? "")
     .replace(/&/g, "&amp;")
@@ -106,187 +121,38 @@ function getDisplayName(user) {
   return metadata.full_name || metadata.name || user?.email || "Creator";
 }
 
+function getInitials(name) {
+  const safe = String(name || "C").trim();
+  if (!safe) return "C";
+  const parts = safe.split(/\s+/).slice(0, 2);
+  return parts.map((p) => p.charAt(0).toUpperCase()).join("");
+}
+
 function getAvatarUrl(user) {
   const metadata = user && user.user_metadata ? user.user_metadata : {};
-  return metadata.avatar_url || metadata.picture || "https://api.dicebear.com/8.x/initials/svg?seed=Creator";
+  return metadata.avatar_url || metadata.picture || "";
 }
 
-async function loadPersonalAccountData() {
-  if (!currentUser) return;
-
-  DOM.profileName.textContent = getDisplayName(currentUser);
-  DOM.profileEmail.textContent = currentUser.email || "--";
-  DOM.profileAvatar.src = getAvatarUrl(currentUser);
-  DOM.profileAvatar.onerror = () => {
-    DOM.profileAvatar.src = "https://api.dicebear.com/8.x/initials/svg?seed=Creator";
-  };
-
-  DOM.accountSubtitle.textContent = "Loading your quizzes...";
-
-  const { data: quizzes, error: quizzesError } = await supabase
-    .from("quizzes")
-    .select("id, title, created_at, questions")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (quizzesError) {
-    DOM.accountSubtitle.textContent = "Could not load your quiz history.";
-    DOM.myQuizzesGrid.innerHTML = `<div class="questions-empty">Failed to load quizzes: ${escapeText(quizzesError.message || "Unknown error")}</div>`;
-    return;
-  }
-
-  const quizIds = (quizzes || []).map((quiz) => quiz.id);
-  const statsByQuizId = new Map();
-
-  if (quizIds.length > 0) {
-    const { data: submissions, error: submissionStatsError } = await supabase
-      .from("submissions")
-      .select("quiz_id, score_correct, score_total, created_at")
-      .in("quiz_id", quizIds);
-
-    if (submissionStatsError) {
-      DOM.accountSubtitle.textContent = "Loaded quizzes, but could not load submission stats.";
-    } else {
-      (submissions || []).forEach((sub) => {
-        const quizId = sub.quiz_id;
-        if (!quizId) return;
-
-        if (!statsByQuizId.has(quizId)) {
-          statsByQuizId.set(quizId, {
-            count: 0,
-            scoreSum: 0,
-            scoreTotalSum: 0,
-            lastSubmittedAt: null,
-          });
-        }
-
-        const stat = statsByQuizId.get(quizId);
-        stat.count += 1;
-        stat.scoreSum += Number(sub.score_correct || 0);
-        stat.scoreTotalSum += Number(sub.score_total || 0);
-
-        const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
-        const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
-        if (ts > currentLastTs) {
-          stat.lastSubmittedAt = sub.created_at;
-        }
-      });
-    }
-  }
-
-  if (!quizzes || quizzes.length === 0) {
-    DOM.accountSubtitle.textContent = "You have not created any quizzes yet.";
-    DOM.myQuizzesGrid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--glass-border);">
-        <div style="font-size: 2rem; margin-bottom: 0.6rem;">📝</div>
-        <h3 style="margin: 0 0 0.4rem; color: var(--text-1);">No quizzes yet</h3>
-        <p style="margin: 0; color: var(--text-3); font-size: 0.9rem;">Click Create New Quiz to publish your first quiz.</p>
-      </div>
-    `;
-    return;
-  }
-
-  DOM.accountSubtitle.textContent = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
-  DOM.myQuizzesGrid.innerHTML = quizzes.map((quiz) => {
-    const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
-    const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
-    const avgPct = stats.scoreTotalSum > 0 ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100) : 0;
-    const avgText = stats.count > 0 ? `${avgPct}% avg score` : "No attempts";
-    const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
-
-    return `
-      <article class="question-item" style="padding: 1rem;">
-        <div style="display:flex; justify-content:space-between; gap:0.8rem; align-items:flex-start; margin-bottom:0.55rem;">
-          <h3 style="margin:0; font-size:1rem; font-family:var(--font-logo);">${escapeText(quiz.title || "Untitled Quiz")}</h3>
-          <span style="font-size:0.75rem; color:var(--text-3); white-space:nowrap;">${escapeText(formatDate(quiz.created_at).split(",")[0])}</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; font-size:0.84rem; color:var(--text-2); margin-bottom:0.3rem;">
-          <span>${qCount} questions</span>
-          <span>${stats.count} submissions</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; font-size:0.84rem; color:var(--text-2); margin-bottom:0.85rem;">
-          <span>${escapeText(avgText)}</span>
-          <span>${escapeText(lastSubmittedLabel)}</span>
-        </div>
-        <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
-          <a class="btn-secondary" href="dashboard.html?quizId=${quiz.id}" style="padding:0.34rem 0.65rem; font-size:0.78rem; text-decoration:none;">View Data</a>
-          <a class="btn-secondary" href="index.html?quizId=${quiz.id}" style="padding:0.34rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
-        </div>
-      </article>
-    `;
-  }).join("");
+function getBaseUrl() {
+  return window.location.origin + window.location.pathname.replace(/create\.html$/, "");
 }
 
-async function checkAuth() {
-  const { data } = await supabase.auth.getSession();
-  if (data.session) {
-    currentUser = data.session.user;
-    await loadPersonalAccountData();
-    showAccountView();
-  } else {
-    currentUser = null;
-    showLoginView();
-  }
-}
-
-function showAuthError(msg) {
-  DOM.authError.textContent = msg;
-  DOM.authError.classList.remove("hidden");
-}
-
-DOM.btnGoogleLogin.addEventListener("click", async () => {
-  DOM.authError.classList.add("hidden");
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.href,
-    }
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  }).catch(() => {
+    const inp = document.createElement("input");
+    inp.value = text;
+    document.body.appendChild(inp);
+    inp.select();
+    document.execCommand("copy");
+    inp.remove();
+    const orig = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = orig; }, 1500);
   });
-  if (error) {
-    showAuthError("Google Login failed: " + error.message);
-  }
-});
-
-DOM.btnAccountLogout.addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  await checkAuth();
-});
-
-DOM.btnShowCreate.addEventListener("click", () => {
-  DOM.accountCard.classList.add("hidden");
-  DOM.createCard.classList.remove("hidden");
-});
-
-DOM.btnCancelCreate.addEventListener("click", () => {
-  DOM.createCard.classList.add("hidden");
-  DOM.accountCard.classList.remove("hidden");
-});
-
-DOM.btnOpenCreate.addEventListener("click", () => {
-  showCreateView();
-});
-
-DOM.btnBackAccount.addEventListener("click", async () => {
-  await loadPersonalAccountData();
-  showAccountView();
-});
-
-const questionBuilderState = {
-  questions: [],
-};
-
-function showError(msg) {
-  DOM.createError.textContent = msg;
-  DOM.createError.classList.remove("hidden");
-}
-function clearError() {
-  DOM.createError.classList.add("hidden");
-}
-
-function setLoading(loading) {
-  DOM.btnPublish.disabled = loading;
-  DOM.btnPublishText.classList.toggle("hidden", loading);
-  DOM.btnPublishSpinner.classList.toggle("hidden", !loading);
 }
 
 function clearQuestionDraft() {
@@ -298,30 +164,20 @@ function clearQuestionDraft() {
   DOM.inpCorrectAnswer.value = "0";
 }
 
-function resetQuizBuilderDraft() {
-  DOM.inpTitle.value = "";
-  DOM.inpTime.value = "";
-  DOM.inpViolations.value = "5";
-  questionBuilderState.questions = [];
-  clearQuestionDraft();
-  renderQuestionsList();
-  clearError();
-}
-
-function syncQuestionsJsonPreview() {
-  DOM.questionsCount.textContent = String(questionBuilderState.questions.length);
+function syncQuestionsCount() {
+  DOM.questionsCount.textContent = String(state.questions.length);
 }
 
 function renderQuestionsList() {
-  if (!questionBuilderState.questions.length) {
+  if (!state.questions.length) {
     DOM.questionsList.innerHTML = '<div class="questions-empty">No questions added yet.</div>';
-    syncQuestionsJsonPreview();
+    syncQuestionsCount();
     return;
   }
 
   DOM.questionsList.innerHTML = "";
 
-  questionBuilderState.questions.forEach((question, index) => {
+  state.questions.forEach((question, index) => {
     const article = document.createElement("article");
     article.className = "question-item";
 
@@ -363,30 +219,193 @@ function renderQuestionsList() {
     DOM.questionsList.appendChild(article);
   });
 
-  syncQuestionsJsonPreview();
+  syncQuestionsCount();
 }
 
-function getBaseUrl() {
-  return window.location.origin + window.location.pathname.replace(/create\.html$/, "");
+function resetQuizBuilderDraft() {
+  DOM.inpTitle.value = "";
+  DOM.inpTime.value = "";
+  DOM.inpViolations.value = "5";
+  state.questions = [];
+  clearQuestionDraft();
+  renderQuestionsList();
+  clearError();
 }
 
-function copyToClipboard(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    const orig = btn.textContent;
-    btn.textContent = "Copied!";
-    setTimeout(() => { btn.textContent = orig; }, 1500);
-  }).catch(() => {
-    const inp = document.createElement("input");
-    inp.value = text;
-    document.body.appendChild(inp);
-    inp.select();
-    document.execCommand("copy");
-    inp.remove();
-    const orig = btn.textContent;
-    btn.textContent = "Copied!";
-    setTimeout(() => { btn.textContent = orig; }, 1500);
+async function loadPersonalAccountData() {
+  if (!state.currentUser) return;
+
+  const displayName = getDisplayName(state.currentUser);
+  DOM.profileName.textContent = displayName;
+  DOM.profileEmail.textContent = state.currentUser.email || "--";
+
+  const avatarUrl = getAvatarUrl(state.currentUser);
+  DOM.profileInitials.textContent = getInitials(displayName);
+
+  if (avatarUrl) {
+    DOM.profileAvatar.src = avatarUrl;
+    DOM.profileAvatar.classList.remove("hidden");
+    DOM.profileInitials.classList.add("hidden");
+    DOM.profileAvatar.onerror = () => {
+      DOM.profileAvatar.classList.add("hidden");
+      DOM.profileInitials.classList.remove("hidden");
+    };
+  } else {
+    DOM.profileAvatar.classList.add("hidden");
+    DOM.profileInitials.classList.remove("hidden");
+  }
+
+  DOM.accountSubtitle.textContent = "Loading your quizzes...";
+
+  const { data: quizzes, error: quizzesError } = await supabase
+    .from("quizzes")
+    .select("id, title, created_at, questions")
+    .eq("user_id", state.currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (quizzesError) {
+    DOM.accountSubtitle.textContent = "Could not load your quiz history.";
+    DOM.quizzesGrid.innerHTML = `<div class="questions-empty">Failed to load quizzes: ${escapeText(quizzesError.message || "Unknown error")}</div>`;
+    return;
+  }
+
+  const quizIds = (quizzes || []).map((quiz) => quiz.id);
+  const statsByQuizId = new Map();
+
+  if (quizIds.length > 0) {
+    const { data: submissions } = await supabase
+      .from("submissions")
+      .select("quiz_id, score_correct, score_total, created_at")
+      .in("quiz_id", quizIds);
+
+    (submissions || []).forEach((sub) => {
+      const quizId = sub.quiz_id;
+      if (!quizId) return;
+
+      if (!statsByQuizId.has(quizId)) {
+        statsByQuizId.set(quizId, {
+          count: 0,
+          scoreSum: 0,
+          scoreTotalSum: 0,
+          lastSubmittedAt: null,
+        });
+      }
+
+      const stat = statsByQuizId.get(quizId);
+      stat.count += 1;
+      stat.scoreSum += Number(sub.score_correct || 0);
+      stat.scoreTotalSum += Number(sub.score_total || 0);
+
+      const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
+      const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
+      if (ts > currentLastTs) {
+        stat.lastSubmittedAt = sub.created_at;
+      }
+    });
+  }
+
+  if (!quizzes || quizzes.length === 0) {
+    DOM.accountSubtitle.textContent = "You have not created any quizzes yet.";
+    DOM.quizzesGrid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--glass-border);">
+        <div style="font-size: 2rem; margin-bottom: 0.6rem;">📝</div>
+        <h3 style="margin: 0 0 0.4rem; color: var(--text-1);">No quizzes yet</h3>
+        <p style="margin: 0; color: var(--text-3); font-size: 0.9rem;">Click Build New Quiz to publish your first quiz.</p>
+      </div>
+    `;
+    return;
+  }
+
+  DOM.accountSubtitle.textContent = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
+  DOM.quizzesGrid.innerHTML = quizzes.map((quiz) => {
+    const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
+    const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
+    const avgPct = stats.scoreTotalSum > 0 ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100) : 0;
+    const avgText = stats.count > 0 ? `${avgPct}% avg score` : "No attempts";
+    const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
+
+    return `
+      <article class="quiz-card">
+        <h3>${escapeText(quiz.title || "Untitled Quiz")}</h3>
+        <div class="quiz-card-meta">
+          <span>${qCount} questions</span>
+          <span>${escapeText(formatDate(quiz.created_at).split(",")[0])}</span>
+        </div>
+        <div class="quiz-card-meta">
+          <span>${stats.count} submissions</span>
+          <span>${escapeText(avgText)}</span>
+        </div>
+        <div class="quiz-card-meta" style="margin-bottom: 0.8rem;">
+          <span>Last submission</span>
+          <span>${escapeText(lastSubmittedLabel)}</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap: wrap;">
+          <a class="btn-secondary" href="dashboard.html?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">View Data</a>
+          <a class="btn-secondary" href="index.html?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+async function syncAuthView() {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) {
+    showLoginView();
+    showAuthError("Unable to read session. Please try login again.");
+    return;
+  }
+
+  if (data?.session?.user) {
+    state.currentUser = data.session.user;
+    await loadPersonalAccountData();
+    showAccountView();
+  } else {
+    state.currentUser = null;
+    showLoginView();
+  }
+}
+
+function wireAuthListeners() {
+  supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      state.currentUser = session.user;
+      await loadPersonalAccountData();
+      showAccountView();
+    } else {
+      state.currentUser = null;
+      showLoginView();
+    }
   });
 }
+
+DOM.btnGoogleLogin.addEventListener("click", async () => {
+  DOM.authError.classList.add("hidden");
+
+  const redirectTo = `${window.location.origin}${window.location.pathname}`;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo },
+  });
+
+  if (error) {
+    showAuthError("Google login failed: " + error.message);
+  }
+});
+
+DOM.btnAccountLogout.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  showLoginView();
+});
+
+DOM.btnShowCreate.addEventListener("click", () => {
+  showCreateView();
+});
+
+DOM.btnBackAccount.addEventListener("click", async () => {
+  await loadPersonalAccountData();
+  showAccountView();
+});
 
 DOM.btnAddQuestion.addEventListener("click", () => {
   clearError();
@@ -404,13 +423,8 @@ DOM.btnAddQuestion.addEventListener("click", () => {
     return showError("Selected correct answer option is empty. Fill that option or choose another correct answer.");
   }
 
-  const nextId = `q${String(questionBuilderState.questions.length + 1).padStart(3, "0")}`;
-  questionBuilderState.questions.push({
-    id: nextId,
-    q: questionText,
-    options,
-    answer,
-  });
+  const nextId = `q${String(state.questions.length + 1).padStart(3, "0")}`;
+  state.questions.push({ id: nextId, q: questionText, options, answer });
 
   clearQuestionDraft();
   renderQuestionsList();
@@ -424,10 +438,10 @@ DOM.questionsList.addEventListener("click", (event) => {
   if (!removeButton) return;
 
   const index = parseInt(removeButton.dataset.index || "-1", 10);
-  if (index < 0 || index >= questionBuilderState.questions.length) return;
+  if (index < 0 || index >= state.questions.length) return;
 
-  questionBuilderState.questions.splice(index, 1);
-  questionBuilderState.questions = questionBuilderState.questions.map((question, idx) => ({
+  state.questions.splice(index, 1);
+  state.questions = state.questions.map((question, idx) => ({
     ...question,
     id: `q${String(idx + 1).padStart(3, "0")}`,
   }));
@@ -442,20 +456,16 @@ DOM.btnPublish.addEventListener("click", async () => {
   const timeLimit = parseInt(DOM.inpTime.value, 10);
   const maxViolations = parseInt(DOM.inpViolations.value, 10) || 5;
 
+  if (!state.currentUser) return showError("Please sign in before publishing.");
   if (!title) return showError("Please enter a quiz title.");
   if (!timeLimit || timeLimit < 1) return showError("Please enter a valid time limit in minutes.");
-  if (!questionBuilderState.questions.length) {
-    return showError("Please add at least one question.");
-  }
+  if (!state.questions.length) return showError("Please add at least one question.");
+
   if (!isSupabaseConfigured()) {
     return showError("Supabase is not configured. Update supabase-config.js with your project URL and anon key, then publish again.");
   }
 
-  const questions = [...questionBuilderState.questions];
-
-  if (!Array.isArray(questions) || questions.length === 0) {
-    return showError("Questions must be a non-empty JSON array.");
-  }
+  const questions = [...state.questions];
 
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
@@ -465,9 +475,6 @@ DOM.btnPublish.addEventListener("click", async () => {
     if (!q.answer) {
       return showError(`Question ${i + 1} is missing the 'answer' field.`);
     }
-    if (!q.id) {
-      q.id = `q${String(i + 1).padStart(3, "0")}`;
-    }
   }
 
   setLoading(true);
@@ -476,13 +483,10 @@ DOM.btnPublish.addEventListener("click", async () => {
     const { data, error } = await supabase
       .from("quizzes")
       .insert({
-      user_id: currentUser.id,
-      title,
-      config: {
-        timeLimit,
-        maxViolations,
-      },
-      questions,
+        user_id: state.currentUser.id,
+        title,
+        config: { timeLimit, maxViolations },
+        questions,
       })
       .select("id")
       .single();
@@ -491,20 +495,17 @@ DOM.btnPublish.addEventListener("click", async () => {
 
     const quizId = data.id;
     const base = getBaseUrl();
-    const quizLink = `${base}index.html?quizId=${quizId}`;
-    const dashLink = `${base}dashboard.html?quizId=${quizId}`;
+    DOM.inpQuizLink.value = `${base}index.html?quizId=${quizId}`;
+    DOM.inpDashLink.value = `${base}dashboard.html?quizId=${quizId}`;
 
-    DOM.inpQuizLink.value = quizLink;
-    DOM.inpDashLink.value = dashLink;
     showResultView();
   } catch (err) {
-    console.error("[SecureQuiz] Failed to publish quiz:", err);
     if (err && (err.code === "42501" || err.code === "PGRST301")) {
       showError("Publish blocked by Supabase policies. Allow insert access on quizzes table.");
     } else if (err && err.code === "PGRST204") {
       showError("Publish failed due to invalid quiz data. Check question fields and try again.");
     } else {
-      showError("Failed to publish quiz: " + (err.message || "Unknown error"));
+      showError("Failed to publish quiz: " + (err?.message || "Unknown error"));
     }
   } finally {
     setLoading(false);
@@ -530,4 +531,5 @@ DOM.btnGoAccount.addEventListener("click", async () => {
 });
 
 renderQuestionsList();
-checkAuth();
+wireAuthListeners();
+syncAuthView();
