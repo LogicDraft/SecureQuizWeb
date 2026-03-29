@@ -9,7 +9,64 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+    .profile-initials {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .profile-name { font-size: 1.3rem; font-weight: 700; color: var(--text-1); margin-bottom: 0.2rem; }
+    .profile-email { font-size: 0.9rem; color: var(--text-3); }
+    .quizzes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .quiz-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .quiz-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    .quiz-card h3 { margin: 0; font-size: 1.1rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .quiz-card-meta { font-size: 0.8rem; color: var(--text-3); display: flex; justify-content: space-between; }
+  </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -19,12 +76,12 @@
     <section class="screen active">
       <div class="screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
 
-        <div class="hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 640px; margin: 0 auto; margin-bottom: 2rem;">
+        <div class="hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; margin-bottom: 2rem;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <div class="hero-eyebrow" style="margin: 0;">Creator Portal</div>
             <a href="home.html" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">Back to Home</a>
           </div>
-          <h1 style="align-self: flex-start; margin: 0;">Create Quiz</h1>
+          <h1 style="align-self: flex-start; margin: 0;">Personal Account</h1>
         </div>
 
         <!-- Auth Card -->
@@ -45,12 +102,42 @@
           <div id="auth-error" class="error-msg hidden" style="margin-top:1rem;"></div>
         </div>
 
+        <!-- Account Card (Personal Dashboard) -->
+        <div class="card hidden" style="max-width: 900px; margin: 0 auto; margin-bottom: 2rem;" id="account-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="card-title" style="margin: 0;">Creator Account</h2>
+            <button type="button" id="btn-account-logout" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
+          </div>
+
+          <div class="profile-card">
+            <div id="profile-picture-container">
+              <div class="profile-initials" id="profile-initials">?</div>
+              <img src="" alt="Profile" id="profile-avatar" class="profile-avatar hidden" />
+            </div>
+            <div>
+              <div class="profile-name" id="profile-name">Loading...</div>
+              <div class="profile-email" id="profile-email">--</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+              <h2 class="card-title" style="margin: 0; font-size: 1.4rem;">My Quizzes</h2>
+              <p class="card-subtitle" style="margin: 0; font-size: 0.9rem;" id="account-subtitle">Select a quiz to view analytics.</p>
+            </div>
+            <button type="button" id="btn-show-create" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Build New Quiz</button>
+          </div>
+
+          <div class="quizzes-grid" id="quizzes-grid">
+            <!-- Quizzes injected here -->
+          </div>
+        </div>
+
         <div class="card hidden" style="max-width: 640px;" id="create-card">
           <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
             <h2 style="margin:0; font-size:1.4rem;">New Quiz</h2>
             <div style="display: flex; gap: 0.8rem;">
-              <a href="dashboard.html" class="btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">My Quizzes</a>
-              <button type="button" id="btn-logout" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
+              <button type="button" id="btn-back-account" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Back to Account</button>
             </div>
           </div>
 
@@ -142,7 +229,7 @@
 
           <div style="display:flex;gap:1rem;margin-top:1rem;">
             <button type="button" id="btn-new-quiz" class="btn-secondary btn-full">Create Another Quiz</button>
-            <a id="btn-go-dashboard" href="#" class="btn-primary btn-full" style="text-decoration:none;text-align:center;">View Dashboard →</a>
+            <button type="button" id="btn-go-account" class="btn-primary btn-full">Back to Account</button>
           </div>
         </div>
 

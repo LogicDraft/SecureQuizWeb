@@ -17,8 +17,16 @@ const DOM = {
   btnPublishText: document.getElementById("btn-publish-text"),
   btnPublishSpinner: document.getElementById("btn-publish-spinner"),
   createError: document.getElementById("create-error"),
+  accountCard: document.getElementById("account-card"),
   createCard: document.getElementById("create-card"),
   resultSection: document.getElementById("result-section"),
+  profileName: document.getElementById("profile-name"),
+  profileEmail: document.getElementById("profile-email"),
+  profileAvatar: document.getElementById("profile-avatar"),
+  accountSubtitle: document.getElementById("account-subtitle"),
+  myQuizzesGrid: document.getElementById("my-quizzes-grid"),
+  btnOpenCreate: document.getElementById("btn-open-create"),
+  btnBackAccount: document.getElementById("btn-back-account"),
   inpQuizLink: document.getElementById("inp-quiz-link"),
   inpDashLink: document.getElementById("inp-dashboard-link"),
   btnCopyQuiz: document.getElementById("btn-copy-quiz"),
@@ -27,23 +35,197 @@ const DOM = {
   btnGoDash: document.getElementById("btn-go-dashboard"),
   authError: document.getElementById("auth-error"),
   btnGoogleLogin: document.getElementById("btn-google-login"),
-  btnLogout: document.getElementById("btn-logout"),
   loginCard: document.getElementById("login-card"),
+  createCard: document.getElementById("create-card"),
+  successCard: document.getElementById("success-card"),
+
+  // Account overview nodes
+  btnAccountLogout: document.getElementById("btn-account-logout"),
+  btnShowCreate: document.getElementById("btn-show-create"),
+  btnCancelCreate: document.getElementById("btn-cancel-create"),
+  accountCard: document.getElementById("account-card"),
+  profileName: document.getElementById("profile-name"),
+  profileEmail: document.getElementById("profile-email"),
+  profileInitials: document.getElementById("profile-initials"),
+  profileAvatar: document.getElementById("profile-avatar"),
+  quizzesGrid: document.getElementById("quizzes-grid"),
+  accountSubtitle: document.getElementById("account-subtitle"),
 };
 
 let currentUser = null;
+
+function showLoginView() {
+  DOM.loginCard.classList.remove("hidden");
+  DOM.accountCard.classList.add("hidden");
+  DOM.createCard.classList.add("hidden");
+  DOM.resultSection.classList.add("hidden");
+}
+
+function showAccountView() {
+  DOM.loginCard.classList.add("hidden");
+  DOM.accountCard.classList.remove("hidden");
+  DOM.createCard.classList.add("hidden");
+  DOM.resultSection.classList.add("hidden");
+}
+
+function showCreateView() {
+  DOM.loginCard.classList.add("hidden");
+  DOM.accountCard.classList.add("hidden");
+  DOM.createCard.classList.remove("hidden");
+  DOM.resultSection.classList.add("hidden");
+}
+
+function showResultView() {
+  DOM.loginCard.classList.add("hidden");
+  DOM.accountCard.classList.add("hidden");
+  DOM.createCard.classList.add("hidden");
+  DOM.resultSection.classList.remove("hidden");
+}
+
+function escapeText(val) {
+  return String(val ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatDate(val) {
+  if (!val) return "--";
+  const d = new Date(val);
+  if (Number.isNaN(d.getTime())) return "--";
+  return d.toLocaleString("en-IN", {
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+}
+
+function getDisplayName(user) {
+  const metadata = user && user.user_metadata ? user.user_metadata : {};
+  return metadata.full_name || metadata.name || user?.email || "Creator";
+}
+
+function getAvatarUrl(user) {
+  const metadata = user && user.user_metadata ? user.user_metadata : {};
+  return metadata.avatar_url || metadata.picture || "https://api.dicebear.com/8.x/initials/svg?seed=Creator";
+}
+
+async function loadPersonalAccountData() {
+  if (!currentUser) return;
+
+  DOM.profileName.textContent = getDisplayName(currentUser);
+  DOM.profileEmail.textContent = currentUser.email || "--";
+  DOM.profileAvatar.src = getAvatarUrl(currentUser);
+  DOM.profileAvatar.onerror = () => {
+    DOM.profileAvatar.src = "https://api.dicebear.com/8.x/initials/svg?seed=Creator";
+  };
+
+  DOM.accountSubtitle.textContent = "Loading your quizzes...";
+
+  const { data: quizzes, error: quizzesError } = await supabase
+    .from("quizzes")
+    .select("id, title, created_at, questions")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (quizzesError) {
+    DOM.accountSubtitle.textContent = "Could not load your quiz history.";
+    DOM.myQuizzesGrid.innerHTML = `<div class="questions-empty">Failed to load quizzes: ${escapeText(quizzesError.message || "Unknown error")}</div>`;
+    return;
+  }
+
+  const quizIds = (quizzes || []).map((quiz) => quiz.id);
+  const statsByQuizId = new Map();
+
+  if (quizIds.length > 0) {
+    const { data: submissions, error: submissionStatsError } = await supabase
+      .from("submissions")
+      .select("quiz_id, score_correct, score_total, created_at")
+      .in("quiz_id", quizIds);
+
+    if (submissionStatsError) {
+      DOM.accountSubtitle.textContent = "Loaded quizzes, but could not load submission stats.";
+    } else {
+      (submissions || []).forEach((sub) => {
+        const quizId = sub.quiz_id;
+        if (!quizId) return;
+
+        if (!statsByQuizId.has(quizId)) {
+          statsByQuizId.set(quizId, {
+            count: 0,
+            scoreSum: 0,
+            scoreTotalSum: 0,
+            lastSubmittedAt: null,
+          });
+        }
+
+        const stat = statsByQuizId.get(quizId);
+        stat.count += 1;
+        stat.scoreSum += Number(sub.score_correct || 0);
+        stat.scoreTotalSum += Number(sub.score_total || 0);
+
+        const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
+        const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
+        if (ts > currentLastTs) {
+          stat.lastSubmittedAt = sub.created_at;
+        }
+      });
+    }
+  }
+
+  if (!quizzes || quizzes.length === 0) {
+    DOM.accountSubtitle.textContent = "You have not created any quizzes yet.";
+    DOM.myQuizzesGrid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--glass-border);">
+        <div style="font-size: 2rem; margin-bottom: 0.6rem;">📝</div>
+        <h3 style="margin: 0 0 0.4rem; color: var(--text-1);">No quizzes yet</h3>
+        <p style="margin: 0; color: var(--text-3); font-size: 0.9rem;">Click Create New Quiz to publish your first quiz.</p>
+      </div>
+    `;
+    return;
+  }
+
+  DOM.accountSubtitle.textContent = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
+  DOM.myQuizzesGrid.innerHTML = quizzes.map((quiz) => {
+    const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
+    const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
+    const avgPct = stats.scoreTotalSum > 0 ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100) : 0;
+    const avgText = stats.count > 0 ? `${avgPct}% avg score` : "No attempts";
+    const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
+
+    return `
+      <article class="question-item" style="padding: 1rem;">
+        <div style="display:flex; justify-content:space-between; gap:0.8rem; align-items:flex-start; margin-bottom:0.55rem;">
+          <h3 style="margin:0; font-size:1rem; font-family:var(--font-logo);">${escapeText(quiz.title || "Untitled Quiz")}</h3>
+          <span style="font-size:0.75rem; color:var(--text-3); white-space:nowrap;">${escapeText(formatDate(quiz.created_at).split(",")[0])}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; color:var(--text-2); margin-bottom:0.3rem;">
+          <span>${qCount} questions</span>
+          <span>${stats.count} submissions</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; color:var(--text-2); margin-bottom:0.85rem;">
+          <span>${escapeText(avgText)}</span>
+          <span>${escapeText(lastSubmittedLabel)}</span>
+        </div>
+        <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+          <a class="btn-secondary" href="dashboard.html?quizId=${quiz.id}" style="padding:0.34rem 0.65rem; font-size:0.78rem; text-decoration:none;">View Data</a>
+          <a class="btn-secondary" href="index.html?quizId=${quiz.id}" style="padding:0.34rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
 
 async function checkAuth() {
   const { data } = await supabase.auth.getSession();
   if (data.session) {
     currentUser = data.session.user;
-    DOM.loginCard.classList.add("hidden");
-    DOM.createCard.classList.remove("hidden");
+    await loadPersonalAccountData();
+    showAccountView();
   } else {
     currentUser = null;
-    DOM.loginCard.classList.remove("hidden");
-    DOM.createCard.classList.add("hidden");
-    DOM.resultSection.classList.add("hidden");
+    showLoginView();
   }
 }
 
@@ -65,9 +247,28 @@ DOM.btnGoogleLogin.addEventListener("click", async () => {
   }
 });
 
-DOM.btnLogout.addEventListener("click", async () => {
+DOM.btnAccountLogout.addEventListener("click", async () => {
   await supabase.auth.signOut();
   await checkAuth();
+});
+
+DOM.btnShowCreate.addEventListener("click", () => {
+  DOM.accountCard.classList.add("hidden");
+  DOM.createCard.classList.remove("hidden");
+});
+
+DOM.btnCancelCreate.addEventListener("click", () => {
+  DOM.createCard.classList.add("hidden");
+  DOM.accountCard.classList.remove("hidden");
+});
+
+DOM.btnOpenCreate.addEventListener("click", () => {
+  showCreateView();
+});
+
+DOM.btnBackAccount.addEventListener("click", async () => {
+  await loadPersonalAccountData();
+  showAccountView();
 });
 
 const questionBuilderState = {
@@ -95,6 +296,16 @@ function clearQuestionDraft() {
   DOM.inpOpt3.value = "";
   DOM.inpOpt4.value = "";
   DOM.inpCorrectAnswer.value = "0";
+}
+
+function resetQuizBuilderDraft() {
+  DOM.inpTitle.value = "";
+  DOM.inpTime.value = "";
+  DOM.inpViolations.value = "5";
+  questionBuilderState.questions = [];
+  clearQuestionDraft();
+  renderQuestionsList();
+  clearError();
 }
 
 function syncQuestionsJsonPreview() {
@@ -285,10 +496,7 @@ DOM.btnPublish.addEventListener("click", async () => {
 
     DOM.inpQuizLink.value = quizLink;
     DOM.inpDashLink.value = dashLink;
-    DOM.btnGoDash.href = dashLink;
-
-    DOM.createCard.classList.add("hidden");
-    DOM.resultSection.classList.remove("hidden");
+    showResultView();
   } catch (err) {
     console.error("[SecureQuiz] Failed to publish quiz:", err);
     if (err && (err.code === "42501" || err.code === "PGRST301")) {
@@ -312,15 +520,13 @@ DOM.btnCopyDash.addEventListener("click", () => {
 });
 
 DOM.btnNewQuiz.addEventListener("click", () => {
-  DOM.inpTitle.value = "";
-  DOM.inpTime.value = "";
-  DOM.inpViolations.value = "5";
-  questionBuilderState.questions = [];
-  clearQuestionDraft();
-  renderQuestionsList();
-  clearError();
-  DOM.resultSection.classList.add("hidden");
-  DOM.createCard.classList.remove("hidden");
+  resetQuizBuilderDraft();
+  showCreateView();
+});
+
+DOM.btnGoAccount.addEventListener("click", async () => {
+  await loadPersonalAccountData();
+  showAccountView();
 });
 
 renderQuestionsList();
