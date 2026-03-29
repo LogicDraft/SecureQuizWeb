@@ -344,7 +344,7 @@ async function loadPersonalAccountData({ force = false } = {}) {
     }
 
     const subtitle = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
-    const html = quizzes.map((quiz) => {
+    const html = quizzes.map((quiz, index) => {
     const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
     const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
     const avgPct = stats.scoreTotalSum > 0 ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100) : 0;
@@ -354,7 +354,7 @@ async function loadPersonalAccountData({ force = false } = {}) {
       const createdDate = formatDate(quiz.created_at);
 
       return `
-      <article class="quiz-card">
+      <article class="quiz-card" style="animation-delay: ${index * 0.05}s">
         <h3>${escapeText(quiz.title || "Untitled Quiz")}</h3>
         <div class="quiz-card-meta">
           <span>${qCount} questions</span>
