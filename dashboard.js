@@ -200,17 +200,72 @@ async function loadMyQuizzes() {
       return;
     }
 
+    const quizIds = quizzes.map((quiz) => quiz.id);
+    const statsByQuizId = new Map();
+
+    if (quizIds.length > 0) {
+      const { data: submissions, error: submissionStatsError } = await supabase
+        .from("submissions")
+        .select("quiz_id, score_correct, score_total, created_at")
+        .in("quiz_id", quizIds);
+
+      if (submissionStatsError) {
+        showError(buildSupabaseDashboardError(submissionStatsError, "select", "submissions"));
+        return;
+      }
+
+      (submissions || []).forEach((sub) => {
+        const quizId = sub.quiz_id;
+        if (!quizId) return;
+
+        if (!statsByQuizId.has(quizId)) {
+          statsByQuizId.set(quizId, {
+            count: 0,
+            scoreSum: 0,
+            scoreTotalSum: 0,
+            lastSubmittedAt: null,
+          });
+        }
+
+        const stat = statsByQuizId.get(quizId);
+        stat.count += 1;
+        stat.scoreSum += Number(sub.score_correct || 0);
+        stat.scoreTotalSum += Number(sub.score_total || 0);
+
+        const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
+        const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
+        if (ts > currentLastTs) {
+          stat.lastSubmittedAt = sub.created_at;
+        }
+      });
+    }
+
     DOM.subtitle.textContent = `You have ${quizzes.length} quizzes.`;
     DOM.quizzesGrid.innerHTML = quizzes.map(quiz => {
       const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
       const date = formatDate(quiz.created_at);
       const title = escapeText(quiz.title || "Untitled Quiz");
+      const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
+      const avgPct = stats.scoreTotalSum > 0
+        ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100)
+        : 0;
+      const avgLabel = stats.count > 0 ? `${avgPct}% avg` : "No attempts";
+      const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
+
       return `
         <a href="dashboard.html?quizId=${quiz.id}" class="quiz-card">
           <h3>${title}</h3>
           <div class="quiz-card-meta">
             <span>${qCount} questions</span>
             <span>${date.split(',')[0]}</span>
+          </div>
+          <div class="quiz-card-meta">
+            <span>${stats.count} submissions</span>
+            <span>${avgLabel}</span>
+          </div>
+          <div class="quiz-card-meta">
+            <span>Last submission</span>
+            <span>${escapeText(lastSubmittedLabel)}</span>
           </div>
         </a>
       `;
