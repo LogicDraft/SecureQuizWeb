@@ -25,7 +25,82 @@ const DOM = {
   btnCopyDash: document.getElementById("btn-copy-dash"),
   btnNewQuiz: document.getElementById("btn-new-quiz"),
   btnGoDash: document.getElementById("btn-go-dashboard"),
+  authEmail: document.getElementById("inp-auth-email"),
+  authPass: document.getElementById("inp-auth-pass"),
+  authError: document.getElementById("auth-error"),
+  btnLogin: document.getElementById("btn-login"),
+  btnSignup: document.getElementById("btn-signup"),
+  btnGoogleLogin: document.getElementById("btn-google-login"),
+  btnLogout: document.getElementById("btn-logout"),
+  loginCard: document.getElementById("login-card"),
 };
+
+let currentUser = null;
+
+async function checkAuth() {
+  const { data } = await supabase.auth.getSession();
+  if (data.session) {
+    currentUser = data.session.user;
+    DOM.loginCard.classList.add("hidden");
+    DOM.createCard.classList.remove("hidden");
+  } else {
+    currentUser = null;
+    DOM.loginCard.classList.remove("hidden");
+    DOM.createCard.classList.add("hidden");
+    DOM.resultSection.classList.add("hidden");
+  }
+}
+
+function showAuthError(msg) {
+  DOM.authError.textContent = msg;
+  DOM.authError.classList.remove("hidden");
+}
+
+DOM.btnLogin.addEventListener("click", async () => {
+  const email = DOM.authEmail.value;
+  const password = DOM.authPass.value;
+  DOM.authError.classList.add("hidden");
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    showAuthError("Login failed: " + error.message);
+  } else {
+    await checkAuth();
+  }
+});
+
+DOM.btnSignup.addEventListener("click", async () => {
+  const email = DOM.authEmail.value;
+  const password = DOM.authPass.value;
+  DOM.authError.classList.add("hidden");
+  const { error, data } = await supabase.auth.signUp({ email, password });
+  if (error) {
+    showAuthError("Signup failed: " + error.message);
+  } else {
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      showAuthError("User already exists. Please log in.");
+    } else {
+      showAuthError("Signup successful! You can now log in.");
+    }
+  }
+});
+
+DOM.btnGoogleLogin.addEventListener("click", async () => {
+  DOM.authError.classList.add("hidden");
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.href,
+    }
+  });
+  if (error) {
+    showAuthError("Google Login failed: " + error.message);
+  }
+});
+
+DOM.btnLogout.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  await checkAuth();
+});
 
 const questionBuilderState = {
   questions: [],
@@ -222,6 +297,7 @@ DOM.btnPublish.addEventListener("click", async () => {
     const { data, error } = await supabase
       .from("quizzes")
       .insert({
+      user_id: currentUser.id,
       title,
       config: {
         timeLimit,
@@ -280,3 +356,4 @@ DOM.btnNewQuiz.addEventListener("click", () => {
 });
 
 renderQuestionsList();
+checkAuth();

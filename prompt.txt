@@ -1,0 +1,41 @@
+I want to add an "Export to Excel" feature to my SecureQuizApp dashboard. I want the exported file to be a true .xlsx file with properly formatted column widths, not just a squished CSV. To do this, we will use the SheetJS library.
+Please apply the following changes to dashboard.html and dashboard.js:
+Step 1: Update dashboard.html
+ * Add CSS: Add the following styles inside the <style> tag to format the export button and its header:
+   .export-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.export-btn {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.export-btn:hover {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+ * Update UI Layout: Wrap the existing <div class="dashboard-meta"> element inside a new <div class="export-header">. Add the export button <button id="btn-export" class="export-btn">Export to Excel</button> inside this new flex container, right next to the dashboard-meta div. Ensure the margin-bottom and border-bottom from dashboard-meta are moved out to maintain the visual layout.
+ * Add SheetJS CDN: Right before the <script src="background.js"></script> tag at the bottom of the body, add:
+   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+Step 2: Update dashboard.js
+ * Global Variables: At the top of the file, define let currentSubmissions = []; and const btnExport = document.getElementById("btn-export");.
+ * Capture Data: Inside the loadSubmissions async function (within init()), immediately after fetching the submissions data from Supabase successfully, assign it to the global array: currentSubmissions = submissions || [];
+ * Add Export Logic: Add a click event listener to btnExport. When clicked:
+   * Check if currentSubmissions has data.
+   * Map currentSubmissions into an array of objects representing the rows (S.No, Student Name, Student ID, Score as "X/Y", Percentage, Tab Switches, Fullscreen Exits, Screenshot Attempts, Status ("Clean" or "Flagged" based on >= 5 violations), Auto-Submit ("Yes"/"No"), Device, and formatted Submitted At date).
+   * Convert the array to a worksheet using XLSX.utils.json_to_sheet().
+   * Set custom column widths by assigning an array to worksheet["!cols"] (e.g., width 25 for Name, 22 for Date, etc.).
+   * Create a new workbook, append the sheet, and trigger the download using XLSX.writeFile() naming the file SecureQuiz_Results_[QuizTitle].xlsx.

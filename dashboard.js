@@ -10,7 +10,89 @@ const DOM = {
   subtitle: document.getElementById("dash-subtitle"),
   error: document.getElementById("dash-error"),
   rows: document.getElementById("submission-rows"),
+  authEmail: document.getElementById("inp-auth-email"),
+  authPass: document.getElementById("inp-auth-pass"),
+  authError: document.getElementById("auth-error"),
+  btnLogin: document.getElementById("btn-login"),
+  btnSignup: document.getElementById("btn-signup"),
+  btnGoogleLogin: document.getElementById("btn-google-login"),
+  btnLogout: document.getElementById("btn-logout"),
+  loginCard: document.getElementById("login-card"),
+  dashboardCard: document.getElementById("dashboard-card"),
+  btnBackOverview: document.getElementById("btn-back-overview"),
+  overviewView: document.getElementById("overview-view"),
+  singleQuizView: document.getElementById("single-quiz-view"),
+  quizzesGrid: document.getElementById("quizzes-grid"),
+  btnExport: document.getElementById("btn-export"),
 };
+
+let currentUser = null;
+let currentSubmissions = [];
+
+async function checkAuth() {
+  const { data } = await supabase.auth.getSession();
+  if (data.session) {
+    currentUser = data.session.user;
+    DOM.loginCard.classList.add("hidden");
+    DOM.dashboardCard.classList.remove("hidden");
+    init(); // Run dashboard init only when logged in
+  } else {
+    currentUser = null;
+    DOM.loginCard.classList.remove("hidden");
+    DOM.dashboardCard.classList.add("hidden");
+  }
+}
+
+function showAuthError(msg) {
+  DOM.authError.textContent = msg;
+  DOM.authError.classList.remove("hidden");
+}
+
+DOM.btnLogin.addEventListener("click", async () => {
+  const email = DOM.authEmail.value;
+  const password = DOM.authPass.value;
+  DOM.authError.classList.add("hidden");
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    showAuthError("Login failed: " + error.message);
+  } else {
+    await checkAuth();
+  }
+});
+
+DOM.btnSignup.addEventListener("click", async () => {
+  const email = DOM.authEmail.value;
+  const password = DOM.authPass.value;
+  DOM.authError.classList.add("hidden");
+  const { error, data } = await supabase.auth.signUp({ email, password });
+  if (error) {
+    showAuthError("Signup failed: " + error.message);
+  } else {
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      showAuthError("User already exists. Please log in.");
+    } else {
+      showAuthError("Signup successful! You can now log in.");
+    }
+  }
+});
+
+DOM.btnGoogleLogin.addEventListener("click", async () => {
+  DOM.authError.classList.add("hidden");
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.href,
+    }
+  });
+  if (error) {
+    showAuthError("Google Login failed: " + error.message);
+  }
+});
+
+DOM.btnLogout.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  await checkAuth();
+});
 
 function buildSupabaseDashboardError(error, operation, tableName) {
   const code = error && error.code ? String(error.code) : "UNKNOWN";
@@ -123,13 +205,67 @@ function renderRows(submissions) {
   }).join("");
 }
 
+async function loadMyQuizzes() {
+  if (!currentUser) return;
+  try {
+    const { data: quizzes, error } = await supabase
+      .from("quizzes")
+      .select("id, title, created_at, questions")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      showError(buildSupabaseDashboardError(error, "select", "quizzes"));
+      return;
+    }
+
+    if (!quizzes || quizzes.length === 0) {
+      DOM.subtitle.textContent = "You haven't created any quizzes yet.";
+      DOM.quizzesGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--glass-border);">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">📝</div>
+          <h3 style="margin-bottom: 0.5rem; color: var(--text-1);">No Quizzes Found</h3>
+          <p style="color: var(--text-3); font-size: 0.9rem; margin-bottom: 1.5rem;">Create your first secure quiz to start gathering submissions.</p>
+          <a href="create.html" class="btn-primary" style="text-decoration: none;">Create Quiz</a>
+        </div>
+      `;
+      return;
+    }
+
+    DOM.subtitle.textContent = `You have ${quizzes.length} quizzes.`;
+    DOM.quizzesGrid.innerHTML = quizzes.map(quiz => {
+      const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
+      const date = formatDate(quiz.created_at);
+      const title = escapeText(quiz.title || "Untitled Quiz");
+      return `
+        <a href="dashboard.html?quizId=${quiz.id}" class="quiz-card">
+          <h3>${title}</h3>
+          <div class="quiz-card-meta">
+            <span>${qCount} questions</span>
+            <span>${date.split(',')[0]}</span>
+          </div>
+        </a>
+      `;
+    }).join("");
+
+  } catch (err) {
+    showError("Failed to load quizzes: " + err.message);
+  }
+}
+
 async function init() {
   if (!QUIZ_ID) {
-    DOM.subtitle.textContent = "Missing quiz ID";
-    showError("No quizId found in the URL. Open this page from the Create Quiz page.");
+    DOM.overviewView.classList.remove("hidden");
+    DOM.singleQuizView.classList.add("hidden");
+    DOM.btnBackOverview.classList.add("hidden");
+    document.title = "My Quizzes | Dashboard";
+    await loadMyQuizzes();
     return;
   }
 
+  DOM.overviewView.classList.add("hidden");
+  DOM.singleQuizView.classList.remove("hidden");
+  DOM.btnBackOverview.classList.remove("hidden");
   DOM.quizId.textContent = QUIZ_ID;
 
   try {
@@ -166,7 +302,8 @@ async function init() {
       if (submissionsError) {
         throw new Error(buildSupabaseDashboardError(submissionsError, "select", "submissions"));
       }
-      renderRows(submissions || []);
+      currentSubmissions = submissions || [];
+      renderRows(currentSubmissions);
     };
 
     await loadSubmissions();
@@ -188,4 +325,73 @@ async function init() {
   }
 }
 
-init();
+DOM.btnExport.addEventListener("click", () => {
+  if (!currentSubmissions || currentSubmissions.length === 0) {
+    showError("No data to export.");
+    return;
+  }
+
+  const exportData = currentSubmissions.map((sub, idx) => {
+    const tabs = Number(sub.tab_switches ?? sub.tabSwitches ?? 0);
+    const fs = Number(sub.fullscreen_exits ?? sub.fullscreenExits ?? 0);
+    const ss = Number(sub.screenshot_attempts ?? sub.screenshotAttempts ?? 0);
+    const totalViolations = tabs + fs + ss;
+
+    const scoreFromText = typeof sub.score_text === "string" && sub.score_text.includes("/")
+      ? sub.score_text.split("/").map((item) => Number.parseInt(item, 10))
+      : [];
+    const score = Number.isFinite(sub.score_correct) ? sub.score_correct
+      : Number.isFinite(sub.scoreCorrect) ? sub.scoreCorrect
+      : Number.isFinite(scoreFromText[0]) ? scoreFromText[0]
+      : 0;
+    const total = Number.isFinite(sub.score_total) ? sub.score_total
+      : Number.isFinite(sub.scoreTotal) ? sub.scoreTotal
+      : Number.isFinite(scoreFromText[1]) ? scoreFromText[1]
+      : 0;
+    const pct = total > 0 ? Math.round((score / total) * 100) : 0;
+
+    return {
+      "S.No": idx + 1,
+      "Student Name": sub.student_name || sub.studentName || "Unknown",
+      "Student ID": sub.student_id || sub.studentId || "--",
+      "Score": `${score}/${total}`,
+      "Percentage": `${pct}%`,
+      "Tab Switches": tabs,
+      "Fullscreen Exits": fs,
+      "Screenshot Attempts": ss,
+      "Status": totalViolations >= 5 ? "Flagged" : "Clean",
+      "Auto-Submit": (sub.auto_submit ?? sub.autoSubmit) ? "Yes" : "No",
+      "Device": sub.device || "--",
+      "Submitted At": formatDate(sub.created_at || sub.submitted_at_iso || sub.submittedAt || sub.timestamp)
+    };
+  });
+
+  const worksheet = typeof XLSX !== "undefined" && XLSX.utils ? XLSX.utils.json_to_sheet(exportData) : null;
+  if (!worksheet) {
+    showError("Excel library not loaded properly. Please refresh the page.");
+    return;
+  }
+
+  worksheet["!cols"] = [
+    { wch: 6 },  // S.No
+    { wch: 25 }, // Name
+    { wch: 15 }, // ID
+    { wch: 10 }, // Score
+    { wch: 12 }, // Percentage
+    { wch: 15 }, // Tabs
+    { wch: 16 }, // FS
+    { wch: 20 }, // Screenshots
+    { wch: 12 }, // Status
+    { wch: 12 }, // Auto
+    { wch: 15 }, // Device
+    { wch: 22 }  // Date
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
+  
+  const title = DOM.quizTitle.textContent || "Quiz";
+  XLSX.writeFile(workbook, `SecureQuiz_Results_${title.replace(/[^a-z0-9]/gi, '_')}.xlsx`);
+});
+
+checkAuth();

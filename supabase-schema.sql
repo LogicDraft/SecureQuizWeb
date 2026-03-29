@@ -5,6 +5,7 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.quizzes (
   id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id),
   title text not null,
   config jsonb not null default '{}'::jsonb,
   questions jsonb not null default '[]'::jsonb,
@@ -99,31 +100,46 @@ grant usage on schema public to anon, authenticated;
 grant select, insert on table public.quizzes to anon, authenticated;
 grant select, insert on table public.submissions to anon, authenticated;
 
--- Basic policies for browser-based public access (quick start)
--- Tighten these for production if you add auth.
+-- Secure policies enforcing Authentication
 do $$
 begin
+  -- Drop existing open policies if they exist
+  drop policy if exists quizzes_select_all on public.quizzes;
+  drop policy if exists quizzes_insert_all on public.quizzes;
+  drop policy if exists submissions_select_all on public.submissions;
+  drop policy if exists submissions_insert_all on public.submissions;
+
+  -- 1. Quizzes: Anyone can read quizzes to take them
   if not exists (
-    select 1 from pg_policies where policyname = 'quizzes_select_all' and tablename = 'quizzes'
+    select 1 from pg_policies where policyname = 'quizzes_select_public' and tablename = 'quizzes'
   ) then
-    create policy quizzes_select_all on public.quizzes for select using (true);
+    create policy quizzes_select_public on public.quizzes for select using (true);
   end if;
 
+  -- 2. Quizzes: Only authenticated users can insert quizzes, and they own them
   if not exists (
-    select 1 from pg_policies where policyname = 'quizzes_insert_all' and tablename = 'quizzes'
+    select 1 from pg_policies where policyname = 'quizzes_insert_auth' and tablename = 'quizzes'
   ) then
-    create policy quizzes_insert_all on public.quizzes for insert with check (true);
+    create policy quizzes_insert_auth on public.quizzes for insert to authenticated with check (auth.uid() = user_id);
   end if;
 
+  -- 3. Submissions: Anyone can insert a submission (students taking the quiz)
   if not exists (
-    select 1 from pg_policies where policyname = 'submissions_select_all' and tablename = 'submissions'
+    select 1 from pg_policies where policyname = 'submissions_insert_public' and tablename = 'submissions'
   ) then
-    create policy submissions_select_all on public.submissions for select using (true);
+    create policy submissions_insert_public on public.submissions for insert with check (true);
   end if;
 
+  -- 4. Submissions: Only the teacher who created the quiz can view its submissions
   if not exists (
-    select 1 from pg_policies where policyname = 'submissions_insert_all' and tablename = 'submissions'
+    select 1 from pg_policies where policyname = 'submissions_select_owner' and tablename = 'submissions'
   ) then
-    create policy submissions_insert_all on public.submissions for insert with check (true);
+    create policy submissions_select_owner on public.submissions for select to authenticated using (
+      exists (
+        select 1 from public.quizzes
+        where quizzes.id = submissions.quiz_id
+        and quizzes.user_id = auth.uid()
+      )
+    );
   end if;
 end $$;
