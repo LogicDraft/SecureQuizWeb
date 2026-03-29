@@ -7,6 +7,7 @@
   <title>SecureQuiz — Create Quiz</title>
   <meta name="description" content="Create a new secure quiz and generate a shareable link for students." />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="minimal.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
@@ -78,6 +79,13 @@
   </style>
 </head>
 <body>
+  <script src="theme.js"></script>
+  <button class="btn-theme-switch" title="Toggle Theme">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    Switch UI
+  </button>
   <canvas id="canvas"></canvas>
   <div id="cursor"></div>
 

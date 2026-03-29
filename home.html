@@ -7,11 +7,19 @@
   <title>SecureQuiz — Smart & Secure Quiz Platform</title>
   <meta name="description" content="Create, host, and attempt quizzes with built-in security and real-time results." />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="minimal.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <script src="theme.js"></script>
+  <button class="btn-theme-switch" title="Toggle Theme">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    Switch UI
+  </button>
   <canvas id="canvas"></canvas>
   <div id="cursor"></div>
 
@@ -59,19 +67,19 @@
 
           <div class="landing-about-grid">
             <div class="notice-box" style="margin-bottom:0;">
-              <span class="notice-icon">INFO</span>
+              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
               <span>Create quizzes in minutes with simple question and option inputs. No coding needed.</span>
             </div>
             <div class="notice-box" style="margin-bottom:0;">
-              <span class="notice-icon">LINK</span>
+              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
               <span>Generate a quiz link instantly and share it with your audience, class, or team.</span>
             </div>
             <div class="notice-box" style="margin-bottom:0;">
-              <span class="notice-icon">RESULT</span>
+              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
               <span>View submissions and scores in real time using the dashboard link.</span>
             </div>
             <div class="notice-box" style="margin-bottom:0;">
-              <span class="notice-icon">SAFE</span>
+              <div class="about-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
               <span>Built-in monitoring helps discourage cheating through tab-switch and fullscreen tracking.</span>
             </div>
           </div>
@@ -83,31 +91,31 @@
 
           <div class="features-grid" style="max-width:none;padding:0;margin:0;">
             <article class="feature-card" style="padding:1.4rem;">
-              <div class="feature-icon">LOCK</div>
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
               <h3>Secure Attempt Mode</h3>
               <p>Protect quiz sessions with anti-cheat tracking and secure flow controls.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
-              <div class="feature-icon">CHART</div>
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
               <h3>Instant Results</h3>
               <p>Get submission data quickly and review performance through a live dashboard.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
-              <div class="feature-icon">DEVICE</div>
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
               <h3>Works on Mobile &amp; Desktop</h3>
               <p>Responsive interface designed for phones, tablets, laptops, and desktops.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
-              <div class="feature-icon">FAST</div>
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
               <h3>Fast &amp; Lightweight</h3>
               <p>Runs with minimal overhead for quick loading and smooth interaction.</p>
             </article>
 
             <article class="feature-card" style="padding:1.4rem;">
-              <div class="feature-icon">TRACK</div>
+              <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
               <h3>Smart Tracking</h3>
               <p>Tab switches and fullscreen exits are monitored during attempts for better integrity.</p>
             </article>
