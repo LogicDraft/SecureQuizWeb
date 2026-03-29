@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Prevent indexing of the dashboard page with private student results
+Disallow: /dashboard.html
+
+Sitemap: https://secure-quiz-app-self.vercel.app/sitemap.xml

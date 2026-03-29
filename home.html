@@ -202,7 +202,10 @@
       });
     }, { threshold: 0.18 });
 
-    document.querySelectorAll(".reveal-up").forEach((item) => observer.observe(item));
+    document.querySelectorAll(".reveal-up").forEach((item, index) => {
+      item.style.transitionDelay = `${Math.min(index * 80, 480)}ms`;
+      observer.observe(item);
+    });
   </script>
 </body>
 </html>

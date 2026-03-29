@@ -914,13 +914,24 @@ a, button, input[type="text"], input[type="email"] {
 
 .reveal-up {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  transform: translateY(24px) scale(0.985);
+  filter: blur(2px);
+  transition: opacity 0.68s cubic-bezier(0.16, 1, 0.3, 1), transform 0.68s cubic-bezier(0.16, 1, 0.3, 1), filter 0.68s ease;
 }
 
 .reveal-up.is-visible {
   opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
+}
+
+.card,
+.feature-card,
+.quiz-card,
+.question-item,
+.step-item,
+.notice-box {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
 }
 
 .setup-code {
@@ -1079,14 +1090,21 @@ a, button, input[type="text"], input[type="email"] {
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
-  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition), filter var(--transition), background-position 0.45s ease;
   box-shadow: 0 4px 14px var(--accent-glow);
+  background-size: 130% 130%;
+  background-position: 0% 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+  filter: saturate(1.06);
+  background-position: 100% 50%;
+}
 .btn-primary:active { transform: translateY(0); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -1100,9 +1118,14 @@ a, button, input[type="text"], input[type="email"] {
   font-weight: 500;
   font-family: var(--font);
   cursor: pointer;
-  transition: background var(--transition), transform var(--transition);
+  transition: background var(--transition), transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
-.btn-secondary:hover { background: var(--btn-secondary-hover); }
+.btn-secondary:hover {
+  background: var(--btn-secondary-hover);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--glass-border) 60%, var(--accent) 40%);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
+}
 .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-full { width: 100%; }
