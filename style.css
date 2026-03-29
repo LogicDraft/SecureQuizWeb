@@ -919,6 +919,12 @@ a, button, input[type="text"], input[type="email"] {
   grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
   gap: 1.25rem;
   align-items: stretch;
+  margin: 0 auto;
+}
+
+.landing-hero-grid:not(:has(*:nth-child(2))) {
+  grid-template-columns: minmax(0, 1020px);
+  justify-content: center;
 }
 
 .landing-hero-copy {
