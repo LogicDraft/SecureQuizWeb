@@ -33,8 +33,10 @@ create table if not exists public.submissions (
   created_at timestamptz not null default now()
 );
 
--- If submissions table already existed from an older version,
+-- If tables already existed from an older version,
 -- backfill all expected columns used by the current app.
+alter table public.quizzes add column if not exists user_id uuid references auth.users(id);
+
 alter table public.submissions add column if not exists quiz_id uuid;
 alter table public.submissions add column if not exists student_name text;
 alter table public.submissions add column if not exists student_id text;
