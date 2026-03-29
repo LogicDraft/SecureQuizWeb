@@ -25,11 +25,7 @@ const DOM = {
   btnCopyDash: document.getElementById("btn-copy-dash"),
   btnNewQuiz: document.getElementById("btn-new-quiz"),
   btnGoDash: document.getElementById("btn-go-dashboard"),
-  authEmail: document.getElementById("inp-auth-email"),
-  authPass: document.getElementById("inp-auth-pass"),
   authError: document.getElementById("auth-error"),
-  btnLogin: document.getElementById("btn-login"),
-  btnSignup: document.getElementById("btn-signup"),
   btnGoogleLogin: document.getElementById("btn-google-login"),
   btnLogout: document.getElementById("btn-logout"),
   loginCard: document.getElementById("login-card"),
@@ -55,34 +51,6 @@ function showAuthError(msg) {
   DOM.authError.textContent = msg;
   DOM.authError.classList.remove("hidden");
 }
-
-DOM.btnLogin.addEventListener("click", async () => {
-  const email = DOM.authEmail.value;
-  const password = DOM.authPass.value;
-  DOM.authError.classList.add("hidden");
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    showAuthError("Login failed: " + error.message);
-  } else {
-    await checkAuth();
-  }
-});
-
-DOM.btnSignup.addEventListener("click", async () => {
-  const email = DOM.authEmail.value;
-  const password = DOM.authPass.value;
-  DOM.authError.classList.add("hidden");
-  const { error, data } = await supabase.auth.signUp({ email, password });
-  if (error) {
-    showAuthError("Signup failed: " + error.message);
-  } else {
-    if (data.user && data.user.identities && data.user.identities.length === 0) {
-      showAuthError("User already exists. Please log in.");
-    } else {
-      showAuthError("Signup successful! You can now log in.");
-    }
-  }
-});
 
 DOM.btnGoogleLogin.addEventListener("click", async () => {
   DOM.authError.classList.add("hidden");
