@@ -1026,8 +1026,12 @@ a, button, input[type="text"], input[type="email"] {
   border-radius: 18px;
   border: 1px solid var(--glass-border);
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
-    linear-gradient(145deg, rgba(15,23,42,0.88), rgba(8,14,28,0.78));
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-2) 92%, transparent),
+      color-mix(in srgb, var(--surface-1) 94%, transparent)
+    ),
+    color-mix(in srgb, var(--bg-1) 78%, transparent);
 }
 
 .hero-stage-row span {
@@ -1077,13 +1081,13 @@ a, button, input[type="text"], input[type="email"] {
 }
 
 .hero-stage-step-copy strong,
-.guide-rail-item strong {
+.guide-rail-item > div strong {
   display: block;
   font-size: 0.92rem;
 }
 
 .hero-stage-step-copy span,
-.guide-rail-item span {
+.guide-rail-item > div span {
   color: var(--text-2);
   font-size: 0.78rem;
   line-height: 1.45;
