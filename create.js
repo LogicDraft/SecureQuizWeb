@@ -47,7 +47,11 @@ const DOM = {
 const state = {
   currentUser: null,
   questions: [],
+  accountCache: null,
+  accountLoadPromise: null,
 };
+
+const ACCOUNT_CACHE_TTL_MS = 30 * 1000;
 
 function showLoginView() {
   DOM.loginCard.classList.remove("hidden");
@@ -232,7 +236,7 @@ function resetQuizBuilderDraft() {
   clearError();
 }
 
-async function loadPersonalAccountData() {
+async function loadPersonalAccountData({ force = false } = {}) {
   if (!state.currentUser) return;
 
   const displayName = getDisplayName(state.currentUser);
@@ -255,7 +259,22 @@ async function loadPersonalAccountData() {
     DOM.profileInitials.classList.remove("hidden");
   }
 
+  const now = Date.now();
+  const cache = state.accountCache;
+  if (!force && cache && cache.userId === state.currentUser.id && now - cache.fetchedAt < ACCOUNT_CACHE_TTL_MS) {
+    DOM.accountSubtitle.textContent = cache.subtitle;
+    DOM.quizzesGrid.innerHTML = cache.html;
+    return;
+  }
+
+  if (!force && state.accountLoadPromise) {
+    await state.accountLoadPromise;
+    return;
+  }
+
   DOM.accountSubtitle.textContent = "Loading your quizzes...";
+
+  state.accountLoadPromise = (async () => {
 
   const { data: quizzes, error: quizzesError } = await supabase
     .from("quizzes")
@@ -263,73 +282,83 @@ async function loadPersonalAccountData() {
     .eq("user_id", state.currentUser.id)
     .order("created_at", { ascending: false });
 
-  if (quizzesError) {
-    DOM.accountSubtitle.textContent = "Could not load your quiz history.";
-    DOM.quizzesGrid.innerHTML = `<div class="questions-empty">Failed to load quizzes: ${escapeText(quizzesError.message || "Unknown error")}</div>`;
-    return;
-  }
+    if (quizzesError) {
+      DOM.accountSubtitle.textContent = "Could not load your quiz history.";
+      DOM.quizzesGrid.innerHTML = `<div class="questions-empty">Failed to load quizzes: ${escapeText(quizzesError.message || "Unknown error")}</div>`;
+      return;
+    }
 
-  const quizIds = (quizzes || []).map((quiz) => quiz.id);
-  const statsByQuizId = new Map();
+    const quizIds = (quizzes || []).map((quiz) => quiz.id);
+    const statsByQuizId = new Map();
 
-  if (quizIds.length > 0) {
-    const { data: submissions } = await supabase
-      .from("submissions")
-      .select("quiz_id, score_correct, score_total, created_at")
-      .in("quiz_id", quizIds);
+    if (quizIds.length > 0) {
+      const { data: submissions } = await supabase
+        .from("submissions")
+        .select("quiz_id, score_correct, score_total, created_at")
+        .in("quiz_id", quizIds);
 
-    (submissions || []).forEach((sub) => {
-      const quizId = sub.quiz_id;
-      if (!quizId) return;
+      (submissions || []).forEach((sub) => {
+        const quizId = sub.quiz_id;
+        if (!quizId) return;
 
-      if (!statsByQuizId.has(quizId)) {
-        statsByQuizId.set(quizId, {
-          count: 0,
-          scoreSum: 0,
-          scoreTotalSum: 0,
-          lastSubmittedAt: null,
-        });
-      }
+        if (!statsByQuizId.has(quizId)) {
+          statsByQuizId.set(quizId, {
+            count: 0,
+            scoreSum: 0,
+            scoreTotalSum: 0,
+            lastSubmittedAt: null,
+          });
+        }
 
-      const stat = statsByQuizId.get(quizId);
-      stat.count += 1;
-      stat.scoreSum += Number(sub.score_correct || 0);
-      stat.scoreTotalSum += Number(sub.score_total || 0);
+        const stat = statsByQuizId.get(quizId);
+        stat.count += 1;
+        stat.scoreSum += Number(sub.score_correct || 0);
+        stat.scoreTotalSum += Number(sub.score_total || 0);
 
-      const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
-      const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
-      if (ts > currentLastTs) {
-        stat.lastSubmittedAt = sub.created_at;
-      }
-    });
-  }
+        const ts = sub.created_at ? new Date(sub.created_at).getTime() : 0;
+        const currentLastTs = stat.lastSubmittedAt ? new Date(stat.lastSubmittedAt).getTime() : 0;
+        if (ts > currentLastTs) {
+          stat.lastSubmittedAt = sub.created_at;
+        }
+      });
+    }
 
-  if (!quizzes || quizzes.length === 0) {
-    DOM.accountSubtitle.textContent = "You have not created any quizzes yet.";
-    DOM.quizzesGrid.innerHTML = `
+    if (!quizzes || quizzes.length === 0) {
+      const subtitle = "You have not created any quizzes yet.";
+      const html = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--glass-border);">
         <div style="font-size: 2rem; margin-bottom: 0.6rem;">📝</div>
         <h3 style="margin: 0 0 0.4rem; color: var(--text-1);">No quizzes yet</h3>
         <p style="margin: 0; color: var(--text-3); font-size: 0.9rem;">Click Build New Quiz to publish your first quiz.</p>
       </div>
     `;
-    return;
-  }
+      DOM.accountSubtitle.textContent = subtitle;
+      DOM.quizzesGrid.innerHTML = html;
+      state.accountCache = {
+        userId: state.currentUser.id,
+        fetchedAt: Date.now(),
+        subtitle,
+        html,
+      };
+      return;
+    }
 
-  DOM.accountSubtitle.textContent = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
-  DOM.quizzesGrid.innerHTML = quizzes.map((quiz) => {
+    const subtitle = `You have ${quizzes.length} quiz${quizzes.length > 1 ? "zes" : ""}.`;
+    const html = quizzes.map((quiz) => {
     const stats = statsByQuizId.get(quiz.id) || { count: 0, scoreSum: 0, scoreTotalSum: 0, lastSubmittedAt: null };
     const qCount = Array.isArray(quiz.questions) ? quiz.questions.length : 0;
     const avgPct = stats.scoreTotalSum > 0 ? Math.round((stats.scoreSum / stats.scoreTotalSum) * 100) : 0;
     const avgText = stats.count > 0 ? `${avgPct}% avg score` : "No attempts";
     const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
 
-    return `
+      const createdDate = formatDate(quiz.created_at);
+
+      return `
       <article class="quiz-card">
         <h3>${escapeText(quiz.title || "Untitled Quiz")}</h3>
         <div class="quiz-card-meta">
           <span>${qCount} questions</span>
-          <span>${escapeText(formatDate(quiz.created_at).split(",")[0])}</span>
+          <span>${escapeText(createdDate.split(",")[0])}</span>
         </div>
         <div class="quiz-card-meta">
           <span>${stats.count} submissions</span>
@@ -344,8 +373,24 @@ async function loadPersonalAccountData() {
           <a class="btn-secondary" href="index.html?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
         </div>
       </article>
-    `;
-  }).join("");
+      `;
+    }).join("");
+
+    DOM.accountSubtitle.textContent = subtitle;
+    DOM.quizzesGrid.innerHTML = html;
+    state.accountCache = {
+      userId: state.currentUser.id,
+      fetchedAt: Date.now(),
+      subtitle,
+      html,
+    };
+  })();
+
+  try {
+    await state.accountLoadPromise;
+  } finally {
+    state.accountLoadPromise = null;
+  }
 }
 
 async function syncAuthView() {
@@ -358,8 +403,8 @@ async function syncAuthView() {
 
   if (data?.session?.user) {
     state.currentUser = data.session.user;
-    await loadPersonalAccountData();
     showAccountView();
+    void loadPersonalAccountData();
   } else {
     state.currentUser = null;
     showLoginView();
@@ -370,10 +415,11 @@ function wireAuthListeners() {
   supabase.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
       state.currentUser = session.user;
-      await loadPersonalAccountData();
       showAccountView();
+      void loadPersonalAccountData();
     } else {
       state.currentUser = null;
+      state.accountCache = null;
       showLoginView();
     }
   });
@@ -395,6 +441,7 @@ DOM.btnGoogleLogin.addEventListener("click", async () => {
 
 DOM.btnAccountLogout.addEventListener("click", async () => {
   await supabase.auth.signOut();
+  state.accountCache = null;
   showLoginView();
 });
 
@@ -497,6 +544,7 @@ DOM.btnPublish.addEventListener("click", async () => {
     const base = getBaseUrl();
     DOM.inpQuizLink.value = `${base}index.html?quizId=${quizId}`;
     DOM.inpDashLink.value = `${base}dashboard.html?quizId=${quizId}`;
+    state.accountCache = null;
 
     showResultView();
   } catch (err) {
@@ -526,7 +574,7 @@ DOM.btnNewQuiz.addEventListener("click", () => {
 });
 
 DOM.btnGoAccount.addEventListener("click", async () => {
-  await loadPersonalAccountData();
+  await loadPersonalAccountData({ force: true });
   showAccountView();
 });
 
