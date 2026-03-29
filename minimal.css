@@ -133,7 +133,8 @@ body.minimal-theme .result-card,
 body.minimal-theme .marketing-nav,
 body.minimal-theme .quiz-header,
 body.minimal-theme .proctor-bar,
-body.minimal-theme .overlay-card {
+body.minimal-theme .overlay-card,
+body.minimal-theme .marks-card {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02) !important;
@@ -253,6 +254,38 @@ body.minimal-theme .form-group label {
   font-weight: 600 !important;
 }
 
+/* Marks Card Specific Overrides */
+body.minimal-theme .marks-pill,
+body.minimal-theme .marks-score-panel,
+body.minimal-theme .marks-metric-card,
+body.minimal-theme .review-card,
+body.minimal-theme .review-option {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.minimal-theme .marks-pill-label,
+body.minimal-theme .marks-metric-label,
+body.minimal-theme .marks-score-caption,
+body.minimal-theme .marks-card-kicker,
+body.minimal-theme .marks-card-id,
+body.minimal-theme .marks-watermark,
+body.minimal-theme .marks-accuracy,
+body.minimal-theme .review-option-text {
+  color: #64748b !important;
+}
+
+body.minimal-theme .marks-card-student,
+body.minimal-theme .marks-score-value,
+body.minimal-theme .marks-metric-value,
+body.minimal-theme .review-item-text {
+  color: #0f172a !important;
+}
+
+body.minimal-theme .marks-card-orb {
+  display: none !important;
+}
+
 body.minimal-theme .hero h1 {
   background: none !important;
   -webkit-text-fill-color: #111827 !important;
@@ -334,7 +367,9 @@ body.minimal-theme .btn-theme-switch {
   .marketing-nav {
     flex-direction: column !important;
     padding: 1rem !important;
+    padding-right: 4.5rem !important; /* Prevent overlap with top-right toggle switch */
     gap: 0.75rem !important;
+    align-items: flex-start !important;
   }
   .marketing-nav .btn-primary {
     width: 100% !important;
@@ -383,11 +418,5 @@ body.minimal-theme .btn-theme-switch {
     width: 100% !important;
     justify-content: center !important;
     margin-bottom: 0.5rem;
-  }
-
-  .btn-theme-switch {
-    top: auto !important;
-    bottom: 1.5rem !important;
-    right: 1.5rem !important;
   }
 }
