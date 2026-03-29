@@ -406,7 +406,50 @@ body.minimal-theme .btn-theme-switch {
     text-align: center !important;
     gap: 0.75rem !important;
   }
+  .btn-theme-switch {
+    top: auto !important;
+    bottom: 1.5rem !important;
+    right: 1.5rem !important;
+  }
+}
 
+/* Dashboard Specific Mobile Fixes */
+@media (max-width: 768px) {
+  #dashboard-card {
+    padding: 1.2rem !important;
+  }
+
+  #dashboard-card > div[style*="display:flex"],
+  #dashboard-card > div[style*="display: flex"],
+  #overview-view > div[style*="display:flex"],
+  #overview-view > div[style*="display: flex"] {
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+    justify-content: space-between !important;
+  }
+
+  .export-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .dashboard-meta {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .export-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  #btn-back-overview, #btn-logout {
+    border-radius: 8px !important;
+  }
+}
+
+@media (max-width: 768px) {
   .landing-actions {
     width: 100% !important;
     flex-direction: column !important;
