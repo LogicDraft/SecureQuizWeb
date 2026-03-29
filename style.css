@@ -1285,6 +1285,12 @@ a, button, input[type="text"], input[type="email"] {
   max-width: 980px;
 }
 
+.guide-card {
+  max-width: none;
+  display: grid;
+  gap: 0.9rem;
+}
+
 .guide-highlight {
   display: grid;
   gap: 0.45rem;
