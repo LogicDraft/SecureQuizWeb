@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#050508" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SecureQuiz — Dashboard</title>
   <meta name="description" content="Teacher dashboard to view student submissions and proctoring logs." />
   <link rel="stylesheet" href="style.css" />
@@ -194,18 +194,15 @@
   </style>
 </head>
 <body>
-  <script src="theme.js"></script>
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
-
-  <main class="dashboard-page">
-    <section class="screen active">
-      <div class="screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
-        <div class="hero" style="margin-top:0;">
-          <div class="hero-eyebrow">Quiz Analytics</div>
-          <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
-          <p id="dash-subtitle">Loading quiz details...</p>
-        </div>
+  <div id="app">
+    <main class="dashboard-page">
+      <section class="screen active">
+        <div class="screen-inner dashboard-screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
+          <div class="hero" style="margin-top:0;">
+            <div class="hero-eyebrow">Quiz Analytics</div>
+            <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
+            <p id="dash-subtitle">Loading quiz details...</p>
+          </div>
 
         <!-- Auth Card -->
         <div class="card" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
@@ -226,7 +223,7 @@
         </div>
 
         <div class="card hidden" style="max-width:1100px;" id="dashboard-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div class="dashboard-toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <a href="dashboard.html" id="btn-back-overview" class="btn-secondary hidden" style="padding:0.4rem 0.8rem; font-size:0.8rem; text-decoration:none;">← Back to My Quizzes</a>
             <div style="margin-left:auto;">
               <button type="button" id="btn-logout" class="btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Log Out</button>
@@ -235,7 +232,7 @@
 
           <!-- OVERVIEW VIEW -->
           <div id="overview-view">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="dashboard-overview-header" style="display:flex; justify-content:space-between; align-items:center;">
               <h2 class="card-title">My Quizzes</h2>
               <a href="create.html" class="btn-primary" style="padding:0.5rem 1rem; font-size:0.8rem; text-decoration:none;">+ Create Quiz</a>
             </div>
@@ -303,7 +300,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="background.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
