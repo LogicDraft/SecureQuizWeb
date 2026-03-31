@@ -127,9 +127,7 @@ async function loadQuestionsFromSupabase(quizId) {
 
   try {
     const { data, error } = await supabase
-      .from("quizzes")
-      .select("id, title, config, questions")
-      .eq("id", quizId)
+      .rpc("get_quiz_for_student", { query_id: quizId })
       .single();
 
     if (error || !data) {
@@ -523,6 +521,126 @@ function getSerializableState() {
   };
 }
 
+// Lightweight anti-tamper signing for localStorage state payloads.
+const STATE_TAMPER_SALT = "SecureQuiz::v1::state-signature::do-not-change";
+
+function fallbackStateHash(input) {
+  // FNV-1a 32-bit over the salted payload string.
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+function computeStatePayloadHash(payloadString) {
+  return fallbackStateHash(`${STATE_TAMPER_SALT}:${payloadString}`);
+}
+
+function buildSignedStateEnvelope(statePayload) {
+  const payload = typeof statePayload === "string" ? statePayload : JSON.stringify(statePayload);
+  return {
+    payload,
+    hash: computeStatePayloadHash(payload),
+    version: 1,
+  };
+}
+
+function saveSignedStateToStorage(storageKey, statePayload) {
+  const envelope = buildSignedStateEnvelope(statePayload);
+  localStorage.setItem(storageKey, JSON.stringify(envelope));
+}
+
+function clearSignedStateFromStorage(storageKey, usn = state.student.usn) {
+  try {
+    localStorage.removeItem(storageKey);
+  } catch (_) {}
+
+  if (!usn) return;
+
+  try {
+    localStorage.removeItem(getDraftStorageKey(usn));
+  } catch (_) {}
+}
+
+function triggerTamperAutoSubmit(reason = "State Tampering Detected") {
+  const detail = String(reason || "State Tampering Detected");
+  state.suspiciousEvents.push({
+    type: "state_tampering_detected",
+    detail,
+    time: new Date().toISOString(),
+  });
+
+  window.setTimeout(() => {
+    try {
+      confirmSubmit(true, detail);
+    } catch (submitError) {
+      console.error("[SecureQuiz] Failed to trigger tamper auto-submit:", submitError);
+    }
+  }, 0);
+}
+
+function readAndValidateSignedStateFromStorage(storageKey, { tamperReason = "State Tampering Detected", triggerTamperSubmit = false } = {}) {
+  const saved = localStorage.getItem(storageKey);
+  if (!saved) return null;
+
+  let parsedEnvelope = null;
+  let parsedPayload = null;
+
+  try {
+    parsedEnvelope = JSON.parse(saved);
+  } catch (_error) {
+    clearSignedStateFromStorage(storageKey);
+    if (triggerTamperSubmit) {
+      triggerTamperAutoSubmit(tamperReason);
+    }
+    throw new Error(tamperReason);
+  }
+
+  const hasEnvelope = parsedEnvelope
+    && typeof parsedEnvelope === "object"
+    && typeof parsedEnvelope.payload === "string"
+    && typeof parsedEnvelope.hash === "string";
+
+  if (!hasEnvelope) {
+    clearSignedStateFromStorage(storageKey);
+    if (triggerTamperSubmit) {
+      triggerTamperAutoSubmit(tamperReason);
+    }
+    throw new Error(tamperReason);
+  }
+
+  const expectedHash = computeStatePayloadHash(parsedEnvelope.payload);
+  if (expectedHash !== parsedEnvelope.hash) {
+    try {
+      parsedPayload = JSON.parse(parsedEnvelope.payload);
+    } catch (_) {}
+
+    const tamperedUsn = parsedPayload && parsedPayload.student && parsedPayload.student.usn
+      ? String(parsedPayload.student.usn).trim().toUpperCase()
+      : "";
+
+    clearSignedStateFromStorage(storageKey, tamperedUsn || state.student.usn);
+    if (triggerTamperSubmit) {
+      triggerTamperAutoSubmit(tamperReason);
+    }
+    throw new Error(tamperReason);
+  }
+
+  try {
+    parsedPayload = JSON.parse(parsedEnvelope.payload);
+  } catch (_error) {
+    clearSignedStateFromStorage(storageKey);
+    if (triggerTamperSubmit) {
+      triggerTamperAutoSubmit(tamperReason);
+    }
+    throw new Error(tamperReason);
+  }
+
+  return parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
+}
+
 function applySerializedState(snapshot) {
   if (!snapshot || typeof snapshot !== "object") return false;
 
@@ -574,7 +692,7 @@ function applySerializedState(snapshot) {
 
 function persistAppState() {
   try {
-    localStorage.setItem(CONFIG.APP_STATE_KEY, JSON.stringify(getSerializableState()));
+    saveSignedStateToStorage(CONFIG.APP_STATE_KEY, getSerializableState());
   } catch (error) {
     console.error("[SecureQuiz] Failed to persist app state:", error);
   }
@@ -582,15 +700,14 @@ function persistAppState() {
 
 function loadPersistedAppState() {
   try {
-    const saved = localStorage.getItem(CONFIG.APP_STATE_KEY);
-    if (!saved) return null;
-
-    const parsed = JSON.parse(saved);
-    return parsed && typeof parsed === "object" ? parsed : null;
+    return readAndValidateSignedStateFromStorage(CONFIG.APP_STATE_KEY, {
+      tamperReason: "State Tampering Detected",
+      triggerTamperSubmit: true,
+    });
   } catch (error) {
     console.error("[SecureQuiz] Failed to restore persisted app state:", error);
-    localStorage.removeItem(CONFIG.APP_STATE_KEY);
-    return null;
+    clearSignedStateFromStorage(CONFIG.APP_STATE_KEY);
+    throw error;
   }
 }
 
@@ -1740,14 +1857,21 @@ function initAutoSubmitOnRefresh() {
 
     if (state.quizStarted && !state.submissionPersisted) {
       try {
-        localStorage.setItem(getDraftStorageKey(), JSON.stringify(getSerializableState()));
+        saveSignedStateToStorage(getDraftStorageKey(), getSerializableState());
       } catch (_) {}
     }
   });
 }
 
 function checkAutoSubmit() {
-  const snapshot = loadPersistedAppState();
+  let snapshot = null;
+  try {
+    snapshot = loadPersistedAppState();
+  } catch (error) {
+    console.error("[SecureQuiz] Persisted state rejected:", error);
+    return false;
+  }
+
   if (!snapshot) return false;
 
   const savedScreen = normalizeScreenKey(snapshot.currentScreen);
@@ -1850,7 +1974,7 @@ function saveStateToLocalStorage(force = false) {
   if (!force && now - lastSaveTime < SAVE_THROTTLE) return;
 
   try {
-    localStorage.setItem(getDraftStorageKey(), JSON.stringify(getSerializableState()));
+    saveSignedStateToStorage(getDraftStorageKey(), getSerializableState());
     lastSaveTime = now;
   } catch (e) {
     console.error("Failed to save state to localStorage", e);
@@ -1859,14 +1983,15 @@ function saveStateToLocalStorage(force = false) {
 
 function restoreStateFromLocalStorage() {
   try {
-    const savedState = localStorage.getItem(getDraftStorageKey());
-    if (savedState) {
-      const restoredState = JSON.parse(savedState);
-      if (restoredState.student && restoredState.student.usn === state.student.usn) {
-        applySerializedState(restoredState);
-        console.log("Restored state from localStorage");
-        return true;
-      }
+    const restoredState = readAndValidateSignedStateFromStorage(getDraftStorageKey(), {
+      tamperReason: "State Tampering Detected",
+      triggerTamperSubmit: true,
+    });
+
+    if (restoredState && restoredState.student && restoredState.student.usn === state.student.usn) {
+      applySerializedState(restoredState);
+      console.log("Restored state from localStorage");
+      return true;
     }
   } catch (e) {
     console.error("Failed to restore state from localStorage", e);
@@ -2028,7 +2153,7 @@ function openSubmitDialog() {
   showOverlay(DOM.overlaySubmit);
 }
 
-function confirmSubmit(isAuto = false) {
+function confirmSubmit(isAuto = false, autoSubmitReason = null) {
   if (state.submitted) return;
 
   // Once submit is confirmed, clear all refresh-recovery storage so
@@ -2037,7 +2162,7 @@ function confirmSubmit(isAuto = false) {
 
   state.submitted = true;
   clearInterval(state.timerInterval);
-  submitQuizData(isAuto);
+  submitQuizData(isAuto, { autoSubmitReason });
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -2045,7 +2170,7 @@ function confirmSubmit(isAuto = false) {
    Sends all quiz data + proctoring logs to Google Apps Script.
    Shows result screen after submission.
 ───────────────────────────────────────────────────────────────────*/
-async function submitQuizData(isAutoSubmit = false, { reviewToken: existingReviewToken = null } = {}) {
+async function submitQuizData(isAutoSubmit = false, { reviewToken: existingReviewToken = null, autoSubmitReason = null } = {}) {
   const total    = state.questions.length;
   const device   = state.deviceType || getDeviceType();
   const timestamp = new Date().toISOString();
@@ -2074,6 +2199,7 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
     device:           device,
     timestamp:        timestamp,
     autoSubmit:       isAutoSubmit,
+    autoSubmitReason: autoSubmitReason || "",
     reviewToken:      reviewToken,
     suspiciousLog:    JSON.stringify(state.suspiciousEvents),
   };
