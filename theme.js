@@ -22,22 +22,30 @@ function applyTheme(theme) {
 }
 
 // 1. Determine fallback from user's OS preference (Dark = Glass, Light = Minimal)
-const systemPrefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-const defaultTheme = systemPrefersLight ? "minimal" : "glass";
+const mediaQueryLight = window.matchMedia("(prefers-color-scheme: light)");
+const defaultTheme = mediaQueryLight.matches ? "minimal" : "glass";
 
 // 2. Immediately apply saved theme on parse to avoid flashing styles
-const savedTheme = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY) || defaultTheme;
-if (savedTheme === "minimal" || savedTheme === "glass") {
-  localStorage.setItem(THEME_KEY, savedTheme);
-}
-applyTheme(savedTheme);
+// Do NOT save it back immediately so we can dynamically track OS changes until user overrides.
+const savedTheme = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
+applyTheme(savedTheme || defaultTheme);
 
 // 2. Attach click handlers to any theme toggle buttons on DOM load
 document.addEventListener("DOMContentLoaded", () => {
   if (document.body) {
-    document.body.setAttribute("data-ui", savedTheme);
+    document.body.setAttribute("data-ui", savedTheme || defaultTheme);
   }
-  syncToggleButtons(savedTheme);
+  syncToggleButtons(savedTheme || defaultTheme);
+  
+  // Listen for live OS theme changes
+  mediaQueryLight.addEventListener("change", (e) => {
+    // Only auto-switch if the user hasn't hard-locked a preference via the toggle button
+    if (!localStorage.getItem(THEME_KEY) && !localStorage.getItem(LEGACY_THEME_KEY)) {
+      const liveTheme = e.matches ? "minimal" : "glass";
+      applyTheme(liveTheme);
+    }
+  });
+
   const toggleBtns = document.querySelectorAll(".btn-theme-switch");
   toggleBtns.forEach(btn => {
     btn.addEventListener("click", () => {

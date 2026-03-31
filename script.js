@@ -606,6 +606,12 @@ function showScreen(target) {
     target.classList.add("active");
     state.currentScreen = getScreenKeyFromElement(target);
   }
+  
+  const themeSwitch = document.querySelector('.btn-theme-switch');
+  if (themeSwitch) {
+    themeSwitch.style.display = (target === DOM.screenReg) ? '' : 'none';
+  }
+  
   persistAppState();
 }
 
