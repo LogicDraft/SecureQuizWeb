@@ -3,7 +3,7 @@
    Overrides default glassmorphism with clean, flat UI
 ═══════════════════════════════════════════════════════ */
 
-body.minimal-theme {
+:root {
   --primary: #2563eb;
   --primary-light: #3b82f6;
   --primary-dark: #1e40af;
@@ -31,15 +31,15 @@ body.minimal-theme {
   isolation: isolate;
 }
 
-body.minimal-theme::before,
-body.minimal-theme::after {
+body::before,
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
 
-body.minimal-theme::before {
+body::before {
   z-index: 0;
   inset: -50%;
   background:
@@ -53,7 +53,7 @@ body.minimal-theme::before {
   animation: minimalAuroraShift 14s infinite alternate ease-in-out, minimalHueShift 20s infinite alternate ease-in-out;
 }
 
-body.minimal-theme::after {
+body::after {
   z-index: 0;
   opacity: 0.7;
   background-image:
@@ -64,9 +64,9 @@ body.minimal-theme::after {
   animation: minimalGridDrift 14s linear infinite;
 }
 
-body.minimal-theme #app,
-body.minimal-theme .marketing-nav,
-body.minimal-theme main {
+#app,
+.marketing-nav,
+main {
   position: relative;
   z-index: 1;
 }
@@ -90,14 +90,14 @@ body.minimal-theme main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.minimal-theme::before,
-  body.minimal-theme::after {
+  ::before,
+  ::after {
     animation: none !important;
   }
 }
 
 body.glass-theme,
-body.minimal-theme {
+body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -108,32 +108,32 @@ body.glass-theme .btn-secondary,
 body.glass-theme .form-group input,
 body.glass-theme .form-group textarea,
 body.glass-theme .form-group select,
-body.minimal-theme .card,
-body.minimal-theme .feature-card,
-body.minimal-theme .btn-primary,
-body.minimal-theme .btn-secondary,
-body.minimal-theme .form-group input,
-body.minimal-theme .form-group textarea,
-body.minimal-theme .form-group select {
+.card,
+.feature-card,
+.btn-primary,
+.btn-secondary,
+.form-group input,
+.form-group textarea,
+.form-group select {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-body.minimal-theme * {
+* {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-body.minimal-theme .card,
-body.minimal-theme .feature-card,
-body.minimal-theme .quiz-card,
-body.minimal-theme .profile-card,
-body.minimal-theme .question-item,
-body.minimal-theme .result-card,
-body.minimal-theme .marketing-nav,
-body.minimal-theme .quiz-header,
-body.minimal-theme .proctor-bar,
-body.minimal-theme .overlay-card,
-body.minimal-theme .marks-card {
+.card,
+.feature-card,
+.quiz-card,
+.profile-card,
+.question-item,
+.result-card,
+.marketing-nav,
+.quiz-header,
+.proctor-bar,
+.overlay-card,
+.marks-card {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02) !important;
@@ -143,10 +143,10 @@ body.minimal-theme .marks-card {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease !important;
 }
 
-body.minimal-theme .feature-card:hover,
-body.minimal-theme .quiz-card:hover,
-body.minimal-theme .question-item:hover,
-body.minimal-theme .profile-card:hover {
+.feature-card:hover,
+.quiz-card:hover,
+.question-item:hover,
+.profile-card:hover {
   transform: translateY(-4px) scale(1.01);
   border-color: rgba(139, 92, 246, 0.3) !important;
   background: linear-gradient(150deg, #ffffff 0%, #fefeff 50%, #f8fafc 100%) !important;
@@ -156,8 +156,8 @@ body.minimal-theme .profile-card:hover {
     0 6px 12px -2px rgba(244, 63, 94, 0.05) !important;
 }
 
-body.minimal-theme .feature-card::after,
-body.minimal-theme .quiz-card::after {
+.feature-card::after,
+.quiz-card::after {
   content: "";
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -168,137 +168,142 @@ body.minimal-theme .quiz-card::after {
   transition: opacity 0.4s ease;
 }
 
-body.minimal-theme .feature-card:hover::after,
-body.minimal-theme .quiz-card:hover::after {
+.feature-card:hover::after,
+.quiz-card:hover::after {
   opacity: 1;
 }
 
-body.minimal-theme .marketing-links a {
+.marketing-links a {
   color: #4b5563 !important;
 }
 
-body.minimal-theme .marketing-links a:hover {
+.marketing-links a:hover {
   background: #eff6ff !important;
   color: #1f2937 !important;
 }
 
-body.minimal-theme .notice-box,
-body.minimal-theme .step-item,
-body.minimal-theme .instruction-list li,
-body.minimal-theme .questions-empty {
+.notice-box,
+.step-item,
+.instruction-list li,
+.questions-empty {
   background: #ffffff !important;
   border: 1px solid #e5e7eb !important;
 }
 
-body.minimal-theme .quiz-timer-wrap,
-body.minimal-theme .student-badge,
-body.minimal-theme .progress-label,
-body.minimal-theme .proctor-stat {
+.quiz-timer-wrap,
+.student-badge,
+.progress-label,
+.proctor-stat {
   background: #f8fafc !important;
   border: 1px solid #dbeafe !important;
   color: #334155 !important;
 }
 
-body.minimal-theme .progress-bar-track,
-body.minimal-theme .timer-bar-track {
+.progress-bar-track,
+.timer-bar-track {
   background: #e5e7eb !important;
 }
 
-body.minimal-theme .card::before,
-body.minimal-theme .feature-card::before {
+.card::before,
+.feature-card::before {
   display: none !important;
 }
 
-body.minimal-theme .btn-primary,
-body.minimal-theme .btn-secondary {
+.btn-primary,
+.btn-secondary {
   border-radius: 6px !important;
   transition: all 0.2s ease !important;
 }
 
-body.minimal-theme .btn-primary {
+.btn-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   color: white !important;
   border: none !important;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.15) !important;
 }
 
-body.minimal-theme .btn-primary:hover {
+.btn-primary:hover {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25), 0 4px 8px -2px rgba(37, 99, 235, 0.1) !important;
 }
 
-body.minimal-theme .btn-secondary {
+body {
+  background-color: var(--surface-bg);
+  color: var(--text-main) !important;
+}
+
+.btn-secondary {
   background: white !important;
   color: var(--text-2) !important;
   border: 1px solid #d1d5db !important;
 }
 
-body.minimal-theme .btn-secondary:hover {
+.btn-secondary:hover {
   background: #f3f4f6 !important;
   color: var(--text-1) !important;
 }
 
-body.minimal-theme .form-group input,
-body.minimal-theme .form-group textarea,
-body.minimal-theme .form-group select {
+.form-group input,
+.form-group textarea,
+.form-group select {
   background: #ffffff !important;
   border: 1px solid #d1d5db !important;
   border-radius: 6px !important;
   color: #1f2937 !important;
 }
 
-body.minimal-theme .form-group label {
+.form-group label {
   color: #4b5563 !important;
   font-weight: 600 !important;
 }
 
 /* Marks Card Specific Overrides */
-body.minimal-theme .marks-pill,
-body.minimal-theme .marks-score-panel,
-body.minimal-theme .marks-metric-card,
-body.minimal-theme .review-card,
-body.minimal-theme .review-option {
+.marks-pill,
+.marks-score-panel,
+.marks-metric-card,
+.review-card,
+.review-option {
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
 }
 
-body.minimal-theme .marks-pill-label,
-body.minimal-theme .marks-metric-label,
-body.minimal-theme .marks-score-caption,
-body.minimal-theme .marks-card-kicker,
-body.minimal-theme .marks-card-id,
-body.minimal-theme .marks-watermark,
-body.minimal-theme .marks-accuracy,
-body.minimal-theme .review-option-text {
+.marks-pill-label,
+.marks-metric-label,
+.marks-score-caption,
+.marks-card-kicker,
+.marks-card-id,
+.marks-watermark,
+.marks-accuracy,
+.review-option-text {
   color: #64748b !important;
 }
 
-body.minimal-theme .marks-card-student,
-body.minimal-theme .marks-score-value,
-body.minimal-theme .marks-metric-value,
-body.minimal-theme .review-item-text {
+.marks-card-student,
+.marks-score-value,
+.marks-metric-value,
+.review-item-text {
   color: #0f172a !important;
 }
 
-body.minimal-theme .marks-card-orb {
+.marks-card-orb {
   display: none !important;
 }
 
-body.minimal-theme .hero h1 {
+.hero h1 {
   background: none !important;
   -webkit-text-fill-color: #111827 !important;
   color: #111827 !important;
   text-shadow: none !important;
 }
 
-body.minimal-theme .hero-eyebrow,
-body.minimal-theme .section-eyebrow {
+.hero-eyebrow,
+.section-eyebrow {
   color: var(--primary) !important;
 }
 
-body.minimal-theme #canvas,
-body.minimal-theme #cursor {
+#canvas,
+#cursor {
   display: none !important; /* Disables ambient background and custom cursor */
 }
 
@@ -357,8 +362,23 @@ body.minimal-theme #cursor {
   background: #ffffff;
 }
 
-body.minimal-theme .btn-theme-switch {
+.btn-theme-switch {
   box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}
+
+body.marketing-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body.marketing-page .screen {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+body.marketing-page .screen-inner {
+  min-height: 0;
 }
 
 /* Global Mobile Compatibility Fixes */
@@ -460,5 +480,336 @@ body.minimal-theme .btn-theme-switch {
     width: 100% !important;
     justify-content: center !important;
     margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .screen {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  body.marketing-page .screen {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .screen-inner {
+    min-height: 100dvh;
+    padding: 1.1rem 1rem 1.5rem !important;
+    gap: 1rem !important;
+  }
+
+  body.marketing-page .screen-inner {
+    min-height: 0;
+  }
+
+  .card,
+  .feature-card,
+  .question-card,
+  .overlay-card,
+  .result-card,
+  .review-card,
+  .marks-card,
+  .quiz-card {
+    width: 100%;
+  }
+
+  .card,
+  .feature-card,
+  .question-card,
+  .overlay-card,
+  .result-card,
+  .review-card,
+  .marks-card {
+    padding: 1.25rem !important;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px !important;
+  }
+
+  .hero {
+    width: 100%;
+    margin-top: 0 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+  }
+
+  .hero p,
+  .card-subtitle,
+  .section-header p {
+    max-width: 100%;
+  }
+
+  .section-header {
+    margin: 2.5rem 0 1.25rem;
+  }
+
+  .features-grid {
+    padding: 0 !important;
+    gap: 1rem !important;
+  }
+
+  .feature-card {
+    padding: 1.25rem !important;
+  }
+
+  .landing-shell {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.8rem !important;
+    gap: 1rem !important;
+  }
+
+  .landing-proof {
+    justify-content: flex-start !important;
+  }
+
+  .landing-proof span,
+  .hero-chip {
+    max-width: 100%;
+  }
+
+  .cta-actions {
+    width: 100%;
+    flex-direction: column !important;
+  }
+
+  .cta-actions .btn-primary,
+  .cta-actions .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .quiz-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 0.9rem 1rem !important;
+  }
+
+  .quiz-meta {
+    justify-content: flex-start;
+    gap: 0.65rem;
+  }
+
+  .progress-label {
+    width: 100%;
+  }
+
+  .quiz-header-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .quiz-timer-wrap {
+    justify-content: center;
+    flex: 1 1 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    background: var(--surface-1);
+    border: 1px solid var(--glass-border);
+  }
+
+  .btn-submit-top {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .quiz-body {
+    padding: 1rem !important;
+  }
+
+  .question-card {
+    padding: 1.25rem !important;
+  }
+
+  .question-text {
+    font-size: 1rem !important;
+    margin-bottom: 1rem;
+  }
+
+  .option-btn {
+    align-items: flex-start;
+    padding: 0.85rem 0.95rem;
+  }
+
+  .quiz-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .quiz-nav .btn-primary,
+  .quiz-nav .btn-secondary {
+    flex: 1 1 calc(50% - 0.4rem);
+    min-width: 140px;
+  }
+
+  .nav-dots {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .proctor-bar {
+    justify-content: flex-start;
+    padding: 0.75rem 1rem 1rem;
+    gap: 0.6rem;
+  }
+
+  .proctor-stat {
+    flex: 1 1 calc(50% - 0.6rem);
+    min-width: 140px;
+  }
+
+  .result-card {
+    max-width: 100%;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .review-screen-inner {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .review-card {
+    max-height: none !important;
+  }
+
+  .review-header,
+  .review-item-header {
+    flex-direction: column !important;
+  }
+
+  .review-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .review-option-flags {
+    justify-content: flex-start;
+  }
+
+  .export-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .dashboard-meta {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    width: 100%;
+  }
+
+  .dashboard-meta-item,
+  .export-btn {
+    width: 100%;
+  }
+
+  .creator-screen-inner,
+  .dashboard-screen-inner {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.75rem !important;
+  }
+
+  .creator-hero-topbar,
+  .creator-card-header,
+  .creator-section-header,
+  .creator-create-header,
+  .dashboard-toolbar,
+  .dashboard-overview-header,
+  .link-copy-row,
+  .creator-result-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .dashboard-toolbar > div {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .creator-hero-topbar .btn-secondary,
+  .creator-card-header .btn-secondary,
+  .creator-section-header .btn-primary,
+  .creator-create-header .btn-secondary,
+  .dashboard-toolbar .btn-secondary,
+  .dashboard-overview-header .btn-primary,
+  .link-copy-row .btn-secondary,
+  .creator-result-actions .btn-primary,
+  .creator-result-actions .btn-secondary {
+    width: 100%;
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  .dashboard-table-wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  table.dashboard-table {
+    min-width: 760px;
+  }
+
+  .quiz-card h3 {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: initial !important;
+  }
+
+  .quiz-card-meta {
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .marketing-nav {
+    align-items: stretch !important;
+  }
+
+  .marketing-brand {
+    max-width: calc(100% - 0.5rem);
+  }
+
+  .landing-proof span,
+  .hero-chip,
+  .quiz-nav .btn-primary,
+  .quiz-nav .btn-secondary,
+  .proctor-stat {
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .landing-proof span,
+  .hero-chip {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .option-btn {
+    font-size: 0.9rem;
   }
 }
