@@ -1504,6 +1504,13 @@ function initTabSwitchDetection() {
    warning overlay and logs the event.
 ───────────────────────────────────────────────────────────────────*/
 function requestFullscreen() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    showWarningOverlay("iOS detected: Fullscreen enforcement is disabled, but tab switching is still monitored.");
+    setTimeout(() => hideOverlay(DOM.overlayFullscreen), 3000);
+    return Promise.resolve(false);
+  }
+
   const canAttemptMobileFullscreen = state.deviceType !== "mobile" || CONFIG.ENFORCE_FULLSCREEN_ON_MOBILE;
   if (!state.fullscreenMonitoringEnabled || !canAttemptMobileFullscreen) return Promise.resolve(false);
 
@@ -1723,18 +1730,8 @@ function initWindowBlurDetection() {
     }
   });
 
-  // Detect Developer Tools
-  setInterval(() => {
-    if (!state.quizStarted || state.submitted) return;
-    if (
-      window.outerWidth - window.innerWidth > CONFIG.DEVTOOLS_SIZE_THRESHOLD ||
-      window.outerHeight - window.innerHeight > CONFIG.DEVTOOLS_SIZE_THRESHOLD
-    ) {
-      logEvent("devtools_detected");
-      // Uncomment if immediate alert is desired:
-      // alert("Developer tools detected!");
-    }
-  }, 1000);
+  // Developer Tools trap removed as requested to avoid false positives. 
+  // We strictly rely on the existing F12 keydown listener.
 }
 function initAutoSubmitOnRefresh() {
   // Persist the latest view so refresh returns to the same screen.
@@ -2284,6 +2281,7 @@ function renderReviewScreen() {
   }
 
   const reviewByQuestionId = new Map(reviewAnswers.map((item) => [item.questionId, item]));
+  const fragment = document.createDocumentFragment();
 
   state.questions.forEach((question, idx) => {
     const reviewEntry = reviewByQuestionId.get(question.id) || {};
@@ -2371,8 +2369,10 @@ function renderReviewScreen() {
       item.appendChild(note);
     }
 
-    DOM.reviewContainer.appendChild(item);
+    fragment.appendChild(item);
   });
+  
+  DOM.reviewContainer.appendChild(fragment);
 }
 
 /* ─────────────────────────────────────────────────────────────────

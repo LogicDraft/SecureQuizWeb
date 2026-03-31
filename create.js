@@ -181,6 +181,8 @@ function renderQuestionsList() {
 
   DOM.questionsList.innerHTML = "";
 
+  const fragment = document.createDocumentFragment();
+
   state.questions.forEach((question, index) => {
     const article = document.createElement("article");
     article.className = "question-item";
@@ -232,8 +234,10 @@ function renderQuestionsList() {
     article.appendChild(questionText);
     article.appendChild(optionsList);
     article.appendChild(answer);
-    DOM.questionsList.appendChild(article);
+    fragment.appendChild(article);
   });
+
+  DOM.questionsList.appendChild(fragment);
 
   syncQuestionsCount();
 }
@@ -531,6 +535,11 @@ DOM.questionsList.addEventListener("click", (event) => {
 DOM.btnPublish.addEventListener("click", async () => {
   clearError();
 
+  const isDrafting = DOM.inpQuestionText.value.trim() !== "" || DOM.inpOpt1.value.trim() !== "";
+  if (isDrafting) {
+    return showError("You have an unsaved question in the builder. Please click '+ Add Question' or clear the inputs before publishing.");
+  }
+
   const title = DOM.inpTitle.value.trim();
   const timeLimit = parseInt(DOM.inpTime.value, 10);
   const maxViolations = parseInt(DOM.inpViolations.value, 10) || 5;
@@ -580,12 +589,15 @@ DOM.btnPublish.addEventListener("click", async () => {
 
     showResultView();
   } catch (err) {
-    if (err && (err.code === "42501" || err.code === "PGRST301")) {
-      showError("Publish blocked by Supabase policies. Allow insert access on quizzes table.");
-    } else if (err && err.code === "PGRST204") {
+    const code = err && err.code ? String(err.code) : "UNKNOWN";
+    if (["42501", "PGRST301", "PGRST116"].includes(code)) {
+      showError("We couldn't save the requested data due to a permission error. Please contact your administrator.");
+    } else if (code === "PGRST204") {
       showError("Publish failed due to invalid quiz data. Check question fields and try again.");
+    } else if (code === "22P02") {
+      showError("Invalid data format received. Please check the query and try again.");
     } else {
-      showError("Failed to publish quiz: " + (err?.message || "Unknown error"));
+      showError("An unexpected database error occurred. Please try again.");
     }
   } finally {
     setLoading(false);

@@ -65,13 +65,16 @@ DOM.btnLogout.addEventListener("click", async () => {
 
 function buildSupabaseDashboardError(error, operation, tableName) {
   const code = error && error.code ? String(error.code) : "UNKNOWN";
-  const message = error && error.message ? error.message : "Unknown error";
-
+  
   if (["42501", "PGRST301", "PGRST116"].includes(code)) {
-    return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run supabase-schema.sql to enable RLS policies and grants for anon/authenticated roles.`;
+    return "We couldn't load the requested data due to a permission error. Please contact your administrator.";
+  }
+  
+  if (code === "22P02") {
+    return "Invalid data format received. Please check the provided link and try again.";
   }
 
-  return `Supabase ${operation} failed on '${tableName}' (${code}): ${message}`;
+  return "An unexpected error occurred while communicating with the server. Please try again.";
 }
 
 function showError(msg) {

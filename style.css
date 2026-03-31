@@ -18,7 +18,7 @@
   --bg-dark: #050508;
   --bg-dark-alt: #0a0a0f;
   --bg-1: rgba(11, 18, 32, 0.96);
-  --glass: rgba(15, 23, 42, 0.6);
+  --glass: rgba(15, 23, 42, 0.85);
   --glass-border: rgba(148, 163, 184, 0.1);
   --danger: #f43f5e;
   --danger-glow: rgba(244,63,94,0.35);
@@ -287,8 +287,16 @@ h1, h2, h3 {
 }
 
 /* Interactive hover elements get native pointer */
-a, button, input[type="text"], input[type="email"] {
+a, button, input[type="text"], input[type="email"], input[type="number"], textarea, select {
   cursor: pointer;
+}
+
+/* ─── Accessibility & Focus ─── */
+a:focus-visible, button:focus-visible, input[type="text"]:focus-visible, 
+input[type="email"]:focus-visible, input[type="number"]:focus-visible, 
+textarea:focus-visible, select:focus-visible, .option-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 /* ─── Utility ─── */
