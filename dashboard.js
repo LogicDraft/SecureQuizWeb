@@ -124,6 +124,21 @@ function renderRows(submissions) {
     });
   } else if (currentFilter === 'auto') {
     filtered = submissions.filter(sub => Boolean(sub.auto_submit ?? sub.autoSubmit));
+  } else if (currentFilter === 'perfect') {
+    filtered = submissions.filter(sub => {
+      const scoreFromText = typeof sub.score_text === "string" && sub.score_text.includes("/")
+        ? sub.score_text.split("/").map((item) => Number.parseInt(item, 10))
+        : [];
+      const score = Number.isFinite(sub.score_correct) ? sub.score_correct
+        : Number.isFinite(sub.scoreCorrect) ? sub.scoreCorrect
+        : Number.isFinite(scoreFromText[0]) ? scoreFromText[0]
+        : 0;
+      const total = Number.isFinite(sub.score_total) ? sub.score_total
+        : Number.isFinite(sub.scoreTotal) ? sub.scoreTotal
+        : Number.isFinite(scoreFromText[1]) ? scoreFromText[1]
+        : 0;
+      return total > 0 && score === total;
+    });
   }
 
   DOM.subCount.textContent = String(filtered.length);
@@ -409,6 +424,43 @@ DOM.btnExport.addEventListener("click", () => {
   if (!worksheet) {
     showError("Excel library not loaded properly. Please refresh the page.");
     return;
+  }
+
+  // Apply styles to all cells
+  for (const cellRef in worksheet) {
+    if (cellRef.startsWith('!')) continue;
+    
+    const row = parseInt(cellRef.replace(/\D/g, ''), 10);
+    
+    // Default style
+    const cellStyle = {
+      font: { name: "Arial", sz: 11 },
+      alignment: { vertical: "center", horizontal: "center" },
+      fill: { fgColor: { rgb: "FFFFFF" } } // White background default
+    };
+
+    if (row === 1) {
+      // Header Style
+      cellStyle.font.bold = true;
+      cellStyle.font.color = { rgb: "FFFFFF" };
+      cellStyle.fill.fgColor.rgb = "343A40"; // Dark Gray
+    } else {
+      // Conditional Row Styles
+      const rowData = exportData[row - 2];
+      if (rowData) {
+         const pct = parseInt(rowData["Percentage"].replace('%', ''), 10);
+         
+         if (pct === 100) {
+           cellStyle.fill.fgColor.rgb = "D4EDDA"; // Light Green
+         } else if (pct < 40) {
+           cellStyle.fill.fgColor.rgb = "F8D7DA"; // Light Red
+         } else if (rowData["Auto-Submit"] === "Yes") {
+           cellStyle.fill.fgColor.rgb = "FFF3CD"; // Light Yellow
+         }
+      }
+    }
+    
+    worksheet[cellRef].s = cellStyle;
   }
 
   worksheet["!cols"] = [

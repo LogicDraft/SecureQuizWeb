@@ -206,6 +206,75 @@ body[data-ui="minimal"] #cursor {
   display: none !important; /* Disables ambient background and custom cursor */
 }
 
+/* --------------------------------------------------
+   Minimalist Overrides for Marks Card (Report Shell)
+-------------------------------------------------- */
+body[data-ui="minimal"] .marks-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 16px !important;
+}
+
+body[data-ui="minimal"] .marks-card::before,
+body[data-ui="minimal"] .marks-card-orb,
+body[data-ui="minimal"] .marks-score-panel::after {
+  display: none !important;
+}
+
+body[data-ui="minimal"] .marks-pill,
+body[data-ui="minimal"] .marks-score-panel,
+body[data-ui="minimal"] .marks-metric-card {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui="minimal"] .marks-card-student,
+body[data-ui="minimal"] .marks-score-value,
+body[data-ui="minimal"] .marks-metric-value,
+body[data-ui="minimal"] .report-shell-title {
+  color: #111827 !important;
+}
+
+body[data-ui="minimal"] .marks-card-id,
+body[data-ui="minimal"] .marks-pill-label,
+body[data-ui="minimal"] .marks-score-label,
+body[data-ui="minimal"] .marks-score-caption,
+body[data-ui="minimal"] .marks-metric-label,
+body[data-ui="minimal"] .marks-accuracy,
+body[data-ui="minimal"] .report-shell-subtitle,
+body[data-ui="minimal"] #report-generated-at,
+body[data-ui="minimal"] #report-quiz-title {
+  color: #4b5563 !important;
+}
+
+body[data-ui="minimal"] .marks-status-pill {
+  background: #e0e7ff !important;
+  border: 1px solid #c7d2fe !important;
+  color: #3730a3 !important;
+}
+
+body[data-ui="minimal"] .marks-card.is-pending .marks-status-pill {
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #92400e !important;
+}
+
+body[data-ui="minimal"] .marks-card-footer {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+body[data-ui="minimal"] .marks-watermark {
+  color: #9ca3af !important;
+}
+
+body[data-ui="minimal"] .report-shell {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 
 
 /* Global Mobile Compatibility Fixes */
