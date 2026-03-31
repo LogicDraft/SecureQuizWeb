@@ -270,64 +270,7 @@ body.minimal-theme #cursor {
   display: none !important; /* Disables ambient background and custom cursor */
 }
 
-/* Global floating theme toggle switch */
-.btn-theme-switch {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  bottom: auto;
-  z-index: 99999;
-  width: 52px;
-  height: 30px;
-  border-radius: 30px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background: #94a3b8;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), inset 0 2px 4px rgba(0,0,0,0.06);
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  text-indent: -9999px;
-  overflow: hidden;
-}
 
-.btn-theme-switch svg {
-  display: none;
-}
-
-.btn-theme-switch::before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
-}
-
-.btn-theme-switch:hover {
-  transform: translateY(-1px);
-}
-
-.btn-theme-switch:focus-visible {
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.26);
-}
-
-/* Active state: Minimal UI on (Green matching picture) */
-.btn-theme-switch.is-minimal {
-  background: #10b981;
-}
-
-.btn-theme-switch.is-minimal::before {
-  transform: translateX(22px);
-  background: #ffffff;
-}
-
-body.minimal-theme .btn-theme-switch {
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
-}
 
 /* Global Mobile Compatibility Fixes */
 @media (max-width: 768px) {
@@ -385,9 +328,5 @@ body.minimal-theme .btn-theme-switch {
     margin-bottom: 0.5rem;
   }
 
-  .btn-theme-switch {
-    top: auto !important;
-    bottom: 1.5rem !important;
-    right: 1.5rem !important;
-  }
+
 }
