@@ -203,6 +203,13 @@ html[data-ui="glass"] .icon-moon {
   z-index: 1000;
 }
 
+.site-copyright {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-3);
+  padding: 1.2rem 1rem 1.6rem;
+}
+
 /* Mobile Optimizations for Toggle */
 @media (max-width: 768px) {
   .marketing-nav {
