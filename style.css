@@ -130,34 +130,37 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
+/* UI Toggle Base */
+.btn-icon-toggle svg {
+  display: none;
+}
+
 /* Light mode (Minimalist UI) */
-body[data-ui="minimal"] .btn-icon-toggle {
+body[data-ui="minimal"] .btn-icon-toggle,
+html[data-ui="minimal"] .btn-icon-toggle {
   background: #ffffff;
   border-color: #e2e8f0;
   color: #f59e0b; /* Sun color - vibrant yellow/orange */
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
 }
 
-body[data-ui="minimal"] .icon-moon {
-  display: none;
-}
-body[data-ui="minimal"] .icon-sun {
+body[data-ui="minimal"] .icon-sun,
+html[data-ui="minimal"] .icon-sun {
   display: block;
   animation: glow-spin 0.6s ease-out forwards;
 }
 
 /* Dark mode (Glassmorphism UI) */
-body[data-ui="glass"] .btn-icon-toggle {
+body[data-ui="glass"] .btn-icon-toggle,
+html[data-ui="glass"] .btn-icon-toggle {
   background: rgba(15, 23, 42, 0.6);
   border-color: rgba(148, 163, 184, 0.2);
   color: #e2e8f0; /* Moon color - cool slate */
   box-shadow: 0 0 15px rgba(226, 232, 240, 0.2);
 }
 
-body[data-ui="glass"] .icon-sun {
-  display: none;
-}
-body[data-ui="glass"] .icon-moon {
+body[data-ui="glass"] .icon-moon,
+html[data-ui="glass"] .icon-moon {
   display: block;
   animation: glow-spin 0.6s ease-out forwards;
 }

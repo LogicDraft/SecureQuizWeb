@@ -13,7 +13,10 @@ function syncToggleButtons(theme) {
 }
 
 function applyTheme(theme) {
-  document.body.setAttribute("data-ui", theme);
+  document.documentElement.setAttribute("data-ui", theme);
+  if (document.body) {
+    document.body.setAttribute("data-ui", theme);
+  }
   
   syncToggleButtons(theme);
 }
@@ -31,11 +34,14 @@ applyTheme(savedTheme);
 
 // 2. Attach click handlers to any theme toggle buttons on DOM load
 document.addEventListener("DOMContentLoaded", () => {
+  if (document.body) {
+    document.body.setAttribute("data-ui", savedTheme);
+  }
   syncToggleButtons(savedTheme);
   const toggleBtns = document.querySelectorAll(".btn-theme-switch");
   toggleBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      const currentTheme = document.body.getAttribute("data-ui") || "glass";
+      const currentTheme = document.documentElement.getAttribute("data-ui") || "glass";
       const newTheme = currentTheme === "glass" ? "minimal" : "glass";
       
       // Save and apply
