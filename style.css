@@ -276,20 +276,24 @@ body.glass-theme .icon-moon {
 
 /* Mobile Optimizations for Toggle */
 @media (max-width: 768px) {
+  .marketing-nav {
+    flex-direction: row !important;
+    padding: 1rem 1.25rem !important;
+    align-items: center !important;
+    gap: 0 !important;
+  }
+  .marketing-nav > .btn-primary {
+    display: none !important; /* Hide redundant CTA on mobile */
+  }
   .btn-icon-toggle {
-    position: absolute !important;
-    top: 1.25rem !important;
-    right: 1.25rem !important;
+    position: static !important;
     margin: 0 !important;
     width: 40px !important;
     height: 40px !important;
     z-index: 1001;
   }
   .login-nav {
-    padding: 1.25rem;
-  }
-  .marketing-nav {
-    padding: 1.25rem !important;
+    padding: 1rem 1.25rem !important;
   }
 }
 
