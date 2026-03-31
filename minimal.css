@@ -31,77 +31,7 @@ body[data-ui="minimal"] {
   isolation: isolate;
 }
 
-body[data-ui="minimal"]::before,
-body[data-ui="minimal"]::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-
-body[data-ui="minimal"]::before {
-  z-index: 0;
-  inset: -50%;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.25) 0%, transparent 40%),
-    radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.25) 0%, transparent 40%),
-    radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.25) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
-  background-size: 200% 200%;
-  filter: blur(80px) saturate(1.5);
-  transform-origin: center;
-  animation: minimalGradientDrift 18s ease-in-out infinite alternate, minimalAuroraShift 25s linear infinite;
-}
-
-body[data-ui="minimal"]::after {
-  z-index: 0;
-  opacity: 0.55;
-  background-image:
-    linear-gradient(rgba(37,99,235,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,0.045) 1px, transparent 1px);
-  background-size: 34px 34px;
-  transform-origin: center;
-  animation: minimalGridDrift 22s linear infinite;
-}
-
-body[data-ui="minimal"] #app,
-body[data-ui="minimal"] .marketing-nav,
-body[data-ui="minimal"] main {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes minimalGradientDrift {
-  0% { background-position: 0% 0%; }
-  33% { background-position: 100% 50%; }
-  66% { background-position: 50% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-@keyframes minimalAuroraShift {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes minimalGridDrift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-18px, -12px, 0);
-  }
-  100% {
-    transform: translate3d(-36px, -24px, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body[data-ui="minimal"]::before,
-  body[data-ui="minimal"]::after {
-    animation: none !important;
-  }
-}
+/* Background declarations have been ported to style.css for centralized ambient mesh rendering */
 
 body[data-ui="glass"],
 body[data-ui="minimal"] {

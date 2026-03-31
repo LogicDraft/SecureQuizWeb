@@ -2250,3 +2250,84 @@ body.last-strike::before {
   color: var(--text-1);
   border-color: rgba(148, 163, 184, 0.3);
 }
+
+/* ==========================================================================
+   MINIMALIST THEME AMBIENT BACKGROUND ANIMATION
+   Adds a slow, professional mesh-gradient motion to the light theme.
+========================================================================== */
+
+/* 1. Slowly pan the main background gradient */
+body[data-ui="minimal"] {
+  background-size: 200% 200%;
+  animation: ambientPan 20s ease-in-out infinite alternate;
+}
+
+@keyframes ambientPan {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+/* 2. Create floating, blurred ambient orbs using pseudo-elements */
+body[data-ui="minimal"]::before,
+body[data-ui="minimal"]::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -2; /* Keep behind the canvas and app content */
+  opacity: 0.6;
+  pointer-events: none;
+  animation: floatOrb 25s infinite alternate ease-in-out;
+  will-change: transform;
+}
+
+/* Orb 1: Soft Blue/Cyan */
+body[data-ui="minimal"]::before {
+  width: 55vw;
+  height: 55vw;
+  max-width: 800px;
+  max-height: 800px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+/* Orb 2: Soft Purple/Indigo */
+body[data-ui="minimal"]::after {
+  width: 45vw;
+  height: 45vw;
+  max-width: 600px;
+  max-height: 600px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  bottom: -10%;
+  right: -10%;
+  animation-delay: -12.5s; /* Offset the animation so they move out of sync */
+}
+
+/* 3. The floating motion keyframes */
+@keyframes floatOrb {
+  0% { 
+    transform: translate(0, 0) scale(1); 
+  }
+  33% { 
+    transform: translate(8vw, 12vh) scale(1.1); 
+  }
+  66% { 
+    transform: translate(-6vw, 8vh) scale(0.95); 
+  }
+  100% { 
+    transform: translate(0vw, 0vh) scale(1); 
+  }
+}
+
+/* Ensure these heavy blur effects are turned off if the user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  body[data-ui="minimal"] {
+    animation: none;
+  }
+  body[data-ui="minimal"]::before,
+  body[data-ui="minimal"]::after {
+    display: none;
+  }
+}
