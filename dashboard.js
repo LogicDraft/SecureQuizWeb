@@ -24,6 +24,7 @@ const DOM = {
 
 let currentUser = null;
 let currentSubmissions = [];
+let currentFilter = 'all';
 
 async function checkAuth() {
   const { data } = await supabase.auth.getSession();
@@ -110,9 +111,21 @@ function getViolationClass(val, warnThreshold = 3, dangerThreshold = 5) {
 }
 
 function renderRows(submissions) {
-  DOM.subCount.textContent = String(submissions.length);
+  let filtered = submissions;
+  if (currentFilter === 'flagged') {
+    filtered = submissions.filter(sub => {
+      const tabs = Number(sub.tab_switches ?? sub.tabSwitches ?? 0);
+      const fs = Number(sub.fullscreen_exits ?? sub.fullscreenExits ?? 0);
+      const ss = Number(sub.screenshot_attempts ?? sub.screenshotAttempts ?? 0);
+      return (tabs + fs + ss) >= 5;
+    });
+  } else if (currentFilter === 'auto') {
+    filtered = submissions.filter(sub => Boolean(sub.auto_submit ?? sub.autoSubmit));
+  }
 
-  if (!submissions.length) {
+  DOM.subCount.textContent = String(filtered.length);
+
+  if (!filtered.length) {
     DOM.rows.innerHTML = `
       <tr><td colspan="10" class="dashboard-empty">
         <div class="dashboard-empty-icon">📋</div>
@@ -122,7 +135,7 @@ function renderRows(submissions) {
     return;
   }
 
-  DOM.rows.innerHTML = submissions.map((sub, idx) => {
+  DOM.rows.innerHTML = filtered.map((sub, idx) => {
     const name = escapeText(sub.student_name || sub.studentName || "Unknown");
     const usn = escapeText(sub.student_id || sub.studentId || "--");
 
@@ -415,6 +428,15 @@ DOM.btnExport.addEventListener("click", () => {
   
   const title = DOM.quizTitle.textContent || "Quiz";
   XLSX.writeFile(workbook, `SecureQuiz_Results_${title.replace(/[^a-z0-9]/gi, '_')}.xlsx`);
+});
+
+document.querySelectorAll('.btn-filter').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.getAttribute('data-filter') || 'all';
+    if (currentSubmissions) renderRows(currentSubmissions);
+  });
 });
 
 checkAuth();

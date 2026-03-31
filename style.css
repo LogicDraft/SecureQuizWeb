@@ -276,6 +276,14 @@ body.ambient-effects-off #cursor {
 h1, h2, h3 {
   font-family: var(--font-logo);
   letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.quiz-card h3,
+.marks-card-student,
+.profile-name {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Interactive hover elements get native pointer */
@@ -491,7 +499,7 @@ a, button, input[type="text"], input[type="email"] {
 }
 .hero h1 {
   font-family: var(--font-logo);
-  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-size: clamp(2rem, 8vw, 5rem);
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 1.5rem;
@@ -566,6 +574,8 @@ a, button, input[type="text"], input[type="email"] {
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 0.3rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .card-subtitle {
   color: var(--text-2);
@@ -717,7 +727,7 @@ a, button, input[type="text"], input[type="email"] {
   color: var(--text-1);
   font-size: 0.95rem;
   font-family: var(--font);
-  transition: border-color var(--transition), box-shadow var(--transition);
+  transition: all 0.2s ease;
   outline: none;
 }
 .form-group textarea {
@@ -732,7 +742,8 @@ a, button, input[type="text"], input[type="email"] {
 .form-group textarea:focus,
 .form-group select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transform: translateY(-2px);
 }
 
 .question-builder-grid {
@@ -741,11 +752,28 @@ a, button, input[type="text"], input[type="email"] {
   gap: 0.9rem;
 }
 
+@media (max-width: 600px) {
+  .question-builder-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .questions-list {
   margin: 0 0 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+}
+
+.publish-action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  padding: 1rem 0;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+  margin-top: 1.5rem;
 }
 
 .questions-empty {
@@ -1032,6 +1060,9 @@ a, button, input[type="text"], input[type="email"] {
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .dashboard-empty {
@@ -1144,6 +1175,29 @@ a, button, input[type="text"], input[type="email"] {
 }
 .btn-secondary:hover { background: var(--btn-secondary-hover); }
 .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-danger-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: transparent;
+  border: 1px solid var(--error-border);
+  color: var(--danger);
+  outline: none;
+}
+.btn-danger-ghost:hover:not(:disabled) {
+  background: var(--error-bg);
+  border-color: var(--danger);
+}
+.btn-danger-ghost:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-full { width: 100%; }
 
@@ -1619,7 +1673,7 @@ a, button, input[type="text"], input[type="email"] {
   margin-bottom: 0.7rem;
 }
 .marks-card-student {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-size: clamp(1.4rem, 5vw, 2.5rem);
   line-height: 1.05;
   margin-bottom: 0.35rem;
 }
@@ -2030,7 +2084,10 @@ a, button, input[type="text"], input[type="email"] {
 ═══════════════════════════════════════════════════ */
 @media (max-width: 480px) {
   .card { padding: 1.5rem; }
-  .question-text { font-size: 0.97rem; }
+  .question-text { font-size: 1.1rem; line-height: 1.65; }
+  .option-btn { font-size: 1rem; }
+  .review-option-text { line-height: 1.65; }
+  .score-badge, .integrity-pill { font-size: 0.75rem; }
   .quiz-header { padding: 0.75rem 1rem; }
   .quiz-body { padding: 1rem; }
   .quiz-nav { gap: 0.4rem; }
@@ -2113,4 +2170,75 @@ body.last-strike::before {
   0% { box-shadow: 0 0 10px var(--danger-glow), inset 0 0 10px var(--danger-glow); opacity: 0.7; }
   50% { box-shadow: 0 0 25px var(--danger-glow), inset 0 0 25px var(--danger-glow); opacity: 1; }
   100% { box-shadow: 0 0 10px var(--danger-glow), inset 0 0 10px var(--danger-glow); opacity: 0.7; }
+}
+
+/* ─── ADVANCED UX COMPONENTS ─── */
+.dashboard-filters {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.btn-filter {
+  background: var(--surface-1);
+  border: 1px solid var(--glass-border);
+  color: var(--text-2);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-filter:hover {
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+.btn-filter.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.network-badge {
+  background: var(--error-bg);
+  color: var(--danger);
+  outline: 1px solid var(--error-border);
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  animation: pulse-offline 1.5s infinite;
+}
+
+@keyframes pulse-offline {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.btn-icon-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-2);
+}
+.btn-icon-ghost:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-1);
+  border-color: rgba(148, 163, 184, 0.3);
 }

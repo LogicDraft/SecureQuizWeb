@@ -243,6 +243,7 @@ const DOM = {
   btnStartSpinner: document.getElementById("btn-start-spinner"),
 
   // Quiz
+  networkBadge: document.getElementById("network-badge"),
   quizStudentName: document.getElementById("quiz-student-name"),
   quizProgressLabel: document.getElementById("quiz-progress-label"),
   quizTimer:       document.getElementById("quiz-timer"),
@@ -2437,6 +2438,14 @@ function init() {
 
   // Setup navigation buttons
   setupNavigation();
+
+  // Network Connectivity Monitor
+  window.addEventListener('offline', () => {
+    if (DOM.networkBadge) DOM.networkBadge.classList.remove('hidden');
+  });
+  window.addEventListener('online', () => {
+    if (DOM.networkBadge) DOM.networkBadge.classList.add('hidden');
+  });
 
   // Exit Fullscreen Button
   if (DOM.btnExitFullscreen) {

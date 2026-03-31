@@ -193,12 +193,24 @@ function renderQuestionsList() {
 
     const removeButton = document.createElement("button");
     removeButton.type = "button";
-    removeButton.className = "btn-secondary question-remove-btn";
+    removeButton.className = "btn-danger-ghost question-remove-btn";
     removeButton.dataset.index = String(index);
     removeButton.textContent = "Remove";
 
+    const cloneButton = document.createElement("button");
+    cloneButton.type = "button";
+    cloneButton.className = "btn-icon-ghost question-clone-btn";
+    cloneButton.dataset.index = String(index);
+    cloneButton.innerHTML = "Duplicate";
+
+    const actionsDiv = document.createElement("div");
+    actionsDiv.style.display = "flex";
+    actionsDiv.style.gap = "0.5rem";
+    actionsDiv.appendChild(cloneButton);
+    actionsDiv.appendChild(removeButton);
+
     head.appendChild(title);
-    head.appendChild(removeButton);
+    head.appendChild(actionsDiv);
 
     const questionText = document.createElement("p");
     questionText.className = "question-item-text";
@@ -482,18 +494,38 @@ DOM.questionsList.addEventListener("click", (event) => {
   if (!(target instanceof HTMLElement)) return;
 
   const removeButton = target.closest(".question-remove-btn");
-  if (!removeButton) return;
+  if (removeButton) {
+    const index = parseInt(removeButton.dataset.index || "-1", 10);
+    if (index < 0 || index >= state.questions.length) return;
 
-  const index = parseInt(removeButton.dataset.index || "-1", 10);
-  if (index < 0 || index >= state.questions.length) return;
+    state.questions.splice(index, 1);
+    state.questions = state.questions.map((question, idx) => ({
+      ...question,
+      id: `q${String(idx + 1).padStart(3, "0")}`,
+    }));
 
-  state.questions.splice(index, 1);
-  state.questions = state.questions.map((question, idx) => ({
-    ...question,
-    id: `q${String(idx + 1).padStart(3, "0")}`,
-  }));
+    renderQuestionsList();
+    return;
+  }
 
-  renderQuestionsList();
+  const cloneButton = target.closest(".question-clone-btn");
+  if (cloneButton) {
+    const index = parseInt(cloneButton.dataset.index || "-1", 10);
+    if (index < 0 || index >= state.questions.length) return;
+
+    const sourceQuestion = state.questions[index];
+    DOM.inpQuestionText.value = sourceQuestion.q;
+    DOM.inpOpt1.value = sourceQuestion.options[0] || "";
+    DOM.inpOpt2.value = sourceQuestion.options[1] || "";
+    DOM.inpOpt3.value = sourceQuestion.options[2] || "";
+    DOM.inpOpt4.value = sourceQuestion.options[3] || "";
+    
+    const ansIndex = sourceQuestion.options.indexOf(sourceQuestion.answer);
+    DOM.inpCorrectAnswer.value = ansIndex >= 0 ? String(ansIndex) : "0";
+    
+    // Scroll up gracefully to the question builder
+    document.querySelector(".question-builder").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 });
 
 DOM.btnPublish.addEventListener("click", async () => {
