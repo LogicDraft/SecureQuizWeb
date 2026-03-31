@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#050508" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SecureQuiz — Create Quiz</title>
+  <meta name="description" content="Create a new secure quiz and generate a shareable link for students." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="minimal.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    @keyframes fadeScaleIn {
+      from { opacity: 0; transform: scale(0.98) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .card:not(.hidden) {
+      animation: fadeScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+    .profile-initials {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .profile-name { font-size: 1.3rem; font-weight: 700; color: var(--text-1); margin-bottom: 0.2rem; }
+    .profile-email { font-size: 0.9rem; color: var(--text-3); }
+    .quizzes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .quiz-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      opacity: 0;
+      animation: fadeScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .quiz-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    .quiz-card h3 { margin: 0; font-size: 1.1rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .quiz-card-meta { font-size: 0.8rem; color: var(--text-3); display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <script src="theme.js"></script>
+  <button class="btn-theme-switch" title="Toggle Theme">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    Switch UI
+  </button>
+  <canvas id="canvas"></canvas>
+  <div id="cursor"></div>
+
+  <div id="app">
+    <section class="screen active">
+      <div class="screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
+
+        <div class="hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; margin-bottom: 2rem;">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div class="hero-eyebrow" style="margin: 0;">Creator Portal</div>
+            <a href="home.html" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">Back to Home</a>
+          </div>
+          <h1 style="align-self: flex-start; margin: 0;">Personal Account</h1>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="card" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
+          <h2 class="card-title">Creator Login</h2>
+          <p class="card-subtitle">Please sign in with Google to create secure quizzes.</p>
+          
+          <button type="button" id="btn-google-login" class="btn-secondary btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Sign in with Google
+          </button>
+          
+          <div id="auth-error" class="error-msg hidden" style="margin-top:1rem;"></div>
+        </div>
+
+        <!-- Account Card (Personal Dashboard) -->
+        <div class="card hidden" style="max-width: 900px; margin: 0 auto; margin-bottom: 2rem;" id="account-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="card-title" style="margin: 0;">Creator Account</h2>
+            <button type="button" id="btn-account-logout" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
+          </div>
+
+          <div class="profile-card">
+            <div id="profile-picture-container">
+              <div class="profile-initials" id="profile-initials">?</div>
+              <img src="" alt="Profile" id="profile-avatar" class="profile-avatar hidden" />
+            </div>
+            <div>
+              <div class="profile-name" id="profile-name">Loading...</div>
+              <div class="profile-email" id="profile-email">--</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+              <h2 class="card-title" style="margin: 0; font-size: 1.4rem;">My Quizzes</h2>
+              <p class="card-subtitle" style="margin: 0; font-size: 0.9rem;" id="account-subtitle">Select a quiz to view analytics.</p>
+            </div>
+            <button type="button" id="btn-show-create" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Build New Quiz</button>
+          </div>
+
+          <div class="quizzes-grid" id="quizzes-grid">
+            <!-- Quizzes injected here -->
+          </div>
+        </div>
+
+        <div class="card hidden" style="max-width: 640px;" id="create-card">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
+            <h2 style="margin:0; font-size:1.4rem;">New Quiz</h2>
+            <div style="display: flex; gap: 0.8rem;">
+              <button type="button" id="btn-back-account" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Back to Account</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inp-title">Quiz Title <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="text" id="inp-title" placeholder="e.g. Midterm Physics" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-time">Time Limit (minutes) <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <input type="number" id="inp-time" placeholder="e.g. 30" min="1" max="180" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-violations">Max Tab Switches Allowed</label>
+            <input type="number" id="inp-violations" placeholder="e.g. 5" min="1" max="20" value="5" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="inp-question-text">Question Text <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <textarea id="inp-question-text" rows="3" placeholder="Enter the question"></textarea>
+          </div>
+
+          <div class="question-builder-grid">
+            <div class="form-group">
+              <label for="inp-opt-1">Option A <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+              <input type="text" id="inp-opt-1" placeholder="Enter option A" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-2">Option B <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+              <input type="text" id="inp-opt-2" placeholder="Enter option B" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-3">Option C</label>
+              <input type="text" id="inp-opt-3" placeholder="Enter option C" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="inp-opt-4">Option D</label>
+              <input type="text" id="inp-opt-4" placeholder="Enter option D" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inp-correct-answer">Correct Answer <span style="color:var(--danger);font-size:0.85em;">*</span></label>
+            <select id="inp-correct-answer">
+              <option value="0">Option A</option>
+              <option value="1">Option B</option>
+              <option value="2">Option C</option>
+              <option value="3">Option D</option>
+            </select>
+          </div>
+
+          <button type="button" id="btn-add-question" class="btn-secondary btn-full" style="margin-bottom:1rem;">+ Add Question</button>
+
+          <div class="notice-box">
+            <span class="notice-icon">📌</span>
+            <span>Added Questions: <strong id="questions-count">0</strong>. Add at least one question to publish the quiz.</span>
+          </div>
+
+          <div id="questions-list" class="questions-list"></div>
+
+          <div id="create-error" class="error-msg hidden"></div>
+
+          <button type="button" id="btn-publish" class="btn-primary btn-full">
+            <span id="btn-publish-text">Start Quiz →</span>
+            <span id="btn-publish-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <div id="result-section" class="card hidden" style="max-width: 640px;">
+          <h2 class="card-title" style="color:var(--success);">Quiz Published!</h2>
+          <p class="card-subtitle">Share these links with your students.</p>
+
+          <div class="form-group">
+            <label>Student Quiz Link</label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="inp-quiz-link" readonly style="flex:1;" />
+              <button type="button" id="btn-copy-quiz" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Dashboard Link</label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="inp-dashboard-link" readonly style="flex:1;" />
+              <button type="button" id="btn-copy-dash" class="btn-secondary" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;margin-top:1rem;">
+            <button type="button" id="btn-new-quiz" class="btn-secondary btn-full">Create Another Quiz</button>
+            <button type="button" id="btn-go-account" class="btn-primary btn-full">Back to Account</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <script src="background.js"></script>
+  <script type="module" src="create.js"></script>
+</body>
+</html>

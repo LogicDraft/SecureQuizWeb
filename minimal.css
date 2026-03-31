@@ -1,0 +1,393 @@
+/* ═══════════════════════════════════════════════════════
+   minimal.css — SecureQuiz Minimalist Theme
+   Overrides default glassmorphism with clean, flat UI
+═══════════════════════════════════════════════════════ */
+
+body.minimal-theme {
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+  --accent: #2563eb;
+  --accent-2: #2563eb;
+  --text-1: #1f2937;
+  --text-2: #4b5563;
+  --text-3: #6b7280;
+  --body-bg: #f9fafb;
+  --canvas-base: #f9fafb;
+  --glass: #ffffff;
+  --glass-border: #e5e7eb;
+  --surface-1: #ffffff;
+  --surface-2: #f3f4f6;
+  --surface-3: #e5e7eb;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --result-fetch-bg: #ffffff;
+  --result-fetch-core: #ffffff;
+  --header-bg: #ffffff;
+  --field-bg: #ffffff;
+  --track-bg: #e5e7eb;
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-logo: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  position: relative;
+  isolation: isolate;
+}
+
+body.minimal-theme::before,
+body.minimal-theme::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body.minimal-theme::before {
+  z-index: 0;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.4), transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(244, 63, 94, 0.35), transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.4), transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.3), transparent 50%);
+  filter: blur(80px) saturate(1.3);
+  transform-origin: center;
+  animation: minimalAuroraShift 24s ease-in-out infinite alternate;
+}
+
+body.minimal-theme::after {
+  z-index: 0;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(rgba(37,99,235,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.045) 1px, transparent 1px);
+  background-size: 34px 34px;
+  transform-origin: center;
+  animation: minimalGridDrift 22s linear infinite;
+}
+
+body.minimal-theme #app,
+body.minimal-theme .marketing-nav,
+body.minimal-theme main {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes minimalAuroraShift {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  25% { transform: translate3d(4%, 6%, 0) scale(1.05) rotate(2deg); }
+  50% { transform: translate3d(-3%, 8%, 0) scale(1.1) rotate(-2deg); }
+  75% { transform: translate3d(-6%, -4%, 0) scale(1.05) rotate(1deg); }
+  100% { transform: translate3d(3%, -6%, 0) scale(1) rotate(0deg); }
+}
+
+@keyframes minimalGridDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-18px, -12px, 0);
+  }
+  100% {
+    transform: translate3d(-36px, -24px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.minimal-theme::before,
+  body.minimal-theme::after {
+    animation: none !important;
+  }
+}
+
+body.glass-theme,
+body.minimal-theme {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.glass-theme .card,
+body.glass-theme .feature-card,
+body.glass-theme .btn-primary,
+body.glass-theme .btn-secondary,
+body.glass-theme .form-group input,
+body.glass-theme .form-group textarea,
+body.glass-theme .form-group select,
+body.minimal-theme .card,
+body.minimal-theme .feature-card,
+body.minimal-theme .btn-primary,
+body.minimal-theme .btn-secondary,
+body.minimal-theme .form-group input,
+body.minimal-theme .form-group textarea,
+body.minimal-theme .form-group select {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.minimal-theme * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.minimal-theme .card,
+body.minimal-theme .feature-card,
+body.minimal-theme .quiz-card,
+body.minimal-theme .profile-card,
+body.minimal-theme .question-item,
+body.minimal-theme .result-card,
+body.minimal-theme .marketing-nav,
+body.minimal-theme .quiz-header,
+body.minimal-theme .proctor-bar,
+body.minimal-theme .overlay-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02) !important;
+  border-radius: 16px !important;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease !important;
+}
+
+body.minimal-theme .feature-card:hover,
+body.minimal-theme .quiz-card:hover,
+body.minimal-theme .question-item:hover,
+body.minimal-theme .profile-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(139, 92, 246, 0.3) !important;
+  background: linear-gradient(150deg, #ffffff 0%, #fefeff 50%, #f8fafc 100%) !important;
+  box-shadow: 
+    0 20px 40px -8px rgba(139, 92, 246, 0.12),
+    0 12px 24px -6px rgba(6, 182, 212, 0.08),
+    0 6px 12px -2px rgba(244, 63, 94, 0.05) !important;
+}
+
+body.minimal-theme .feature-card::after,
+body.minimal-theme .quiz-card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.04), transparent 50%),
+              radial-gradient(circle at 0% 100%, rgba(6, 182, 212, 0.04), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.minimal-theme .feature-card:hover::after,
+body.minimal-theme .quiz-card:hover::after {
+  opacity: 1;
+}
+
+body.minimal-theme .marketing-links a {
+  color: #4b5563 !important;
+}
+
+body.minimal-theme .marketing-links a:hover {
+  background: #eff6ff !important;
+  color: #1f2937 !important;
+}
+
+body.minimal-theme .notice-box,
+body.minimal-theme .step-item,
+body.minimal-theme .instruction-list li,
+body.minimal-theme .questions-empty {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+body.minimal-theme .quiz-timer-wrap,
+body.minimal-theme .student-badge,
+body.minimal-theme .progress-label,
+body.minimal-theme .proctor-stat {
+  background: #f8fafc !important;
+  border: 1px solid #dbeafe !important;
+  color: #334155 !important;
+}
+
+body.minimal-theme .progress-bar-track,
+body.minimal-theme .timer-bar-track {
+  background: #e5e7eb !important;
+}
+
+body.minimal-theme .card::before,
+body.minimal-theme .feature-card::before {
+  display: none !important;
+}
+
+body.minimal-theme .btn-primary,
+body.minimal-theme .btn-secondary {
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+body.minimal-theme .btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.15) !important;
+}
+
+body.minimal-theme .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25), 0 4px 8px -2px rgba(37, 99, 235, 0.1) !important;
+}
+
+body.minimal-theme .btn-secondary {
+  background: white !important;
+  color: var(--text-2) !important;
+  border: 1px solid #d1d5db !important;
+}
+
+body.minimal-theme .btn-secondary:hover {
+  background: #f3f4f6 !important;
+  color: var(--text-1) !important;
+}
+
+body.minimal-theme .form-group input,
+body.minimal-theme .form-group textarea,
+body.minimal-theme .form-group select {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  color: #1f2937 !important;
+}
+
+body.minimal-theme .form-group label {
+  color: #4b5563 !important;
+  font-weight: 600 !important;
+}
+
+body.minimal-theme .hero h1 {
+  background: none !important;
+  -webkit-text-fill-color: #111827 !important;
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+body.minimal-theme .hero-eyebrow,
+body.minimal-theme .section-eyebrow {
+  color: var(--primary) !important;
+}
+
+body.minimal-theme #canvas,
+body.minimal-theme #cursor {
+  display: none !important; /* Disables ambient background and custom cursor */
+}
+
+/* Global floating theme toggle switch */
+.btn-theme-switch {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  bottom: auto;
+  z-index: 99999;
+  width: 52px;
+  height: 30px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #94a3b8;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), inset 0 2px 4px rgba(0,0,0,0.06);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+.btn-theme-switch svg {
+  display: none;
+}
+
+.btn-theme-switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+}
+
+.btn-theme-switch:hover {
+  transform: translateY(-1px);
+}
+
+.btn-theme-switch:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.26);
+}
+
+/* Active state: Minimal UI on (Green matching picture) */
+.btn-theme-switch.is-minimal {
+  background: #10b981;
+}
+
+.btn-theme-switch.is-minimal::before {
+  transform: translateX(22px);
+  background: #ffffff;
+}
+
+body.minimal-theme .btn-theme-switch {
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}
+
+/* Global Mobile Compatibility Fixes */
+@media (max-width: 768px) {
+  .marketing-nav {
+    flex-direction: column !important;
+    padding: 1rem !important;
+    gap: 0.75rem !important;
+  }
+  .marketing-nav .btn-primary {
+    width: 100% !important;
+    border-radius: 12px !important;
+  }
+  .marketing-links {
+    display: none !important;
+  }
+
+  .hero h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.15 !important;
+  }
+  .hero p {
+    font-size: 0.95rem !important;
+  }
+
+  .screen-inner {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-top: 1rem !important;
+  }
+
+  .quizzes-grid,
+  .landing-about-grid,
+  .landing-steps,
+  .features-grid,
+  .question-builder-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .profile-card {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.75rem !important;
+  }
+
+  .landing-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+
+  .landing-actions .btn-primary,
+  .landing-actions .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-theme-switch {
+    top: auto !important;
+    bottom: 1.5rem !important;
+    right: 1.5rem !important;
+  }
+}
