@@ -12,15 +12,9 @@ function syncToggleButtons(theme) {
   });
 }
 
-// Helper function to apply classes to the body
 function applyTheme(theme) {
-  if (theme === "minimal") {
-    document.body.classList.remove("glass-theme");
-    document.body.classList.add("minimal-theme");
-  } else {
-    document.body.classList.remove("minimal-theme");
-    document.body.classList.add("glass-theme");
-  }
+  document.body.setAttribute("data-ui", theme);
+  
   syncToggleButtons(theme);
 }
 
@@ -41,8 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtns = document.querySelectorAll(".btn-theme-switch");
   toggleBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      // Determine the next theme
-      const currentTheme = document.body.classList.contains("minimal-theme") ? "minimal" : "glass";
+      const currentTheme = document.body.getAttribute("data-ui") || "glass";
       const newTheme = currentTheme === "glass" ? "minimal" : "glass";
       
       // Save and apply

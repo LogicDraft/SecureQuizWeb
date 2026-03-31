@@ -184,8 +184,7 @@ function initCanvasBackground(options = {}) {
 
     targetX = event.clientX;
     targetY = event.clientY;
-    cursor.style.left = `${event.clientX}px`;
-    cursor.style.top = `${event.clientY}px`;
+    cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
 
     if (!cursorVisible) {
       cursor.style.opacity = "1";
@@ -219,11 +218,22 @@ function initCanvasBackground(options = {}) {
 
   updateCanvasSize();
 
-  if (!disableCursor) {
-    window.addEventListener("mousemove", updateCursor);
+  let resizeTicking = false;
+  function throttledUpdateCanvasSize() {
+    if (!resizeTicking) {
+      window.requestAnimationFrame(() => {
+        updateCanvasSize();
+        resizeTicking = false;
+      });
+      resizeTicking = true;
+    }
   }
-  window.addEventListener("resize", updateCanvasSize);
-  window.addEventListener("securequiz:themechange", handleThemeChange);
+
+  if (!disableCursor) {
+    window.addEventListener("mousemove", updateCursor, { passive: true });
+  }
+  window.addEventListener("resize", throttledUpdateCanvasSize, { passive: true });
+  window.addEventListener("securequiz:themechange", handleThemeChange, { passive: true });
   if (!disableCursor) {
     document.body.addEventListener("mouseover", handleMouseOver);
     document.body.addEventListener("mouseout", handleMouseOut);

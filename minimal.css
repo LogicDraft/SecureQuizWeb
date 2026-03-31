@@ -3,7 +3,7 @@
    Overrides default glassmorphism with clean, flat UI
 ═══════════════════════════════════════════════════════ */
 
-body.minimal-theme {
+body[data-ui="minimal"] {
   --primary: #2563eb;
   --primary-light: #3b82f6;
   --primary-dark: #1e40af;
@@ -31,15 +31,15 @@ body.minimal-theme {
   isolation: isolate;
 }
 
-body.minimal-theme::before,
-body.minimal-theme::after {
+body[data-ui="minimal"]::before,
+body[data-ui="minimal"]::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
 
-body.minimal-theme::before {
+body[data-ui="minimal"]::before {
   z-index: 0;
   inset: -20%;
   background:
@@ -52,7 +52,7 @@ body.minimal-theme::before {
   animation: minimalAuroraShift 24s ease-in-out infinite alternate;
 }
 
-body.minimal-theme::after {
+body[data-ui="minimal"]::after {
   z-index: 0;
   opacity: 0.55;
   background-image:
@@ -63,9 +63,9 @@ body.minimal-theme::after {
   animation: minimalGridDrift 22s linear infinite;
 }
 
-body.minimal-theme #app,
-body.minimal-theme .marketing-nav,
-body.minimal-theme main {
+body[data-ui="minimal"] #app,
+body[data-ui="minimal"] .marketing-nav,
+body[data-ui="minimal"] main {
   position: relative;
   z-index: 1;
 }
@@ -91,49 +91,49 @@ body.minimal-theme main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.minimal-theme::before,
-  body.minimal-theme::after {
+  body[data-ui="minimal"]::before,
+  body[data-ui="minimal"]::after {
     animation: none !important;
   }
 }
 
-body.glass-theme,
-body.minimal-theme {
+body[data-ui="glass"],
+body[data-ui="minimal"] {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body.glass-theme .card,
-body.glass-theme .feature-card,
-body.glass-theme .btn-primary,
-body.glass-theme .btn-secondary,
-body.glass-theme .form-group input,
-body.glass-theme .form-group textarea,
-body.glass-theme .form-group select,
-body.minimal-theme .card,
-body.minimal-theme .feature-card,
-body.minimal-theme .btn-primary,
-body.minimal-theme .btn-secondary,
-body.minimal-theme .form-group input,
-body.minimal-theme .form-group textarea,
-body.minimal-theme .form-group select {
+body[data-ui="glass"] .card,
+body[data-ui="glass"] .feature-card,
+body[data-ui="glass"] .btn-primary,
+body[data-ui="glass"] .btn-secondary,
+body[data-ui="glass"] .form-group input,
+body[data-ui="glass"] .form-group textarea,
+body[data-ui="glass"] .form-group select,
+body[data-ui="minimal"] .card,
+body[data-ui="minimal"] .feature-card,
+body[data-ui="minimal"] .btn-primary,
+body[data-ui="minimal"] .btn-secondary,
+body[data-ui="minimal"] .form-group input,
+body[data-ui="minimal"] .form-group textarea,
+body[data-ui="minimal"] .form-group select {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-body.minimal-theme * {
+body[data-ui="minimal"] * {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-body.minimal-theme .card,
-body.minimal-theme .feature-card,
-body.minimal-theme .quiz-card,
-body.minimal-theme .profile-card,
-body.minimal-theme .question-item,
-body.minimal-theme .result-card,
-body.minimal-theme .marketing-nav,
-body.minimal-theme .quiz-header,
-body.minimal-theme .proctor-bar,
-body.minimal-theme .overlay-card {
+body[data-ui="minimal"] .card,
+body[data-ui="minimal"] .feature-card,
+body[data-ui="minimal"] .quiz-card,
+body[data-ui="minimal"] .profile-card,
+body[data-ui="minimal"] .question-item,
+body[data-ui="minimal"] .result-card,
+body[data-ui="minimal"] .marketing-nav,
+body[data-ui="minimal"] .quiz-header,
+body[data-ui="minimal"] .proctor-bar,
+body[data-ui="minimal"] .overlay-card {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02) !important;
@@ -143,10 +143,10 @@ body.minimal-theme .overlay-card {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease !important;
 }
 
-body.minimal-theme .feature-card:hover,
-body.minimal-theme .quiz-card:hover,
-body.minimal-theme .question-item:hover,
-body.minimal-theme .profile-card:hover {
+body[data-ui="minimal"] .feature-card:hover,
+body[data-ui="minimal"] .quiz-card:hover,
+body[data-ui="minimal"] .question-item:hover,
+body[data-ui="minimal"] .profile-card:hover {
   transform: translateY(-4px) scale(1.01);
   border-color: rgba(139, 92, 246, 0.3) !important;
   background: linear-gradient(150deg, #ffffff 0%, #fefeff 50%, #f8fafc 100%) !important;
@@ -156,8 +156,8 @@ body.minimal-theme .profile-card:hover {
     0 6px 12px -2px rgba(244, 63, 94, 0.05) !important;
 }
 
-body.minimal-theme .feature-card::after,
-body.minimal-theme .quiz-card::after {
+body[data-ui="minimal"] .feature-card::after,
+body[data-ui="minimal"] .quiz-card::after {
   content: "";
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -168,105 +168,105 @@ body.minimal-theme .quiz-card::after {
   transition: opacity 0.4s ease;
 }
 
-body.minimal-theme .feature-card:hover::after,
-body.minimal-theme .quiz-card:hover::after {
+body[data-ui="minimal"] .feature-card:hover::after,
+body[data-ui="minimal"] .quiz-card:hover::after {
   opacity: 1;
 }
 
-body.minimal-theme .marketing-links a {
+body[data-ui="minimal"] .marketing-links a {
   color: #4b5563 !important;
 }
 
-body.minimal-theme .marketing-links a:hover {
+body[data-ui="minimal"] .marketing-links a:hover {
   background: #eff6ff !important;
   color: #1f2937 !important;
 }
 
-body.minimal-theme .notice-box,
-body.minimal-theme .step-item,
-body.minimal-theme .instruction-list li,
-body.minimal-theme .questions-empty {
+body[data-ui="minimal"] .notice-box,
+body[data-ui="minimal"] .step-item,
+body[data-ui="minimal"] .instruction-list li,
+body[data-ui="minimal"] .questions-empty {
   background: #ffffff !important;
   border: 1px solid #e5e7eb !important;
 }
 
-body.minimal-theme .quiz-timer-wrap,
-body.minimal-theme .student-badge,
-body.minimal-theme .progress-label,
-body.minimal-theme .proctor-stat {
+body[data-ui="minimal"] .quiz-timer-wrap,
+body[data-ui="minimal"] .student-badge,
+body[data-ui="minimal"] .progress-label,
+body[data-ui="minimal"] .proctor-stat {
   background: #f8fafc !important;
   border: 1px solid #dbeafe !important;
   color: #334155 !important;
 }
 
-body.minimal-theme .progress-bar-track,
-body.minimal-theme .timer-bar-track {
+body[data-ui="minimal"] .progress-bar-track,
+body[data-ui="minimal"] .timer-bar-track {
   background: #e5e7eb !important;
 }
 
-body.minimal-theme .card::before,
-body.minimal-theme .feature-card::before {
+body[data-ui="minimal"] .card::before,
+body[data-ui="minimal"] .feature-card::before {
   display: none !important;
 }
 
-body.minimal-theme .btn-primary,
-body.minimal-theme .btn-secondary {
+body[data-ui="minimal"] .btn-primary,
+body[data-ui="minimal"] .btn-secondary {
   border-radius: 6px !important;
   transition: all 0.2s ease !important;
 }
 
-body.minimal-theme .btn-primary {
+body[data-ui="minimal"] .btn-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   color: white !important;
   border: none !important;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.15) !important;
 }
 
-body.minimal-theme .btn-primary:hover {
+body[data-ui="minimal"] .btn-primary:hover {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25), 0 4px 8px -2px rgba(37, 99, 235, 0.1) !important;
 }
 
-body.minimal-theme .btn-secondary {
+body[data-ui="minimal"] .btn-secondary {
   background: white !important;
   color: var(--text-2) !important;
   border: 1px solid #d1d5db !important;
 }
 
-body.minimal-theme .btn-secondary:hover {
+body[data-ui="minimal"] .btn-secondary:hover {
   background: #f3f4f6 !important;
   color: var(--text-1) !important;
 }
 
-body.minimal-theme .form-group input,
-body.minimal-theme .form-group textarea,
-body.minimal-theme .form-group select {
+body[data-ui="minimal"] .form-group input,
+body[data-ui="minimal"] .form-group textarea,
+body[data-ui="minimal"] .form-group select {
   background: #ffffff !important;
   border: 1px solid #d1d5db !important;
   border-radius: 6px !important;
   color: #1f2937 !important;
 }
 
-body.minimal-theme .form-group label {
+body[data-ui="minimal"] .form-group label {
   color: #4b5563 !important;
   font-weight: 600 !important;
 }
 
-body.minimal-theme .hero h1 {
+body[data-ui="minimal"] .hero h1 {
   background: none !important;
   -webkit-text-fill-color: #111827 !important;
   color: #111827 !important;
   text-shadow: none !important;
 }
 
-body.minimal-theme .hero-eyebrow,
-body.minimal-theme .section-eyebrow {
+body[data-ui="minimal"] .hero-eyebrow,
+body[data-ui="minimal"] .section-eyebrow {
   color: var(--primary) !important;
 }
 
-body.minimal-theme #canvas,
-body.minimal-theme #cursor {
+body[data-ui="minimal"] #canvas,
+body[data-ui="minimal"] #cursor {
   display: none !important; /* Disables ambient background and custom cursor */
 }
 

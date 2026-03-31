@@ -2401,18 +2401,25 @@ function init() {
   state.deviceType = getDeviceType();
   applyAmbientEffectsMode(true);
 
+  let resizeTicking = false;
   window.addEventListener("resize", () => {
-    const nextDeviceType = getDeviceType();
-    const deviceTypeChanged = nextDeviceType !== state.deviceType;
-    state.deviceType = nextDeviceType;
+    if (!resizeTicking) {
+      window.requestAnimationFrame(() => {
+        const nextDeviceType = getDeviceType();
+        const deviceTypeChanged = nextDeviceType !== state.deviceType;
+        state.deviceType = nextDeviceType;
 
-    if (deviceTypeChanged && !shouldEnforceFullscreen()) {
-      document.body.classList.remove("last-strike");
-      hideOverlay(DOM.overlayFullscreen);
+        if (deviceTypeChanged && !shouldEnforceFullscreen()) {
+          document.body.classList.remove("last-strike");
+          hideOverlay(DOM.overlayFullscreen);
+        }
+
+        applyAmbientEffectsMode();
+        resizeTicking = false;
+      });
+      resizeTicking = true;
     }
-
-    applyAmbientEffectsMode();
-  });
+  }, { passive: true });
 
   // Initialize all anti-cheat listeners
   initTabSwitchDetection();
@@ -2463,24 +2470,29 @@ function init() {
     });
   }
 
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  }
+
+  const debouncedInputSave = debounce(() => {
+    syncRegistrationDraftFromDom();
+    persistAppState();
+  }, 500);
+
   if (DOM.inpUSN) {
-    DOM.inpUSN.addEventListener("input", () => {
-      syncRegistrationDraftFromDom();
-      persistAppState();
-    });
+    DOM.inpUSN.addEventListener("input", debouncedInputSave);
   }
 
   if (DOM.inpName) {
-    DOM.inpName.addEventListener("input", () => {
-      persistAppState();
-    });
+    DOM.inpName.addEventListener("input", debouncedInputSave);
   }
 
   if (DOM.inpEmail) {
-    DOM.inpEmail.addEventListener("input", () => {
-      syncRegistrationDraftFromDom();
-      persistAppState();
-    });
+    DOM.inpEmail.addEventListener("input", debouncedInputSave);
   }
 
   if (state.accessBlocked) {

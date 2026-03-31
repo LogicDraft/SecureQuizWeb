@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="minimal.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     .dashboard-page { min-height: 100vh; }
     .dashboard-meta {
@@ -192,9 +192,9 @@
     .quiz-card h3 { margin: 0; font-size: 1.1rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .quiz-card-meta { font-size: 0.8rem; color: var(--text-3); display: flex; justify-content: space-between; }
   </style>
+  <script src="theme.js"></script>
 </head>
 <body>
-  <script src="theme.js"></script>
   <canvas id="canvas"></canvas>
   <div id="cursor"></div>
 
@@ -302,8 +302,8 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="background.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="background.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>

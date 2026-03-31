@@ -98,7 +98,7 @@
   --review-option-border: rgba(255,255,255,0.06);
 }
 
-:root[data-theme="light"] {
+/* Removed duplicate light theme root */ {
   color-scheme: light;
   --primary: #2563eb;
   --primary-light: #1d4ed8;
@@ -215,33 +215,33 @@
 }
 
 /* Light mode (Minimalist UI) */
-body.minimal-theme .btn-icon-toggle {
+body[data-ui="minimal"] .btn-icon-toggle {
   background: #ffffff;
   border-color: #e2e8f0;
   color: #f59e0b; /* Sun color - vibrant yellow/orange */
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
 }
 
-body.minimal-theme .icon-moon {
+body[data-ui="minimal"] .icon-moon {
   display: none;
 }
-body.minimal-theme .icon-sun {
+body[data-ui="minimal"] .icon-sun {
   display: block;
   animation: glow-spin 0.6s ease-out forwards;
 }
 
 /* Dark mode (Glassmorphism UI) */
-body.glass-theme .btn-icon-toggle {
+body[data-ui="glass"] .btn-icon-toggle {
   background: rgba(15, 23, 42, 0.6);
   border-color: rgba(148, 163, 184, 0.2);
   color: #e2e8f0; /* Moon color - cool slate */
   box-shadow: 0 0 15px rgba(226, 232, 240, 0.2);
 }
 
-body.glass-theme .icon-sun {
+body[data-ui="glass"] .icon-sun {
   display: none;
 }
-body.glass-theme .icon-moon {
+body[data-ui="glass"] .icon-moon {
   display: block;
   animation: glow-spin 0.6s ease-out forwards;
 }
@@ -300,7 +300,11 @@ body.glass-theme .icon-moon {
 /* ─── Reset & Base ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html { 
+  scroll-behavior: smooth; 
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 
 body {
   font-family: var(--font);
@@ -473,14 +477,17 @@ a, button, input[type="text"], input[type="email"] {
 
 #cursor {
   position: fixed;
+  top: -10px;
+  left: -10px;
   width: 20px;
   height: 20px;
   border: 1.5px solid var(--cursor-border);
   border-radius: 50%;
   pointer-events: none;
   z-index: 10000;
-  opacity: 0; /* Hidden until mouse moves */
-  transition: transform 0.15s ease-out, width 0.2s ease, height 0.2s ease, background 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  will-change: transform;
+  transition: width 0.2s ease, height 0.2s ease, background 0.3s ease, opacity 0.3s ease;
 }
 
 #cursor::after {
@@ -1642,6 +1649,7 @@ a, button, input[type="text"], input[type="email"] {
   padding: 1px;
   background: var(--report-card-outline);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;

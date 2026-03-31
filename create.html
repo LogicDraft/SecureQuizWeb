@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="minimal.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     @keyframes fadeScaleIn {
       from { opacity: 0; transform: scale(0.98) translateY(10px); }
@@ -77,9 +78,9 @@
     .quiz-card h3 { margin: 0; font-size: 1.1rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .quiz-card-meta { font-size: 0.8rem; color: var(--text-3); display: flex; justify-content: space-between; }
   </style>
+  <script src="theme.js"></script>
 </head>
 <body>
-  <script src="theme.js"></script>
   <canvas id="canvas"></canvas>
   <div id="cursor"></div>
 
@@ -143,7 +144,7 @@
           <div class="profile-card">
             <div id="profile-picture-container">
               <div class="profile-initials" id="profile-initials">?</div>
-              <img src="" alt="Profile" id="profile-avatar" class="profile-avatar hidden" />
+              <img src="" alt="Profile" id="profile-avatar" class="profile-avatar hidden" loading="lazy" width="64" height="64" />
             </div>
             <div>
               <div class="profile-name" id="profile-name">Loading...</div>
@@ -268,7 +269,7 @@
     </section>
   </div>
 
-  <script src="background.js"></script>
+  <script defer src="background.js"></script>
   <script type="module" src="create.js"></script>
 </body>
 </html>
