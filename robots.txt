@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://securequizapp.tech/sitemap.xml
