@@ -43,22 +43,29 @@ This project is built to be blisteringly fast and easily hostable anywhere, requ
 ```text
 /SecureQuizApp
 │
-├── index.html           # (Student) Main quiz interface & proctoring engine
-├── script.js            # (Student) Handles quiz logic, timer, and anti-cheat
+├── pages/
+│   ├── index.html       # (Student) Main quiz interface & proctoring engine
+│   ├── create.html      # (Teacher) Interface to build and publish quizzes
+│   ├── dashboard.html   # (Teacher) Multi-quiz analytics table for submissions
+│   ├── home.html        # (Public) Marketing and onboarding page
+│   └── setup.html       # (Public) Setup and usage guide
 │
-├── create.html          # (Teacher) Interface to build and publish quizzes
-├── create.js            # (Teacher) Pushes quiz data to Supabase and generates URLs
+├── assets/
+│   ├── css/
+│   │   ├── style.css            # (Shared) Global styling and layouts
+│   │   └── minimal.css          # (Shared) Minimalist UI overrides
+│   └── js/
+│       ├── script.js            # (Student) Quiz logic, timer, anti-cheat
+│       ├── create.js            # (Teacher) Quiz builder and publish flow
+│       ├── dashboard.js         # (Teacher) Dashboard data rendering
+│       ├── supabase-config.js   # (Shared) Supabase client initialization
+│       ├── theme.js             # (Shared) Light/dark theme toggling
+│       └── background.js        # (Shared) Canvas background animations
 │
-├── dashboard.html       # (Teacher) Multi-quiz analytics table for submissions
-├── dashboard.js         # (Teacher) Fetches and displays real-time Supabase data
+├── db/
+│   └── supabase-schema.sql      # (Setup) SQL schema and RLS policies
 │
-├── supabase-config.js   # (Shared) Supabase client initialization and keys
-├── supabase-schema.sql  # (Setup) SQL schema/policies for PostgreSQL backend
 ├── vercel.json          # (Deploy) Vercel routing configuration
 │
-├── style.css            # (Shared) Global styling, glassmorphism, and layouts
-├── minimal.css          # (Shared) Minimalist UI overrides for a cleaner look
-├── theme.js             # (Shared) Handles light/dark theme toggling
-├── background.js        # (Shared) Interactive canvas background animations
 └── README.md            # Project documentation
 ```

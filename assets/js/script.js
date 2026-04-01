@@ -988,11 +988,11 @@ function buildSupabaseErrorMessage(error, operation, tableName = "submissions") 
   const base = error && error.message ? error.message : "Unknown Supabase error.";
 
   if (["42501", "PGRST301", "PGRST116"].includes(code)) {
-    return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run the SQL in supabase-schema.sql to create policies and grants for anon/authenticated roles.`;
+    return `Supabase ${operation} blocked on '${tableName}' (code: ${code}). Run the SQL in db/supabase-schema.sql to create policies and grants for anon/authenticated roles.`;
   }
 
   if (["42703", "PGRST204"].includes(code)) {
-    return `Supabase ${operation} failed because '${tableName}' schema is outdated (code: ${code}). Run supabase-schema.sql to add the latest columns.`;
+    return `Supabase ${operation} failed because '${tableName}' schema is outdated (code: ${code}). Run db/supabase-schema.sql to add the latest columns.`;
   }
 
   if (code === "22P02") {

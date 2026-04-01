@@ -551,7 +551,7 @@ DOM.btnPublish.addEventListener("click", async () => {
   if (!state.questions.length) return showError("Please add at least one question.");
 
   if (!isSupabaseConfigured()) {
-    return showError("Supabase is not configured. Update supabase-config.js with your project URL and anon key, then publish again.");
+    return showError("Supabase is not configured. Update assets/js/supabase-config.js with your project URL and anon key, then publish again.");
   }
 
   const questions = [...state.questions];
