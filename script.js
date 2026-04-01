@@ -130,12 +130,23 @@ async function loadQuestionsFromSupabase(quizId) {
       .rpc("get_quiz_for_student", { query_id: quizId })
       .single();
 
-    if (error || !data) {
-      console.warn(`[SecureQuiz] quizId '${quizId}' not found in Supabase.`);
-      return false;
+    let quizData = data || null;
+    if (error || !quizData) {
+      console.warn("[SecureQuiz] RPC get_quiz_for_student failed, falling back to direct table query:", error);
+      const { data: directData, error: directError } = await supabase
+        .from("quizzes")
+        .select("id, title, config, questions")
+        .eq("id", quizId)
+        .maybeSingle();
+
+      if (directError || !directData) {
+        console.warn(`[SecureQuiz] quizId '${quizId}' not found in Supabase.`);
+        return false;
+      }
+
+      quizData = directData;
     }
 
-    const quizData = data || {};
     if (!Array.isArray(quizData.questions) || quizData.questions.length === 0) {
       console.warn(`[SecureQuiz] quizId '${quizId}' has no valid questions array.`);
       return false;

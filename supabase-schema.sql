@@ -95,6 +95,26 @@ end $$;
 create index if not exists idx_submissions_quiz_id on public.submissions(quiz_id);
 create index if not exists idx_submissions_created_at on public.submissions(created_at desc);
 
+create or replace function public.get_quiz_for_student(query_id uuid)
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = public
+as $$
+  select jsonb_build_object(
+    'id', q.id,
+    'title', q.title,
+    'config', q.config,
+    'questions', q.questions
+  )
+  from public.quizzes q
+  where q.id = query_id
+  limit 1;
+$$;
+
+grant execute on function public.get_quiz_for_student(uuid) to anon, authenticated;
+
 alter table public.quizzes enable row level security;
 alter table public.submissions enable row level security;
 
