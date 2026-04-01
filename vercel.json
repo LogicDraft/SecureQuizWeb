@@ -1,12 +1,49 @@
 {
   "redirects": [
     {
+      "source": "/home.html",
+      "destination": "/home",
+      "permanent": false
+    },
+    {
+      "source": "/create.html",
+      "destination": "/create",
+      "permanent": false
+    },
+    {
+      "source": "/setup.html",
+      "destination": "/setup",
+      "permanent": false
+    },
+    {
+      "source": "/index.html",
+      "destination": "/quiz",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/dashboard",
+      "permanent": false
+    },
+    {
       "source": "/",
-      "destination": "/home.html",
+      "destination": "/home",
       "permanent": false
     }
   ],
   "rewrites": [
+    {
+      "source": "/home",
+      "destination": "/home.html"
+    },
+    {
+      "source": "/create",
+      "destination": "/create.html"
+    },
+    {
+      "source": "/setup",
+      "destination": "/setup.html"
+    },
     {
       "source": "/quiz",
       "destination": "/index.html"

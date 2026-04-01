@@ -138,7 +138,8 @@ function getAvatarUrl(user) {
 }
 
 function getBaseUrl() {
-  return window.location.origin + window.location.pathname.replace(/create\.html$/, "");
+  const normalizedPath = window.location.pathname.replace(/(?:create(?:\.html)?\/?$)/, "");
+  return window.location.origin + normalizedPath;
 }
 
 function copyToClipboard(text, btn) {

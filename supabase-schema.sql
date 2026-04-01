@@ -95,6 +95,31 @@ end $$;
 create index if not exists idx_submissions_quiz_id on public.submissions(quiz_id);
 create index if not exists idx_submissions_created_at on public.submissions(created_at desc);
 
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_indexes
+    where schemaname = 'public'
+      and indexname = 'idx_submissions_quiz_student_unique'
+  ) then
+    if not exists (
+      select 1
+      from public.submissions s
+      where s.student_id is not null
+        and btrim(s.student_id) <> ''
+      group by s.quiz_id, lower(btrim(s.student_id))
+      having count(*) > 1
+    ) then
+      create unique index idx_submissions_quiz_student_unique
+        on public.submissions (quiz_id, lower(btrim(student_id)))
+        where student_id is not null and btrim(student_id) <> '';
+    else
+      raise notice 'Skipping unique index idx_submissions_quiz_student_unique because duplicate historical submissions exist. Deduplicate first, then re-run schema.';
+    end if;
+  end if;
+end $$;
+
 create or replace function public.get_quiz_for_student(query_id uuid)
 returns jsonb
 language sql

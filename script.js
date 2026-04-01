@@ -123,7 +123,13 @@ function applyQuizRuntimeConfig(quizData) {
 }
 
 async function loadQuestionsFromSupabase(quizId) {
-  if (!quizId) return false;
+  if (!quizId) {
+    return {
+      ok: false,
+      code: "SQZ-LINK-MISSING",
+      message: "Quiz access is restricted. Ask your teacher for the shared quiz link and open it exactly as provided.",
+    };
+  }
 
   try {
     const { data, error } = await supabase
@@ -139,9 +145,30 @@ async function loadQuestionsFromSupabase(quizId) {
         .eq("id", quizId)
         .maybeSingle();
 
-      if (directError || !directData) {
+      if (directError) {
+        const directCode = String(directError.code || "UNKNOWN");
+        if (["42501", "PGRST301", "PGRST116"].includes(directCode)) {
+          return {
+            ok: false,
+            code: "SQZ-ACCESS-DENIED",
+            message: "Quiz cannot be opened right now due to a permissions issue. Please contact your teacher.",
+          };
+        }
+
+        return {
+          ok: false,
+          code: "SQZ-SERVER-ERROR",
+          message: "Quiz service is temporarily unavailable. Please try again in a moment.",
+        };
+      }
+
+      if (!directData) {
         console.warn(`[SecureQuiz] quizId '${quizId}' not found in Supabase.`);
-        return false;
+        return {
+          ok: false,
+          code: "SQZ-QUIZ-NOT-FOUND",
+          message: "This quiz link is invalid or expired. Ask your teacher to share the latest student quiz link.",
+        };
       }
 
       quizData = directData;
@@ -149,16 +176,24 @@ async function loadQuestionsFromSupabase(quizId) {
 
     if (!Array.isArray(quizData.questions) || quizData.questions.length === 0) {
       console.warn(`[SecureQuiz] quizId '${quizId}' has no valid questions array.`);
-      return false;
+      return {
+        ok: false,
+        code: "SQZ-QUIZ-EMPTY",
+        message: "This quiz has no questions configured yet. Please ask your teacher to re-publish the quiz.",
+      };
     }
 
     QUESTION_BANK = normalizeQuestionBank(quizData.questions);
     applyQuizRuntimeConfig(quizData);
     console.log(`[SecureQuiz] Loaded ${QUESTION_BANK.length} questions from Supabase quiz '${quizId}'.`);
-    return true;
+    return { ok: true };
   } catch (error) {
     console.error("[SecureQuiz] Failed loading Supabase quiz:", error);
-    return false;
+    return {
+      ok: false,
+      code: "SQZ-SERVER-UNREACHABLE",
+      message: "Unable to connect to quiz services. Check your internet and try again.",
+    };
   }
 }
 
@@ -168,14 +203,17 @@ async function loadQuestions() {
 
   if (!quizId) {
     state.accessBlocked = true;
+    state.accessBlockCode = "SQZ-LINK-MISSING";
     state.accessBlockReason = "Quiz access is restricted. Ask your teacher for the shared quiz link and open it exactly as provided.";
     return;
   }
 
-  const loadedFromSupabase = await loadQuestionsFromSupabase(quizId);
-  if (!loadedFromSupabase) {
+  const loadResult = await loadQuestionsFromSupabase(quizId);
+  if (!loadResult.ok) {
     state.accessBlocked = true;
-    state.accessBlockReason = "This quiz link is invalid or expired. Ask your teacher to share the latest student quiz link.";
+    state.accessBlockCode = loadResult.code || "SQZ-UNKNOWN";
+    const reason = loadResult.message || "This quiz link is invalid or expired. Ask your teacher to share the latest student quiz link.";
+    state.accessBlockReason = `${reason} (Support code: ${state.accessBlockCode})`;
   }
 }
 
@@ -219,6 +257,7 @@ const state = {
   submissionPersisted: false,
   quizId: "",
   accessBlocked: false,
+  accessBlockCode: "",
   accessBlockReason: "",
 
   // Flags
@@ -964,6 +1003,10 @@ function buildSupabaseErrorMessage(error, operation, tableName = "submissions") 
     return `Supabase ${operation} failed due to invalid quiz link (foreign-key mismatch on quiz_id). Open quiz using the exact generated student URL.`;
   }
 
+  if (code === "23505") {
+    return `Supabase ${operation} blocked because a submission already exists for this student in this quiz (code: ${code}).`;
+  }
+
   return `Supabase ${operation} failed (${code}): ${base}`;
 }
 
@@ -1198,11 +1241,16 @@ async function persistSubmissionToSupabase({
       return true;
     }
 
+    if (String(error.code || "") === "23505") {
+      console.warn("[SecureQuiz] Duplicate submission blocked by unique constraint. Treating as already submitted.");
+      return true;
+    }
+
     lastError = error;
     console.warn(`[SecureQuiz] Supabase submissions insert failed for ${attempt.label} payload:`, error);
 
     // Permission and relation errors won't be fixed by trying smaller payloads.
-    if (["42501", "PGRST301", "PGRST116", "22P02", "23503"].includes(String(error.code || ""))) {
+    if (["42501", "PGRST301", "PGRST116", "22P02", "23503", "23505"].includes(String(error.code || ""))) {
       break;
     }
   }

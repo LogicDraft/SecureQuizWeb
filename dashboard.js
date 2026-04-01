@@ -225,7 +225,7 @@ async function loadMyQuizzes() {
           <div style="font-size: 2.5rem; margin-bottom: 1rem;">📝</div>
           <h3 style="margin-bottom: 0.5rem; color: var(--text-1);">No Quizzes Found</h3>
           <p style="color: var(--text-3); font-size: 0.9rem; margin-bottom: 1.5rem;">Create your first secure quiz to start gathering submissions.</p>
-          <a href="create.html" class="btn-primary" style="text-decoration: none;">Create Quiz</a>
+          <a href="create" class="btn-primary" style="text-decoration: none;">Create Quiz</a>
         </div>
       `;
       return;
