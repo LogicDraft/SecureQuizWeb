@@ -284,7 +284,7 @@ async function loadMyQuizzes() {
       const lastSubmittedLabel = stats.lastSubmittedAt ? formatDate(stats.lastSubmittedAt) : "No submissions";
 
       return `
-        <a href="dashboard.html?quizId=${quiz.id}" class="quiz-card">
+        <a href="dashboard?quizId=${quiz.id}" class="quiz-card">
           <h3>${title}</h3>
           <div class="quiz-card-meta">
             <span>${qCount} questions</span>

@@ -5,5 +5,15 @@
       "destination": "/home.html",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/quiz",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    }
   ]
 }

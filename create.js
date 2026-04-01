@@ -385,8 +385,8 @@ async function loadPersonalAccountData({ force = false } = {}) {
           <span>${escapeText(lastSubmittedLabel)}</span>
         </div>
         <div style="display:flex; gap:0.5rem; flex-wrap: wrap;">
-          <a class="btn-secondary" href="dashboard.html?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">View Data</a>
-          <a class="btn-secondary" href="index.html?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
+          <a class="btn-secondary" href="dashboard?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">View Data</a>
+          <a class="btn-secondary" href="quiz?quizId=${quiz.id}" style="padding:0.35rem 0.65rem; font-size:0.78rem; text-decoration:none;">Open Quiz Link</a>
         </div>
       </article>
       `;
@@ -583,8 +583,8 @@ DOM.btnPublish.addEventListener("click", async () => {
 
     const quizId = data.id;
     const base = getBaseUrl();
-    DOM.inpQuizLink.value = `${base}index.html?quizId=${quizId}`;
-    DOM.inpDashLink.value = `${base}dashboard.html?quizId=${quizId}`;
+    DOM.inpQuizLink.value = `${base}quiz?quizId=${quizId}`;
+    DOM.inpDashLink.value = `${base}dashboard?quizId=${quizId}`;
     state.accountCache = null;
 
     showResultView();
