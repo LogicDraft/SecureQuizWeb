@@ -82,11 +82,11 @@
   </style>
   <script src="/assets/js/theme.js"></script>
 </head>
-<body class="page-with-footer bg-slate-950 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_40%)] font-inter text-white tracking-tight relative overflow-x-hidden">
-  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full"></canvas>
-  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/20 blur-[120px] rounded-full"></div>
+<body class="page-with-footer bg-slate-950 relative overflow-hidden bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.12),transparent_40%)] font-inter text-white tracking-tight">
+  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/10 blur-[140px] rounded-full"></canvas>
+  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/10 blur-[140px] rounded-full"></div>
 
-  <header class="login-nav bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
+  <header class="login-nav bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5">
     <div class="marketing-brand" style="font-family: var(--font-logo); font-size: 1.5rem; font-weight: 700;">SecureQuiz</div>
     <button class="btn-theme-switch btn-icon-toggle" title="Toggle UI Mode">
       <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,24 +106,24 @@
     </button>
   </header>
 
-  <div id="app" class="bg-[url('/noise.png')] bg-repeat">
+  <div id="app" class="relative after:absolute after:inset-0 after:bg-[url('/noise.png')] after:opacity-[0.02] after:pointer-events-none">
     <section class="screen active">
       <div class="screen-inner" style="justify-content: flex-start; padding-top: 3rem; padding-bottom: 3rem;">
 
         <div class="hero" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; margin-bottom: 2rem;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <div class="hero-eyebrow text-slate-400" style="margin: 0;">Creator Portal</div>
-            <a href="home" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">Back to Home</a>
+            <a href="home" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">Back to Home</a>
           </div>
           <h1 style="align-self: flex-start; margin: 0;">Personal Account</h1>
         </div>
 
         <!-- Auth Card -->
-        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards]" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
-          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Creator Login</h2>
+        <div class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards]" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Creator Login</h2>
           <p class="card-subtitle text-slate-400 leading-relaxed">Please sign in with Google to create secure quizzes.</p>
           
-          <button type="button" id="btn-google-login" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
+          <button type="button" id="btn-google-login" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -137,10 +137,10 @@
         </div>
 
         <!-- Account Card (Personal Dashboard) -->
-        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] hidden" style="max-width: 900px; margin: 0 auto; margin-bottom: 2rem;" id="account-card">
+        <div class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards] hidden" style="max-width: 900px; margin: 0 auto; margin-bottom: 2rem;" id="account-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent" style="margin: 0;">Creator Account</h2>
-            <button type="button" id="btn-account-logout" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
+            <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent" style="margin: 0;">Creator Account</h2>
+            <button type="button" id="btn-account-logout" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Log Out</button>
           </div>
 
           <div class="profile-card">
@@ -156,10 +156,10 @@
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <div>
-              <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent" style="margin: 0; font-size: 1.4rem;">My Quizzes</h2>
+              <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent" style="margin: 0; font-size: 1.4rem;">My Quizzes</h2>
               <p class="card-subtitle text-slate-400 leading-relaxed" style="margin: 0; font-size: 0.9rem;" id="account-subtitle">Select a quiz to view analytics.</p>
             </div>
-            <button type="button" id="btn-show-create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Build New Quiz</button>
+            <button type="button" id="btn-show-create" class="btn-primary relative overflow-hidden px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Build New Quiz</button>
           </div>
 
           <div class="quizzes-grid" id="quizzes-grid">
@@ -167,11 +167,11 @@
           </div>
         </div>
 
-        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] hidden" style="max-width: 640px;" id="create-card">
+        <div class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards] hidden" style="max-width: 640px;" id="create-card">
           <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
             <h2 style="margin:0; font-size:1.4rem;">New Quiz</h2>
             <div style="display: flex; gap: 0.8rem;">
-              <button type="button" id="btn-back-account" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Back to Account</button>
+              <button type="button" id="btn-back-account" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Back to Account</button>
             </div>
           </div>
 
@@ -224,7 +224,7 @@
             </select>
           </div>
 
-          <button type="button" id="btn-add-question" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 btn-full" style="margin-bottom:1rem;">+ Add Question</button>
+          <button type="button" id="btn-add-question" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full" style="margin-bottom:1rem;">+ Add Question</button>
 
           <div class="notice-box">
             <span class="notice-icon">📌</span>
@@ -236,22 +236,22 @@
           <div id="create-error" class="error-msg hidden"></div>
 
           <div class="publish-action-bar">
-            <button type="button" id="btn-publish" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 btn-full">
+            <button type="button" id="btn-publish" class="btn-primary relative overflow-hidden px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full">
               <span id="btn-publish-text">Start Quiz →</span>
               <span id="btn-publish-spinner" class="spinner hidden"></span>
             </button>
           </div>
         </div>
 
-        <div id="result-section" class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] hidden" style="max-width: 640px;">
-          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent" style="color:var(--success);">Quiz Published!</h2>
+        <div id="result-section" class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards] hidden" style="max-width: 640px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent" style="color:var(--success);">Quiz Published!</h2>
           <p class="card-subtitle text-slate-400 leading-relaxed">Share these links with your students.</p>
 
           <div class="form-group">
             <label>Student Quiz Link</label>
             <div style="display:flex;gap:0.5rem;">
               <input class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" type="text" id="inp-quiz-link" readonly style="flex:1;" />
-              <button type="button" id="btn-copy-quiz" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+              <button type="button" id="btn-copy-quiz" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
             </div>
           </div>
 
@@ -259,13 +259,13 @@
             <label>Dashboard Link</label>
             <div style="display:flex;gap:0.5rem;">
               <input class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" type="text" id="inp-dashboard-link" readonly style="flex:1;" />
-              <button type="button" id="btn-copy-dash" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
+              <button type="button" id="btn-copy-dash" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.75rem 1rem;white-space:nowrap;">Copy</button>
             </div>
           </div>
 
           <div style="display:flex;gap:1rem;margin-top:1rem;">
-            <button type="button" id="btn-new-quiz" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 btn-full">Create Another Quiz</button>
-            <button type="button" id="btn-go-account" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 btn-full">Back to Account</button>
+            <button type="button" id="btn-new-quiz" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full">Create Another Quiz</button>
+            <button type="button" id="btn-go-account" class="btn-primary relative overflow-hidden px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full">Back to Account</button>
           </div>
         </div>
 

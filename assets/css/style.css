@@ -454,6 +454,13 @@ textarea:focus-visible, select:focus-visible, .option-btn:focus-visible {
   border-color: var(--cursor-hover-border);
 }
 
+/* Disable custom cursor effect on mobile and touch-first devices */
+@media (max-width: 768px), (pointer: coarse), (hover: none) {
+  #cursor {
+    display: none !important;
+  }
+}
+
 #app { min-height: 100vh; }
 
 .screen { 
