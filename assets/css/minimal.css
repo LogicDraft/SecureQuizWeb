@@ -350,3 +350,36 @@ body[data-ui="minimal"] .icon-moon {
     animation: none !important;
   }
 }
+
+/* Quiz screen bug fixes (minimal mode only) */
+body[data-ui="minimal"] #screen-quiz {
+  min-height: 100dvh;
+}
+
+body[data-ui="minimal"] .quiz-body {
+  flex: 0 1 auto;
+}
+
+body[data-ui="minimal"] .btn-submit-top {
+  white-space: nowrap;
+  min-width: 128px;
+}
+
+/* Hide progress glow dot when the progress value is 0% */
+body[data-ui="minimal"] .progress-bar-fill[style*="width:0" ]::after,
+body[data-ui="minimal"] .progress-bar-fill[style*="width: 0" ]::after,
+body[data-ui="minimal"] .progress-bar-fill[style*="width:0%" ]::after,
+body[data-ui="minimal"] .progress-bar-fill[style*="width: 0%" ]::after {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body[data-ui="minimal"] .quiz-header > div:last-child {
+    gap: 0.7rem !important;
+  }
+
+  body[data-ui="minimal"] .quiz-timer {
+    min-width: 34px;
+    font-size: 1.25rem;
+  }
+}
