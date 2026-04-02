@@ -16,8 +16,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="/assets/js/theme.js"></script>
 </head>
-<body>
-  <header class="login-nav">
+<body class="bg-slate-950 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_40%)] font-inter text-white tracking-tight relative overflow-x-hidden">
+  <header class="login-nav bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
     <button class="btn-theme-switch btn-icon-toggle" title="Toggle UI Mode">
       <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"></circle>
@@ -35,17 +35,17 @@
       </svg>
     </button>
   </header>
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
+  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full"></canvas>
+  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/20 blur-[120px] rounded-full"></div>
   <!-- ═══════════════════════════════════════════
        OVERLAY: Fullscreen Exit Warning
   ═══════════════════════════════════════════ -->
   <div id="overlay-fullscreen" class="overlay hidden" role="alertdialog" aria-modal="true" aria-label="Fullscreen Warning">
-    <div class="overlay-card">
+    <div class="overlay-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
       <div class="overlay-icon">⚠️</div>
       <h2>Fullscreen Required</h2>
       <p id="fullscreen-msg">You exited fullscreen mode. This action has been logged. Please return to fullscreen to continue the quiz.</p>
-      <button id="btn-return-fullscreen" class="btn-primary">Return to Fullscreen</button>
+      <button id="btn-return-fullscreen" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20">Return to Fullscreen</button>
     </div>
   </div>
 
@@ -53,11 +53,11 @@
        OVERLAY: Tab Switch Warning
   ═══════════════════════════════════════════ -->
   <div id="overlay-tabswitch" class="overlay hidden" role="alertdialog" aria-modal="true" aria-label="Tab Switch Warning">
-    <div class="overlay-card warning">
+    <div class="overlay-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 warning">
       <div class="overlay-icon">🚨</div>
       <h2>Tab Switch Detected!</h2>
       <p id="tabswitch-msg">You switched tabs or minimized the window. This has been recorded.</p>
-      <button id="btn-dismiss-tabswitch" class="btn-primary">I Understand</button>
+      <button id="btn-dismiss-tabswitch" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20">I Understand</button>
     </div>
   </div>
 
@@ -65,13 +65,13 @@
        OVERLAY: Submit Confirmation
   ═══════════════════════════════════════════ -->
   <div id="overlay-submit" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Submit Confirmation">
-    <div class="overlay-card">
+    <div class="overlay-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
       <div class="overlay-icon">📋</div>
       <h2>Submit Quiz?</h2>
       <p id="submit-unanswered-msg">Are you sure you want to submit? You cannot change answers after submission.</p>
       <div class="overlay-actions">
-        <button id="btn-cancel-submit" class="btn-secondary">Go Back</button>
-        <button id="btn-confirm-submit" class="btn-primary">Yes, Submit</button>
+        <button id="btn-cancel-submit" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30">Go Back</button>
+        <button id="btn-confirm-submit" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20">Yes, Submit</button>
       </div>
     </div>
   </div>
@@ -79,29 +79,29 @@
   <!-- ═══════════════════════════════════════════
        MAIN APP WRAPPER
   ═══════════════════════════════════════════ -->
-  <div id="app">
+  <div id="app" class="bg-[url('/noise.png')] bg-repeat">
 
     <!-- ─── SCREEN 1: Registration ─── -->
     <section id="screen-registration" class="screen active">
       <div class="screen-inner">
         <!-- HERO SECTION (Replaces Logo) -->
         <div class="hero">
-          <div class="hero-eyebrow">Anti-Cheat Secure Quiz app</div>
+          <div class="hero-eyebrow text-slate-400">Anti-Cheat Secure Quiz app</div>
           <h1>SecureQuiz</h1>
         </div>
 
-        <div class="card" id="reg-card">
-          <h2 class="card-title">Participant Login</h2>
-          <p class="card-subtitle">Enter your details to begin the quiz.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards]" id="reg-card">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Participant Login</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Enter your details to begin the quiz.</p>
 
           <div class="form-group">
             <label for="inp-name">Full Name <span style="color:var(--danger);font-size:0.85em;">*</span></label>
-            <input type="text" id="inp-name" placeholder="e.g. John Doe" autocomplete="off" />
+            <input class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" type="text" id="inp-name" placeholder="e.g. John Doe" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="inp-usn">Student ID / USN <span style="color:var(--danger);font-size:0.85em;">*</span></label>
-            <input type="text" id="inp-usn" placeholder="e.g. 1AY25AI000" autocomplete="off" />
+            <input class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" type="text" id="inp-usn" placeholder="e.g. 1AY25AI000" autocomplete="off" />
           </div>
 
           <div id="reg-error" class="error-msg hidden"></div>
@@ -111,7 +111,7 @@
             <span>Enter your name and student ID to begin. Tab switching, fullscreen exit, and copy/paste are monitored and logged.</span>
           </div>
 
-          <button id="btn-start-quiz" class="btn-primary btn-full">
+          <button id="btn-start-quiz" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 btn-full">
             <span id="btn-start-text">Start Quiz →</span>
             <span id="btn-start-spinner" class="spinner hidden"></span>
           </button>
@@ -125,17 +125,17 @@
         </div>
 
         <div class="features-grid">
-          <div class="feature-card">
+          <div class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]">
             <div class="feature-icon">🛡️</div>
             <h3>Lockdown Mode</h3>
             <p>Once started, the exam uses strict fullscreen enforcement on supported desktops. On mobile devices, rules may adapt to avoid false violations.</p>
           </div>
-          <div class="feature-card">
+          <div class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]">
             <div class="feature-icon">👁️</div>
             <h3>Tab Monitoring</h3>
             <p>Our Neural Engine monitors OS-level visibility changes. Switching tabs, opening new windows, or minimizing the browser will trigger a hard violation.</p>
           </div>
-          <div class="feature-card">
+          <div class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]">
             <div class="feature-icon">⚡</div>
             <h3>Auto-Submission</h3>
             <p>To preserve integrity, crossing the threshold of 5 security violations immediately locks and submits your paper with all recorded inputs.</p>
@@ -149,9 +149,9 @@
     <!-- ─── SCREEN 2: Instructions ─── -->
     <section id="screen-instructions" class="screen hidden">
       <div class="screen-inner">
-        <div class="card glass-card scrollable-card" id="inst-card">
-          <h2 class="card-title">Read Carefully</h2>
-          <p class="card-subtitle">Please review the rules before starting.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] glass-card scrollable-card" id="inst-card">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Read Carefully</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Please review the rules before starting.</p>
           
           <ul class="instruction-list">
             <li>
@@ -174,13 +174,13 @@
 
           <div class="agreement-box">
             <label class="checkbox-container">
-              <input type="checkbox" id="chk-agree">
+              <input class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" type="checkbox" id="chk-agree">
               <span class="checkmark"></span>
               <span class="agree-text">I agree to the terms and conditions</span>
             </label>
           </div>
 
-          <button id="btn-proceed-quiz" class="btn-primary btn-full locked" disabled>
+          <button id="btn-proceed-quiz" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 btn-full locked" disabled>
             Start Quiz 🚀
           </button>
         </div>
@@ -189,7 +189,7 @@
 
     <!-- ─── SCREEN 3: Quiz ─── -->
     <section id="screen-quiz" class="screen hidden">
-      <div class="quiz-header">
+      <div class="quiz-header bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
         <div class="quiz-meta">
           <span id="quiz-student-name" class="student-badge">Participant</span>
           <span id="quiz-progress-label" class="progress-label">Question 1 of 10</span>
@@ -216,7 +216,7 @@
 
       <!-- Question Card -->
       <div class="quiz-body">
-        <div class="card question-card" id="question-card">
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] question-card" id="question-card">
           <p class="question-number" id="question-number">Q1</p>
           <p class="question-text" id="question-text">Loading question…</p>
           <div class="options-list" id="options-list">
@@ -225,9 +225,9 @@
         </div>
 
         <div class="quiz-nav">
-          <button id="btn-prev" class="btn-secondary" disabled>← Previous</button>
+          <button id="btn-prev" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" disabled>← Previous</button>
           <div class="nav-dots" id="nav-dots"></div>
-          <button id="btn-next" class="btn-primary">Next →</button>
+          <button id="btn-next" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20">Next →</button>
         </div>
 
 
@@ -283,9 +283,9 @@
 
           <p id="result-note" class="result-note">Your results have been recorded.</p>
           <div class="result-actions">
-            <button id="btn-review-answers" class="btn-primary" disabled>Review Answers</button>
-            <button id="btn-retry-submit" class="btn-secondary hidden" type="button">Retry Submission</button>
-            <button id="btn-exit-fullscreen" class="btn-secondary">Exit Fullscreen</button>
+            <button id="btn-review-answers" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" disabled>Review Answers</button>
+            <button id="btn-retry-submit" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 hidden" type="button">Retry Submission</button>
+            <button id="btn-exit-fullscreen" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30">Exit Fullscreen</button>
           </div>
         </div>
 
@@ -367,14 +367,14 @@
 
     <section id="screen-review" class="screen hidden">
       <div class="screen-inner review-screen-inner">
-        <div class="card review-card">
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] review-card">
           <div class="review-header">
             <div>
               <div class="section-eyebrow">Post-Submission Review</div>
-              <h2 class="card-title">Review Answers</h2>
-              <p id="review-summary" class="card-subtitle">Your graded answers will appear here after submission.</p>
+              <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Review Answers</h2>
+              <p id="review-summary" class="card-subtitle text-slate-400 leading-relaxed">Your graded answers will appear here after submission.</p>
             </div>
-            <button id="btn-close-review" class="btn-secondary">← Back to Results</button>
+            <button id="btn-close-review" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30">← Back to Results</button>
           </div>
           <div id="review-container" class="review-container"></div>
         </div>

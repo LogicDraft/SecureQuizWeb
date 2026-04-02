@@ -31,12 +31,12 @@
   </script>
   <script src="/assets/js/theme.js"></script>
 </head>
-<body class="page-with-footer">
+<body class="page-with-footer bg-slate-950 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_40%)] font-inter text-white tracking-tight relative overflow-x-hidden">
 
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
+  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full"></canvas>
+  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/20 blur-[120px] rounded-full"></div>
 
-  <header class="marketing-nav">
+  <header class="marketing-nav bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
     <a class="marketing-brand" href="home">SecureQuiz</a>
     <nav class="marketing-links">
       <a href="#about">About</a>
@@ -44,7 +44,7 @@
       <a href="#how-it-works">How It Works</a>
       <a href="setup">Setup Guide</a>
     </nav>
-    <a href="create" class="btn-primary" style="text-decoration:none;">Create Quiz</a>
+    <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="text-decoration:none;">Create Quiz</a>
     <button class="btn-theme-switch btn-icon-toggle" title="Toggle UI Mode">
       <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"></circle>
@@ -63,15 +63,15 @@
     </button>
   </header>
 
-  <div id="app">
+  <div id="app" class="bg-[url('/noise.png')] bg-repeat">
     <section class="screen active">
       <div class="screen-inner landing-shell">
         <div class="hero landing-hero reveal-up" style="margin-top:0;text-align:left;max-width:1020px;">
-          <div class="hero-eyebrow">Modern Secure Quiz app Experience</div>
+          <div class="hero-eyebrow text-slate-400">Modern Secure Quiz app Experience</div>
           <h1 style="font-size:clamp(2.4rem,6vw,4.8rem);">Secure Quiz app - Smart &amp; Secure Quiz Platform</h1>
           <div class="landing-actions" style="justify-content:flex-start;">
-            <a href="create" class="btn-primary" style="text-decoration:none;">Create a Quiz</a>
-            <a href="#how-it-works" class="btn-secondary" style="text-decoration:none;">How it Works</a>
+            <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="text-decoration:none;">Create a Quiz</a>
+            <a href="#how-it-works" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="text-decoration:none;">How it Works</a>
           </div>
         </div>
 
@@ -82,9 +82,9 @@
           <span>Share link in seconds</span>
         </div>
 
-        <div id="about" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">About SecureQuiz</h2>
-          <p class="card-subtitle">Secure Quiz app built for anyone who wants to run or take quizzes quickly and securely.</p>
+        <div id="about" class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">About SecureQuiz</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Secure Quiz app built for anyone who wants to run or take quizzes quickly and securely.</p>
 
           <div class="landing-about-grid">
             <div class="notice-box" style="margin-bottom:0;">
@@ -106,36 +106,36 @@
           </div>
         </div>
 
-        <div id="features" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">Features</h2>
-          <p class="card-subtitle">Everything you need for secure, fast, and modern quiz experiences.</p>
+        <div id="features" class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Features</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Everything you need for secure, fast, and modern quiz experiences.</p>
 
           <div class="features-grid" style="max-width:none;padding:0;margin:0;">
-            <article class="feature-card" style="padding:1.4rem;">
+            <article class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
               <h3>Secure Attempt Mode</h3>
               <p>Protect quiz sessions with anti-cheat tracking and secure flow controls.</p>
             </article>
 
-            <article class="feature-card" style="padding:1.4rem;">
+            <article class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
               <h3>Instant Results</h3>
               <p>Get submission data quickly and review performance through a live dashboard.</p>
             </article>
 
-            <article class="feature-card" style="padding:1.4rem;">
+            <article class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
               <h3>Works on Mobile &amp; Desktop</h3>
               <p>Responsive interface designed for phones, tablets, laptops, and desktops.</p>
             </article>
 
-            <article class="feature-card" style="padding:1.4rem;">
+            <article class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
               <h3>Fast &amp; Lightweight</h3>
               <p>Runs with minimal overhead for quick loading and smooth interaction.</p>
             </article>
 
-            <article class="feature-card" style="padding:1.4rem;">
+            <article class="feature-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]" style="padding:1.4rem;">
               <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
               <h3>Smart Tracking</h3>
               <p>Tab switches and fullscreen exits are monitored during attempts for better integrity.</p>
@@ -143,9 +143,9 @@
           </div>
         </div>
 
-        <div id="how-it-works" class="card landing-card reveal-up" style="max-width:980px;">
-          <h2 class="card-title">How to Use SecureQuiz</h2>
-          <p class="card-subtitle">Follow these steps to create, host, and share your quiz.</p>
+        <div id="how-it-works" class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card reveal-up" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">How to Use SecureQuiz</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Follow these steps to create, host, and share your quiz.</p>
 
           <div class="landing-steps">
             <article class="step-item">
@@ -190,12 +190,12 @@
           </div>
         </div>
 
-        <div class="card landing-card landing-cta reveal-up" style="max-width:980px;">
-          <h2 class="card-title">Ready to Start?</h2>
-          <p class="card-subtitle">Create your first secure quiz now and share it in seconds.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card landing-cta reveal-up" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Ready to Start?</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Create your first secure quiz now and share it in seconds.</p>
           <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
-            <a href="create" class="btn-primary" style="text-decoration:none;">Start Creating Your Quiz</a>
-            <a href="setup" class="btn-secondary" style="text-decoration:none;">Setup Guide</a>
+            <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="text-decoration:none;">Start Creating Your Quiz</a>
+            <a href="setup" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="text-decoration:none;">Setup Guide</a>
           </div>
         </div>
       </div>

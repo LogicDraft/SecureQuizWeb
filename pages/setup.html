@@ -17,11 +17,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="/assets/js/theme.js"></script>
 </head>
-<body class="page-with-footer">
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
+<body class="page-with-footer bg-slate-950 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_40%)] font-inter text-white tracking-tight relative overflow-x-hidden">
+  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full"></canvas>
+  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/20 blur-[120px] rounded-full"></div>
 
-  <header class="marketing-nav">
+  <header class="marketing-nav bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5">
     <a class="marketing-brand" href="home">SecureQuiz</a>
     <nav class="marketing-links">
       <a href="home#about">About</a>
@@ -29,7 +29,7 @@
       <a href="home#how-it-works">How It Works</a>
       <a href="setup">Setup Guide</a>
     </nav>
-    <a href="create" class="btn-primary" style="text-decoration:none;">Create Quiz</a>
+    <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="text-decoration:none;">Create Quiz</a>
     <button class="btn-theme-switch btn-icon-toggle" title="Toggle UI Mode">
       <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"></circle>
@@ -48,18 +48,18 @@
     </button>
   </header>
 
-  <div id="app">
+  <div id="app" class="bg-[url('/noise.png')] bg-repeat">
     <section class="screen active">
       <div class="screen-inner landing-shell">
         <div class="hero landing-hero" style="margin-top:0;text-align:left;max-width:980px;">
-          <div class="hero-eyebrow">Secure Quiz app User Guide</div>
+          <div class="hero-eyebrow text-slate-400">Secure Quiz app User Guide</div>
           <h1 style="font-size:clamp(2rem,5vw,3.8rem);">How to Use SecureQuiz</h1>
           <p>This guide shows how to use the Secure Quiz app, from starting a quiz to reviewing final results.</p>
         </div>
 
-        <div class="card landing-card" style="max-width:980px;">
-          <h2 class="card-title">Full User Guide (Start to End)</h2>
-          <p class="card-subtitle">Use this complete flow to run a quiz from creation to final report in the Secure Quiz app.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Full User Guide (Start to End)</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Use this complete flow to run a quiz from creation to final report in the Secure Quiz app.</p>
           <div class="landing-steps" style="grid-template-columns:1fr;">
             <article class="step-item">
               <span class="step-index">1</span>
@@ -120,8 +120,8 @@
           </div>
         </div>
 
-        <div class="card landing-card" style="max-width:980px;">
-          <h2 class="card-title">Quick User Checklist</h2>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Quick User Checklist</h2>
           <div class="landing-steps" style="grid-template-columns:1fr;">
             <article class="step-item">
               <span class="step-index">1</span>
@@ -147,12 +147,12 @@
           </div>
         </div>
 
-        <div class="card landing-card landing-cta" style="max-width:980px;">
-          <h2 class="card-title">Start Your Quiz Session</h2>
-          <p class="card-subtitle">Create and run your next quiz in minutes.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] landing-card landing-cta" style="max-width:980px;">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Start Your Quiz Session</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Create and run your next quiz in minutes.</p>
           <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;">
-            <a href="create" class="btn-primary" style="text-decoration:none;">Open Quiz Creator</a>
-            <a href="home" class="btn-secondary" style="text-decoration:none;">Back to Home</a>
+            <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="text-decoration:none;">Open Quiz Creator</a>
+            <a href="home" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="text-decoration:none;">Back to Home</a>
           </div>
         </div>
       </div>

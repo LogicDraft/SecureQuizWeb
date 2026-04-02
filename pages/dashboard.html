@@ -196,25 +196,25 @@
   </style>
   <script src="/assets/js/theme.js"></script>
 </head>
-<body class="page-with-footer">
-  <canvas id="canvas"></canvas>
-  <div id="cursor"></div>
+<body class="page-with-footer bg-slate-950 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_40%)] font-inter text-white tracking-tight relative overflow-x-hidden">
+  <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full"></canvas>
+  <div id="cursor" class="absolute w-96 h-96 bg-pink-500/20 blur-[120px] rounded-full"></div>
 
   <main class="dashboard-page">
     <section class="screen active">
       <div class="screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
         <div class="hero" style="margin-top:0;">
-          <div class="hero-eyebrow">Quiz Analytics</div>
+          <div class="hero-eyebrow text-slate-400">Quiz Analytics</div>
           <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
           <p id="dash-subtitle">Loading quiz details...</p>
         </div>
 
         <!-- Auth Card -->
-        <div class="card" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
-          <h2 class="card-title">Creator Login</h2>
-          <p class="card-subtitle">Please sign in with Google to view dashboard analytics.</p>
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards]" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
+          <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">Creator Login</h2>
+          <p class="card-subtitle text-slate-400 leading-relaxed">Please sign in with Google to view dashboard analytics.</p>
           
-          <button type="button" id="btn-google-login" class="btn-secondary btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
+          <button type="button" id="btn-google-login" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -227,21 +227,21 @@
           <div id="auth-error" class="error-msg hidden" style="margin-top:1rem;"></div>
         </div>
 
-        <div class="card hidden" style="max-width:1100px;" id="dashboard-card">
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] relative isolate before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:brightness-110 hover:scale-[1.01] group group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] opacity-0 blur-sm translate-y-4 animate-[fadeIn_0.6s_ease-out_forwards] hidden" style="max-width:1100px;" id="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <a href="dashboard" id="btn-back-overview" class="btn-secondary hidden" style="padding:0.4rem 0.8rem; font-size:0.8rem; text-decoration:none;">← Back to My Quizzes</a>
+            <a href="dashboard" id="btn-back-overview" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30 hidden" style="padding:0.4rem 0.8rem; font-size:0.8rem; text-decoration:none;">← Back to My Quizzes</a>
             <div style="margin-left:auto;">
-              <button type="button" id="btn-logout" class="btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Log Out</button>
+              <button type="button" id="btn-logout" class="btn-secondary transition-all duration-300 hover:brightness-110 px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-black/30" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Log Out</button>
             </div>
           </div>
 
           <!-- OVERVIEW VIEW -->
           <div id="overview-view">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h2 class="card-title">My Quizzes</h2>
-              <a href="create" class="btn-primary" style="padding:0.5rem 1rem; font-size:0.8rem; text-decoration:none;">+ Create Quiz</a>
+              <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">My Quizzes</h2>
+              <a href="create" class="btn-primary relative px-5 py-2 rounded-xl bg-indigo-500 overflow-hidden transition-all duration-300 before:absolute before:inset-0 before:bg-indigo-400/20 before:blur-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20" style="padding:0.5rem 1rem; font-size:0.8rem; text-decoration:none;">+ Create Quiz</a>
             </div>
-            <p class="card-subtitle">Select a quiz to view live submissions.</p>
+            <p class="card-subtitle text-slate-400 leading-relaxed">Select a quiz to view live submissions.</p>
             <div class="quizzes-grid" id="quizzes-grid">
               <!-- Quizzes will be injected here -->
             </div>
