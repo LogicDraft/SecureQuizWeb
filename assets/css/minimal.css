@@ -1,35 +1,34 @@
-/* ═══════════════════════════════════════════════════════
-   minimal.css — SecureQuiz Minimalist Theme
-   Overrides default glassmorphism with clean, flat UI
-═══════════════════════════════════════════════════════ */
+/* Minimalist UI theme: Soft Sage + Deep Olive */
 
 body[data-ui="minimal"] {
-  --primary: #2563eb;
-  --primary-light: #3b82f6;
-  --primary-dark: #1e40af;
-  --accent: #2563eb;
-  --accent-2: #2563eb;
-  --text-1: #1f2937;
-  --text-2: #4b5563;
-  --text-3: #6b7280;
-  --body-bg: #f9fafb;
-  --canvas-base: #f9fafb;
-  --glass: #ffffff;
-  --glass-border: #e5e7eb;
-  --surface-1: #ffffff;
-  --surface-2: #f3f4f6;
-  --surface-3: #e5e7eb;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --result-fetch-bg: #ffffff;
-  --result-fetch-core: #ffffff;
-  --header-bg: #ffffff;
-  --field-bg: #ffffff;
-  --track-bg: #e5e7eb;
-  --minimal-orb-a: rgba(37, 99, 235, 0.12);
-  --minimal-orb-b: rgba(6, 182, 212, 0.1);
-  --minimal-orb-c: rgba(99, 102, 241, 0.08);
-  --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-logo: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+  --primary: #1a2517;
+  --primary-light: #31472b;
+  --primary-dark: #0f170d;
+  --accent: #acc8a2;
+  --accent-2: #89a67f;
+  --text-1: #162012;
+  --text-2: #2f422a;
+  --text-3: #546d4e;
+  --body-bg: radial-gradient(circle at 16% 10%, #dcead6 0%, #acc8a2 44%, #8dad84 100%);
+  --canvas-base: #acc8a2;
+  --glass: #edf5e9;
+  --glass-border: rgba(26, 37, 23, 0.18);
+  --surface-1: #f3f8f0;
+  --surface-2: #e5efde;
+  --surface-3: #d7e5ce;
+  --field-bg: #f8fbf6;
+  --header-bg: rgba(243, 248, 240, 0.94);
+  --track-bg: #d3e2ca;
+  --danger: #9f3a2f;
+  --success: #2f6f3a;
+  --warning: #8a6b1f;
+  --result-fetch-bg: linear-gradient(180deg, #edf5e9, #dbead3);
+  --result-fetch-core: radial-gradient(circle, #f8fbf6, #acc8a2);
+  --shadow: 0 10px 30px rgba(13, 22, 12, 0.12);
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-logo: "Syne", "Segoe UI", sans-serif;
+  --font: var(--font-body);
   position: relative;
   isolation: isolate;
 }
@@ -39,68 +38,33 @@ body[data-ui="minimal"]::after {
   content: "";
   position: fixed;
   inset: -12% -10%;
-  pointer-events: none;
   z-index: -1;
-  filter: blur(42px);
-  will-change: transform;
+  pointer-events: none;
 }
 
 body[data-ui="minimal"]::before {
   background:
-    radial-gradient(circle at 16% 24%, var(--minimal-orb-a) 0%, transparent 43%),
-    radial-gradient(circle at 82% 18%, var(--minimal-orb-b) 0%, transparent 45%),
-    radial-gradient(circle at 64% 82%, var(--minimal-orb-c) 0%, transparent 42%);
-  animation: minimal-bg-drift 24s ease-in-out infinite alternate;
+    radial-gradient(circle at 0% 15%, rgba(26, 37, 23, 0.18) 0%, transparent 38%),
+    radial-gradient(circle at 84% 8%, rgba(26, 37, 23, 0.1) 0%, transparent 42%),
+    radial-gradient(circle at 58% 85%, rgba(26, 37, 23, 0.08) 0%, transparent 36%);
+  filter: blur(40px);
+  animation: minimal-sage-drift 18s ease-in-out infinite alternate;
 }
 
 body[data-ui="minimal"]::after {
-  background:
-    radial-gradient(circle at 24% 74%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 74% 38%, rgba(6, 182, 212, 0.08) 0%, transparent 44%);
-  animation: minimal-bg-float 16s ease-in-out infinite;
+  inset: auto 0 0 0;
+  height: 40vh;
+  background: linear-gradient(0deg, rgba(26, 37, 23, 0.24), rgba(26, 37, 23, 0));
 }
 
-@keyframes minimal-bg-drift {
-  0% {
-    transform: translate3d(-2%, -1%, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(2%, 1.5%, 0) scale(1.06);
-  }
+@keyframes minimal-sage-drift {
+  0% { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+  100% { transform: translate3d(1.8%, 1.6%, 0) scale(1.05); }
 }
 
-@keyframes minimal-bg-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(1.5%, -1.5%, 0) scale(1.04);
-  }
-}
-
-/* Background declarations have been ported to style.css for centralized ambient mesh rendering */
-
-body[data-ui="glass"],
-body[data-ui="minimal"] {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body[data-ui="glass"] .card,
-body[data-ui="glass"] .feature-card,
-body[data-ui="glass"] .btn-primary,
-body[data-ui="glass"] .btn-secondary,
-body[data-ui="glass"] .form-group input,
-body[data-ui="glass"] .form-group textarea,
-body[data-ui="glass"] .form-group select,
-body[data-ui="minimal"] .card,
-body[data-ui="minimal"] .feature-card,
-body[data-ui="minimal"] .btn-primary,
-body[data-ui="minimal"] .btn-secondary,
-body[data-ui="minimal"] .form-group input,
-body[data-ui="minimal"] .form-group textarea,
-body[data-ui="minimal"] .form-group select {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+body[data-ui="minimal"] #canvas,
+body[data-ui="minimal"] #cursor {
+  display: none !important;
 }
 
 body[data-ui="minimal"] * {
@@ -114,279 +78,275 @@ body[data-ui="minimal"] .quiz-card,
 body[data-ui="minimal"] .profile-card,
 body[data-ui="minimal"] .question-item,
 body[data-ui="minimal"] .result-card,
-body[data-ui="minimal"] .marketing-nav,
 body[data-ui="minimal"] .quiz-header,
 body[data-ui="minimal"] .proctor-bar,
-body[data-ui="minimal"] .overlay-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
-  border-radius: 16px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+body[data-ui="minimal"] .marketing-nav,
+body[data-ui="minimal"] .overlay-card,
+body[data-ui="minimal"] .site-footer {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+body[data-ui="minimal"] .feature-card,
+body[data-ui="minimal"] .quiz-card,
+body[data-ui="minimal"] .question-item,
+body[data-ui="minimal"] .profile-card {
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 body[data-ui="minimal"] .feature-card:hover,
 body[data-ui="minimal"] .quiz-card:hover,
 body[data-ui="minimal"] .question-item:hover,
 body[data-ui="minimal"] .profile-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  border-color: rgba(139, 92, 246, 0.3);
-  background: linear-gradient(150deg, #ffffff 0%, #fefeff 50%, #f8fafc 100%);
-  box-shadow: 
-    0 20px 40px -8px rgba(139, 92, 246, 0.12),
-    0 12px 24px -6px rgba(6, 182, 212, 0.08),
-    0 6px 12px -2px rgba(244, 63, 94, 0.05);
-}
-
-body[data-ui="minimal"] .feature-card::after,
-body[data-ui="minimal"] .quiz-card::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  background: radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.04), transparent 50%),
-              radial-gradient(circle at 0% 100%, rgba(6, 182, 212, 0.04), transparent 50%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-body[data-ui="minimal"] .feature-card:hover::after,
-body[data-ui="minimal"] .quiz-card:hover::after {
-  opacity: 1;
-}
-
-body[data-ui="minimal"] .marketing-links a {
-  color: #4b5563 !important;
-}
-
-body[data-ui="minimal"] .marketing-links a:hover {
-  background: #eff6ff !important;
-  color: #1f2937 !important;
-}
-
-body[data-ui="minimal"] .notice-box,
-body[data-ui="minimal"] .step-item,
-body[data-ui="minimal"] .instruction-list li,
-body[data-ui="minimal"] .questions-empty {
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
-}
-
-body[data-ui="minimal"] .quiz-timer-wrap,
-body[data-ui="minimal"] .student-badge,
-body[data-ui="minimal"] .progress-label,
-body[data-ui="minimal"] .proctor-stat {
-  background: #f8fafc !important;
-  border: 1px solid #dbeafe !important;
-  color: #334155 !important;
-}
-
-body[data-ui="minimal"] .progress-bar-track,
-body[data-ui="minimal"] .timer-bar-track {
-  background: #e5e7eb !important;
+  transform: translateY(-5px);
+  border-color: rgba(26, 37, 23, 0.38) !important;
+  box-shadow: 0 16px 34px rgba(15, 25, 14, 0.2) !important;
 }
 
 body[data-ui="minimal"] .card::before,
-body[data-ui="minimal"] .feature-card::before {
+body[data-ui="minimal"] .feature-card::before,
+body[data-ui="minimal"] .marks-card::before {
   display: none !important;
 }
 
+body[data-ui="minimal"] .marketing-brand,
+body[data-ui="minimal"] .hero h1,
+body[data-ui="minimal"] .card-title,
+body[data-ui="minimal"] .section-header h2,
+body[data-ui="minimal"] .result-title,
+body[data-ui="minimal"] .footer-brand-text {
+  color: #111a0f !important;
+  background: none !important;
+  -webkit-text-fill-color: #111a0f !important;
+  text-shadow: none !important;
+}
+
+body[data-ui="minimal"] .hero-eyebrow,
+body[data-ui="minimal"] .section-eyebrow,
+body[data-ui="minimal"] .footer-brand-tagline {
+  color: #2b3e25 !important;
+}
+
+body[data-ui="minimal"] .marketing-links a {
+  color: #21311d !important;
+}
+
+body[data-ui="minimal"] .marketing-links a:hover {
+  background: #dcead5 !important;
+  color: #111a0f !important;
+}
+
 body[data-ui="minimal"] .btn-primary,
-body[data-ui="minimal"] .btn-secondary {
-  border-radius: 6px !important;
-  transition: all 0.2s ease !important;
+body[data-ui="minimal"] .btn-submit,
+body[data-ui="minimal"] .btn-submit-top,
+body[data-ui="minimal"] #download-report-btn {
+  background: linear-gradient(145deg, #263621 0%, #1a2517 52%, #111a0f 100%) !important;
+  border: 1px solid rgba(12, 20, 10, 0.5) !important;
+  color: #eef5ea !important;
+  box-shadow: 0 10px 22px rgba(16, 23, 14, 0.28) !important;
 }
 
-body[data-ui="minimal"] .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
-  color: white !important;
-  border: none !important;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.15) !important;
-}
-
-body[data-ui="minimal"] .btn-primary:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+body[data-ui="minimal"] .btn-primary:hover,
+body[data-ui="minimal"] .btn-submit:hover,
+body[data-ui="minimal"] .btn-submit-top:hover,
+body[data-ui="minimal"] #download-report-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25), 0 4px 8px -2px rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 14px 28px rgba(12, 18, 10, 0.36) !important;
 }
 
 body[data-ui="minimal"] .btn-secondary {
-  background: white !important;
-  color: var(--text-2) !important;
-  border: 1px solid #d1d5db !important;
+  background: #eff6eb !important;
+  border: 1px solid rgba(26, 37, 23, 0.22) !important;
+  color: #1d2a19 !important;
 }
 
 body[data-ui="minimal"] .btn-secondary:hover {
-  background: #f3f4f6 !important;
-  color: var(--text-1) !important;
+  background: #ddebd6 !important;
+  border-color: rgba(26, 37, 23, 0.34) !important;
 }
 
 body[data-ui="minimal"] .form-group input,
 body[data-ui="minimal"] .form-group textarea,
 body[data-ui="minimal"] .form-group select {
-  background: #ffffff !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 6px !important;
-  color: #1f2937 !important;
-}
-
-body[data-ui="minimal"] .form-group label {
-  color: #4b5563 !important;
-  font-weight: 600 !important;
-}
-
-body[data-ui="minimal"] .hero h1 {
-  background: none !important;
-  -webkit-text-fill-color: #111827 !important;
-  color: #111827 !important;
-  text-shadow: none !important;
-}
-
-body[data-ui="minimal"] .hero-eyebrow,
-body[data-ui="minimal"] .section-eyebrow {
-  color: var(--primary) !important;
-}
-
-body[data-ui="minimal"] #canvas,
-body[data-ui="minimal"] #cursor {
-  display: none !important; /* Disables ambient background and custom cursor */
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body[data-ui="minimal"]::before,
-  body[data-ui="minimal"]::after {
-    animation: none !important;
-  }
-}
-
-/* --------------------------------------------------
-   Minimalist Overrides for Marks Card (Report Shell)
--------------------------------------------------- */
-body[data-ui="minimal"] .marks-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 16px !important;
-}
-
-body[data-ui="minimal"] .marks-card::before,
-body[data-ui="minimal"] .marks-card-orb,
-body[data-ui="minimal"] .marks-score-panel::after {
-  display: none !important;
-}
-
-body[data-ui="minimal"] .marks-pill,
-body[data-ui="minimal"] .marks-score-panel,
-body[data-ui="minimal"] .marks-metric-card {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: none !important;
+  background: var(--field-bg) !important;
+  border: 1px solid rgba(26, 37, 23, 0.26) !important;
+  color: #172213 !important;
   border-radius: 12px !important;
 }
 
-body[data-ui="minimal"] .marks-card-student,
-body[data-ui="minimal"] .marks-score-value,
-body[data-ui="minimal"] .marks-metric-value,
-body[data-ui="minimal"] .report-shell-title {
-  color: #111827 !important;
+body[data-ui="minimal"] .form-group input:focus,
+body[data-ui="minimal"] .form-group textarea:focus,
+body[data-ui="minimal"] .form-group select:focus {
+  border-color: #1a2517 !important;
+  box-shadow: 0 0 0 3px rgba(172, 200, 162, 0.58) !important;
 }
 
-body[data-ui="minimal"] .marks-card-id,
-body[data-ui="minimal"] .marks-pill-label,
-body[data-ui="minimal"] .marks-score-label,
-body[data-ui="minimal"] .marks-score-caption,
-body[data-ui="minimal"] .marks-metric-label,
-body[data-ui="minimal"] .marks-accuracy,
+body[data-ui="minimal"] .form-group label,
+body[data-ui="minimal"] .card-subtitle,
+body[data-ui="minimal"] .result-subtitle,
+body[data-ui="minimal"] .footer-copy,
 body[data-ui="minimal"] .report-shell-subtitle,
 body[data-ui="minimal"] #report-generated-at,
 body[data-ui="minimal"] #report-quiz-title {
-  color: #4b5563 !important;
+  color: #344a2d !important;
+}
+
+body[data-ui="minimal"] .notice-box,
+body[data-ui="minimal"] .step-item,
+body[data-ui="minimal"] .instruction-list li,
+body[data-ui="minimal"] .questions-empty,
+body[data-ui="minimal"] .agreement-box,
+body[data-ui="minimal"] .review-item,
+body[data-ui="minimal"] .review-option {
+  background: #f4f9f2 !important;
+  border: 1px solid rgba(26, 37, 23, 0.16) !important;
+  color: #22311d !important;
+}
+
+body[data-ui="minimal"] .quiz-timer-wrap,
+body[data-ui="minimal"] .student-badge,
+body[data-ui="minimal"] .progress-label,
+body[data-ui="minimal"] .proctor-stat,
+body[data-ui="minimal"] .marks-pill,
+body[data-ui="minimal"] .marks-score-panel,
+body[data-ui="minimal"] .marks-metric-card {
+  background: #e8f1e3 !important;
+  border: 1px solid rgba(26, 37, 23, 0.2) !important;
+  color: #1f2d1a !important;
+}
+
+body[data-ui="minimal"] .progress-bar-track,
+body[data-ui="minimal"] .timer-bar-track,
+body[data-ui="minimal"] .score-ring-bg {
+  background: #d4e2cb !important;
+}
+
+body[data-ui="minimal"] .progress-bar-fill,
+body[data-ui="minimal"] .timer-bar-fill {
+  background: linear-gradient(90deg, #3b5733, #1a2517) !important;
+}
+
+body[data-ui="minimal"] .option-btn {
+  background: #f6fbf4 !important;
+  border: 1px solid rgba(26, 37, 23, 0.2) !important;
+  color: #172213 !important;
+}
+
+body[data-ui="minimal"] .option-btn:hover {
+  border-color: rgba(26, 37, 23, 0.42) !important;
+  background: #e8f2e2 !important;
+}
+
+body[data-ui="minimal"] .option-btn.selected,
+body[data-ui="minimal"] .option-btn.correct {
+  border-color: #1a2517 !important;
+  background: #dce9d5 !important;
+  color: #111a0f !important;
+}
+
+body[data-ui="minimal"] .overlay {
+  background: rgba(11, 18, 10, 0.65) !important;
+}
+
+body[data-ui="minimal"] .overlay-card {
+  background: #edf5e9 !important;
+}
+
+body[data-ui="minimal"] .result-fetching {
+  background: var(--result-fetch-bg) !important;
+  border: 1px solid rgba(26, 37, 23, 0.18) !important;
+}
+
+body[data-ui="minimal"] .result-fetching-core {
+  background: var(--result-fetch-core) !important;
+}
+
+body[data-ui="minimal"] .marks-card {
+  background: #edf5e9 !important;
+  border: 1px solid rgba(26, 37, 23, 0.22) !important;
 }
 
 body[data-ui="minimal"] .marks-status-pill {
-  background: #e0e7ff !important;
-  border: 1px solid #c7d2fe !important;
-  color: #3730a3 !important;
+  background: #dcead5 !important;
+  border: 1px solid rgba(26, 37, 23, 0.22) !important;
+  color: #1a2517 !important;
 }
 
 body[data-ui="minimal"] .marks-card.is-pending .marks-status-pill {
-  background: #fef3c7 !important;
-  border: 1px solid #fde68a !important;
-  color: #92400e !important;
+  background: #efe8ce !important;
+  border: 1px solid #a18a4b !important;
+  color: #5f4e20 !important;
 }
 
-body[data-ui="minimal"] .marks-card-footer {
-  border-top: 1px solid #e2e8f0 !important;
-}
-
-body[data-ui="minimal"] .marks-watermark {
-  color: #9ca3af !important;
-}
-
+body[data-ui="minimal"] .marks-watermark,
 body[data-ui="minimal"] .report-shell {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  color: rgba(26, 37, 23, 0.6) !important;
 }
 
+body[data-ui="minimal"] .btn-icon-toggle {
+  background: #f2f8ef !important;
+  border-color: rgba(26, 37, 23, 0.22) !important;
+  color: #1a2517 !important;
+  box-shadow: 0 6px 18px rgba(14, 21, 12, 0.16) !important;
+}
 
-/* Global Mobile Compatibility Fixes */
+body[data-ui="minimal"] .icon-sun {
+  display: block;
+}
+
+body[data-ui="minimal"] .icon-moon {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .marketing-nav {
-    flex-direction: column !important;
-    padding: 1rem !important;
-    gap: 0.75rem !important;
+  body[data-ui="minimal"] .marketing-nav {
+    padding: 0.95rem 1rem !important;
+    border-radius: 0 0 16px 16px !important;
   }
-  .marketing-nav .btn-primary {
-    width: 100% !important;
-    border-radius: 12px !important;
-  }
-  .marketing-links {
+
+  body[data-ui="minimal"] .marketing-links {
     display: none !important;
   }
 
-  .hero h1 {
-    font-size: 2.25rem !important;
-    line-height: 1.15 !important;
-  }
-  .hero p {
-    font-size: 0.95rem !important;
+  body[data-ui="minimal"] .hero h1 {
+    font-size: clamp(2rem, 8.2vw, 2.7rem) !important;
+    line-height: 1.1 !important;
   }
 
-  .screen-inner {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    margin-top: 1rem !important;
+  body[data-ui="minimal"] .screen-inner {
+    padding-left: 0.95rem !important;
+    padding-right: 0.95rem !important;
   }
 
-  .quizzes-grid,
-  .landing-about-grid,
-  .landing-steps,
-  .features-grid,
-  .question-builder-grid {
+  body[data-ui="minimal"] .landing-actions,
+  body[data-ui="minimal"] .quiz-nav,
+  body[data-ui="minimal"] .overlay-actions {
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+  }
+
+  body[data-ui="minimal"] .landing-actions .btn-primary,
+  body[data-ui="minimal"] .landing-actions .btn-secondary,
+  body[data-ui="minimal"] .quiz-nav .btn-primary,
+  body[data-ui="minimal"] .quiz-nav .btn-secondary,
+  body[data-ui="minimal"] .overlay-actions .btn-primary,
+  body[data-ui="minimal"] .overlay-actions .btn-secondary {
+    width: 100% !important;
+  }
+
+  body[data-ui="minimal"] .landing-about-grid,
+  body[data-ui="minimal"] .landing-steps,
+  body[data-ui="minimal"] .features-grid,
+  body[data-ui="minimal"] .question-builder-grid,
+  body[data-ui="minimal"] .quizzes-grid {
     grid-template-columns: 1fr !important;
   }
+}
 
-  .profile-card {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 0.75rem !important;
+@media (prefers-reduced-motion: reduce) {
+  body[data-ui="minimal"]::before {
+    animation: none !important;
   }
-
-  .landing-actions {
-    width: 100% !important;
-    flex-direction: column !important;
-  }
-
-  .landing-actions .btn-primary,
-  .landing-actions .btn-secondary {
-    width: 100% !important;
-    justify-content: center !important;
-    margin-bottom: 0.5rem;
-  }
-
-
 }
