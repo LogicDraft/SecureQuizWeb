@@ -11,6 +11,12 @@ function initCanvasBackground(options = {}) {
     ),
   } = options;
 
+  const disableCanvasOnMobile = (
+    typeof window.matchMedia === "function"
+    && window.matchMedia("(max-width: 768px)").matches
+  );
+  const shouldDisableCanvas = disabled || disableCanvasOnMobile;
+
   if (typeof window.__secureQuizBackgroundCleanup === "function") {
     window.__secureQuizBackgroundCleanup();
     window.__secureQuizBackgroundCleanup = null;
@@ -20,12 +26,12 @@ function initCanvasBackground(options = {}) {
   const cursor = document.getElementById("cursor") || document.getElementById("custom-cursor");
   if (!canvas || !cursor) return null;
 
-  canvas.hidden = !!disabled;
-  cursor.hidden = !!disabled || !!disableCursor;
+  canvas.hidden = !!shouldDisableCanvas;
+  cursor.hidden = !!shouldDisableCanvas || !!disableCursor;
   cursor.style.opacity = "0";
   cursor.classList.remove("hover");
 
-  if (disabled) {
+  if (shouldDisableCanvas) {
     return null;
   }
 
