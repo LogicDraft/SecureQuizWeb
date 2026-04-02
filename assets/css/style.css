@@ -2186,7 +2186,7 @@ body.page-with-footer .screen-inner {
   .marks-accuracy { text-align: left; }
   .logo-title { font-size: 1.8rem; }
   .overlay-card { padding: 2rem 1.25rem; }
-  .nav-dots { max-width: 160px; }
+  .nav-dots { display: none; }
   .review-card { max-height: none; }
   .review-header,
   .review-item-header { flex-direction: column; }
