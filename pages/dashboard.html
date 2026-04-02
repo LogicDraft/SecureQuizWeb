@@ -196,7 +196,7 @@
   </style>
   <script src="/assets/js/theme.js"></script>
 </head>
-<body class="page-with-footer bg-slate-950 relative overflow-hidden bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.12),transparent_40%)] font-inter text-white tracking-tight">
+<body class="page-with-footer bg-slate-950 text-white relative overflow-hidden bg-[radial-gradient(circle_at_50%_20%,rgba(99,102,241,0.25),transparent_50%)] before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_80%_0%,rgba(168,85,247,0.2),transparent_40%)] before:pointer-events-none font-inter tracking-tight">
   <canvas id="canvas" class="absolute w-96 h-96 bg-indigo-500/10 blur-[140px] rounded-full"></canvas>
   <div id="cursor" class="absolute w-96 h-96 bg-pink-500/10 blur-[140px] rounded-full"></div>
 
@@ -205,16 +205,16 @@
       <div class="screen-inner" style="justify-content:flex-start;padding-top:2.5rem;padding-bottom:2.5rem;">
         <div class="hero" style="margin-top:0;">
           <div class="hero-eyebrow text-slate-400">Quiz Analytics</div>
-          <h1 style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
+          <h1 class="text-5xl md:text-6xl font-semibold tracking-tight leading-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" style="font-size:clamp(2.2rem,5vw,4rem);">Dashboard</h1>
           <p id="dash-subtitle">Loading quiz details...</p>
         </div>
 
         <!-- Auth Card -->
-        <div class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards]" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4),0_0_25px_rgba(99,102,241,0.2)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-1 hover:brightness-110 hover:scale-[1.01] opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards]" style="max-width: 400px; margin: 0 auto; margin-bottom: 2rem;" id="login-card">
           <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Creator Login</h2>
           <p class="card-subtitle text-slate-400 leading-relaxed">Please sign in with Google to view dashboard analytics.</p>
           
-          <button type="button" id="btn-google-login" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
+          <button type="button" id="btn-google-login" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 hover:scale-[1.01] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 btn-full" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #ffffff; color: #000000; border-color: #cccccc;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -227,11 +227,11 @@
           <div id="auth-error" class="error-msg hidden" style="margin-top:1rem;"></div>
         </div>
 
-        <div class="card bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards] hidden" style="max-width:1100px;" id="dashboard-card">
+        <div class="card bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4),0_0_25px_rgba(99,102,241,0.2)] hover:shadow-[0_0_60px_rgba(99,102,241,0.25)] relative before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 transition-all duration-300 ease-out hover:-translate-y-1 hover:brightness-110 hover:scale-[1.01] opacity-0 translate-y-3 animate-[fadeIn_0.5s_ease-out_forwards] hidden" style="max-width:1100px;" id="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <a href="dashboard" id="btn-back-overview" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 hidden" style="padding:0.4rem 0.8rem; font-size:0.8rem; text-decoration:none;">← Back to My Quizzes</a>
             <div style="margin-left:auto;">
-              <button type="button" id="btn-logout" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Log Out</button>
+              <button type="button" id="btn-logout" class="btn-secondary relative overflow-hidden px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 hover:text-white transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 hover:scale-[1.01] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Log Out</button>
             </div>
           </div>
 
@@ -239,7 +239,7 @@
           <div id="overview-view">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <h2 class="card-title text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">My Quizzes</h2>
-              <a href="create" class="btn-primary relative overflow-hidden px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.5rem 1rem; font-size:0.8rem; text-decoration:none;">+ Create Quiz</a>
+              <a href="create" class="btn-primary relative overflow-hidden px-4 py-2 rounded-xl bg-indigo-500 transition-all duration-300 ease-out hover:-translate-y-1 hover:brightness-110 hover:scale-[1.01] shadow-[0_0_30px_rgba(99,102,241,0.5)] hover:shadow-[0_0_50px_rgba(99,102,241,0.7)] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700" style="padding:0.5rem 1rem; font-size:0.8rem; text-decoration:none;">+ Create Quiz</a>
             </div>
             <p class="card-subtitle text-slate-400 leading-relaxed">Select a quiz to view live submissions.</p>
             <div class="quizzes-grid" id="quizzes-grid">
@@ -273,9 +273,9 @@
             <div id="dash-error" class="error-msg hidden"></div>
 
             <div class="dashboard-filters">
-              <button class="btn-filter active" data-filter="all">All Submissions</button>
-              <button class="btn-filter" data-filter="auto">Auto-Submitted</button>
-              <button class="btn-filter" data-filter="perfect">Out of out</button>
+              <button class="btn-filter active bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="all">All Submissions</button>
+              <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="auto">Auto-Submitted</button>
+              <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="perfect">Out of out</button>
             </div>
 
           <div class="dashboard-table-wrap">
