@@ -228,6 +228,10 @@ body[data-ui="minimal"] .timer-bar-fill {
   background: linear-gradient(90deg, #3b5733, #1a2517) !important;
 }
 
+body[data-ui="minimal"] .progress-bar-fill::after {
+  display: none !important;
+}
+
 body[data-ui="minimal"] .option-btn {
   background: #f6fbf4 !important;
   border: 1px solid rgba(26, 37, 23, 0.2) !important;
@@ -292,6 +296,24 @@ body[data-ui="minimal"] .btn-icon-toggle {
   box-shadow: 0 6px 18px rgba(14, 21, 12, 0.16) !important;
 }
 
+body[data-ui="minimal"] .btn-secondary:disabled {
+  opacity: 0.72 !important;
+  background: #e8f0e2 !important;
+  border-color: rgba(26, 37, 23, 0.22) !important;
+  color: #5b7254 !important;
+}
+
+body[data-ui="minimal"] .quiz-header {
+  gap: 0.75rem;
+}
+
+body[data-ui="minimal"] .quiz-header > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
 body[data-ui="minimal"] .icon-sun {
   display: block;
 }
@@ -318,6 +340,45 @@ body[data-ui="minimal"] .icon-moon {
   body[data-ui="minimal"] .screen-inner {
     padding-left: 0.95rem !important;
     padding-right: 0.95rem !important;
+  }
+
+  body[data-ui="minimal"] #screen-quiz {
+    min-height: auto !important;
+  }
+
+  body[data-ui="minimal"] .quiz-header {
+    padding: 0.85rem 0.9rem !important;
+    align-items: flex-start;
+  }
+
+  body[data-ui="minimal"] .quiz-meta {
+    width: 100%;
+    gap: 0.55rem;
+  }
+
+  body[data-ui="minimal"] .quiz-header > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  body[data-ui="minimal"] .btn-submit-top {
+    min-width: 132px;
+    padding: 0.68rem 1.15rem !important;
+    border-radius: 999px !important;
+  }
+
+  body[data-ui="minimal"] .quiz-body {
+    flex: 0 0 auto !important;
+    padding-bottom: 0.8rem !important;
+  }
+
+  body[data-ui="minimal"] .proctor-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 8;
+    margin: 0 0.35rem 0.35rem;
+    border-radius: 999px !important;
   }
 
   body[data-ui="minimal"] .landing-actions,
