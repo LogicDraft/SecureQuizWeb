@@ -141,6 +141,20 @@ function renderRows(submissions) {
     });
   }
 
+  // Sort high → low so row numbers reflect rank (1st = highest scorer)
+  filtered.sort((a, b) => {
+    const extractScore = (sub) => {
+      const scoreFromText = typeof sub.score_text === "string" && sub.score_text.includes("/")
+        ? sub.score_text.split("/").map(item => Number.parseInt(item, 10))
+        : [];
+      return Number.isFinite(sub.score_correct) ? sub.score_correct
+        : Number.isFinite(sub.scoreCorrect)     ? sub.scoreCorrect
+        : Number.isFinite(scoreFromText[0])     ? scoreFromText[0]
+        : 0;
+    };
+    return extractScore(b) - extractScore(a); // Descending order (High to Low)
+  });
+
   DOM.subCount.textContent = String(filtered.length);
 
   if (!filtered.length) {
