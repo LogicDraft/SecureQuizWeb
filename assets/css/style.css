@@ -1317,7 +1317,7 @@ body.page-with-footer .screen-inner {
   font-size: 0.82rem;
   font-weight: 500;
 }
-.progress-label { color: var(--text-2); font-size: 0.88rem; }
+.progress-label { color: var(--text-2); font-size: 1.05rem; }
 
 .quiz-timer-wrap {
   display: flex;
@@ -1381,7 +1381,7 @@ body.page-with-footer .screen-inner {
 .quiz-body {
   flex: 1;
   padding: 1.5rem;
-  max-width: 680px;
+  max-width: 800px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -1400,7 +1400,7 @@ body.page-with-footer .screen-inner {
   to   { opacity: 1; transform: translateY(0); }
 }
 .question-number {
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--accent-2);
   text-transform: uppercase;
@@ -1409,8 +1409,8 @@ body.page-with-footer .screen-inner {
 }
 .question-text {
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 700;
   color: var(--text-1);
   line-height: 1.7;
   margin-bottom: 1.4rem;
@@ -1423,9 +1423,9 @@ body.page-with-footer .screen-inner {
   background: var(--surface-1);
   border: 1.5px solid var(--glass-border);
   border-radius: var(--radius-sm);
-  padding: 0.85rem 1.1rem;
+  padding: 1rem 1.25rem;
   color: var(--text-1);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-family: var(--font-body);
   line-height: 1.6;
   cursor: pointer;
@@ -1439,8 +1439,8 @@ body.page-with-footer .screen-inner {
 }
 .option-btn::before {
   content: '';
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 2px solid var(--text-3);
   border-radius: 50%;
   flex-shrink: 0;
@@ -2162,8 +2162,8 @@ body.page-with-footer .screen-inner {
 ═══════════════════════════════════════════════════ */
 @media (max-width: 480px) {
   .card { padding: 1.5rem; }
-  .question-text { font-size: 1.1rem; line-height: 1.65; }
-  .option-btn { font-size: 1rem; }
+  .question-text { font-size: 1.25rem; line-height: 1.65; }
+  .option-btn { font-size: 1.05rem; }
   .review-option-text { line-height: 1.65; }
   .score-badge, .integrity-pill { font-size: 0.75rem; }
   .quiz-header { padding: 0.75rem 1rem; }
