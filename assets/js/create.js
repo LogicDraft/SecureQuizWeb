@@ -520,6 +520,12 @@ DOM.btnAddQuestion.addEventListener("click", () => {
     return showError("Selected correct answer option is empty. Fill that option or choose another correct answer.");
   }
 
+  // Enforce structural integrity so grading radio buttons don't break logically.
+  const uniqueOptions = new Set(options.map(opt => opt.toLowerCase()));
+  if (uniqueOptions.size !== options.length) {
+    return showError("Duplicate options detected. Please ensure all options are unique.");
+  }
+
   const nextId = `q${String(state.questions.length + 1).padStart(3, "0")}`;
   state.questions.push({ id: nextId, q: questionText, options, answer });
 

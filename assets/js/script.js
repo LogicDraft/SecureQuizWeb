@@ -2447,6 +2447,48 @@ async function submitQuizData(isAutoSubmit = false, { reviewToken: existingRevie
     suspiciousLog:    JSON.stringify(state.suspiciousEvents),
   };
 
+  if (!navigator.onLine) {
+    console.warn("[SecureQuiz] Device is offline. Initiating offline recovery mode.");
+    
+    localStorage.setItem("secureQuiz_offlineData", JSON.stringify({
+      timestamp, isAutoSubmit, device, reviewToken, localReview, total
+    }));
+    
+    showResultScreen(total, device);
+    
+    DOM.resultIcon.textContent = "📶";
+    DOM.resultTitle.textContent = "Connection Lost";
+    DOM.resultSubtitle.textContent = "Your exam is saved securely on this device. Do NOT close this tab.";
+    if (DOM.resultNote) DOM.resultNote.textContent = "Waiting for internet connection to automatically sync...";
+    
+    const popOfflineData = async () => {
+      if (DOM.resultNote) DOM.resultNote.textContent = "Network restored! Synchronizing securely...";
+      try {
+        const savedToSupabase = await persistSubmissionToSupabase({
+          timestamp, isAutoSubmit, device, reviewToken, localReview
+        });
+        if (savedToSupabase) {
+          state.submissionPersisted = true;
+          applySubmissionResult({
+            status: "success",
+            scoreCorrect: localReview.scoreCorrect,
+            scoreTotal: localReview.scoreTotal,
+            reviewAnswers: localReview.reviewAnswers,
+            timestamp,
+          }, total, device);
+          if (DOM.resultNote) DOM.resultNote.textContent = "Submission stored in SecureQuiz cloud. You can now review answers.";
+          localStorage.removeItem("secureQuiz_offlineData");
+        }
+      } catch (err) {
+        if (DOM.resultNote) DOM.resultNote.textContent = "Sync failed. Still waiting... Ensure internet is stable.";
+        window.addEventListener("online", popOfflineData, { once: true });
+      }
+    };
+    
+    window.addEventListener("online", popOfflineData, { once: true });
+    return;
+  }
+
   console.log("[SecureQuiz] Submitting quiz payload", {
     url: CONFIG.APPS_SCRIPT_URL,
     studentId: payload.studentId,

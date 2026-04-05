@@ -28,6 +28,40 @@
       padding-bottom: 1rem;
       border-bottom: 1px solid var(--glass-border);
     }
+    .dash-search-container {
+      position: relative;
+      max-width: 100%;
+      width: 280px;
+    }
+    .dash-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-3);
+      pointer-events: none;
+    }
+    .dash-search-input {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem 0.65rem 2.4rem;
+      color: var(--text-1);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .dash-search-input::placeholder {
+      color: var(--text-3);
+    }
+    .dash-search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
     .export-btn {
       background: rgba(16, 185, 129, 0.15);
       color: #10b981;
@@ -282,11 +316,11 @@
                 <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="perfect">Out of out</button>
               </div>
               
-              <div style="position: relative; max-width: 100%; width: 280px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-3); pointer-events: none;">
+              <div class="dash-search-container">
+                <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" id="dash-search" placeholder="Search by Name or ID..." class="bg-white/5 border border-white/10 rounded-xl py-2 pr-3 pl-9 text-white text-sm focus:outline-none focus:border-indigo-500 focus:bg-white/10 transition-all duration-300 w-full placeholder-slate-500" />
+                <input type="text" id="dash-search" class="dash-search-input" placeholder="Search by Name or ID..." autocomplete="off" />
               </div>
             </div>
 
