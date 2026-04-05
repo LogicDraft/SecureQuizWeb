@@ -173,6 +173,31 @@ function syncQuestionsCount() {
   DOM.questionsCount.textContent = String(state.questions.length);
 }
 
+function saveDraft() {
+  const draftData = {
+    title: DOM.inpTitle.value,
+    timeLimit: DOM.inpTime.value,
+    questions: state.questions
+  };
+  localStorage.setItem('secureQuiz_draft', JSON.stringify(draftData));
+}
+
+function loadDraft() {
+  try {
+    const draftStr = localStorage.getItem('secureQuiz_draft');
+    if (draftStr) {
+      const draftData = JSON.parse(draftStr);
+      if (draftData.title) DOM.inpTitle.value = draftData.title;
+      if (draftData.timeLimit) DOM.inpTime.value = draftData.timeLimit;
+      if (Array.isArray(draftData.questions)) {
+        state.questions = draftData.questions;
+      }
+    }
+  } catch (e) {
+    console.warn("Could not parse secureQuiz_draft", e);
+  }
+}
+
 function renderQuestionsList() {
   if (!state.questions.length) {
     DOM.questionsList.innerHTML = '<div class="questions-empty">No questions added yet.</div>';
@@ -206,9 +231,16 @@ function renderQuestionsList() {
     cloneButton.dataset.index = String(index);
     cloneButton.innerHTML = "Duplicate";
 
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "btn-icon-ghost question-edit-btn";
+    editButton.dataset.index = String(index);
+    editButton.textContent = "Edit";
+
     const actionsDiv = document.createElement("div");
     actionsDiv.style.display = "flex";
     actionsDiv.style.gap = "0.5rem";
+    actionsDiv.appendChild(editButton);
     actionsDiv.appendChild(cloneButton);
     actionsDiv.appendChild(removeButton);
 
@@ -241,6 +273,7 @@ function renderQuestionsList() {
   DOM.questionsList.appendChild(fragment);
 
   syncQuestionsCount();
+  saveDraft();
 }
 
 function resetQuizBuilderDraft() {
@@ -513,23 +546,35 @@ DOM.questionsList.addEventListener("click", (event) => {
     return;
   }
 
-  const cloneButton = target.closest(".question-clone-btn");
-  if (cloneButton) {
-    const index = parseInt(cloneButton.dataset.index || "-1", 10);
+  const editButton = target.closest(".question-edit-btn");
+  if (editButton) {
+    const index = parseInt(editButton.dataset.index || "-1", 10);
     if (index < 0 || index >= state.questions.length) return;
 
-    const sourceQuestion = state.questions[index];
-    DOM.inpQuestionText.value = sourceQuestion.q;
-    DOM.inpOpt1.value = sourceQuestion.options[0] || "";
-    DOM.inpOpt2.value = sourceQuestion.options[1] || "";
-    DOM.inpOpt3.value = sourceQuestion.options[2] || "";
-    DOM.inpOpt4.value = sourceQuestion.options[3] || "";
-    
-    const ansIndex = sourceQuestion.options.indexOf(sourceQuestion.answer);
+    // Pre-fill the builder form with this question's existing data
+    const q = state.questions[index];
+    DOM.inpQuestionText.value = q.q;
+    DOM.inpOpt1.value = q.options[0] || "";
+    DOM.inpOpt2.value = q.options[1] || "";
+    DOM.inpOpt3.value = q.options[2] || "";
+    DOM.inpOpt4.value = q.options[3] || "";
+
+    const ansIndex = q.options.indexOf(q.answer);
     DOM.inpCorrectAnswer.value = ansIndex >= 0 ? String(ansIndex) : "0";
-    
-    // Scroll up gracefully to the question builder
+
+    // Remove the question so saving it via 'Add Question' replaces rather than duplicates it
+    state.questions.splice(index, 1);
+    // Re-sequence IDs so they remain consecutive
+    state.questions = state.questions.map((question, idx) => ({
+      ...question,
+      id: `q${String(idx + 1).padStart(3, "0")}`,
+    }));
+
+    renderQuestionsList();
+
+    // Scroll smoothly back to the question builder form
     document.querySelector(".question-builder").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
   }
 });
 
@@ -587,6 +632,9 @@ DOM.btnPublish.addEventListener("click", async () => {
     DOM.inpQuizLink.value = `${base}quiz?quizId=${quizId}`;
     DOM.inpDashLink.value = `${base}dashboard?quizId=${quizId}`;
     state.accountCache = null;
+    
+    // Clear draft mode after successful publish
+    localStorage.removeItem("secureQuiz_draft");
 
     showResultView();
   } catch (err) {
@@ -623,6 +671,11 @@ DOM.btnGoAccount.addEventListener("click", async () => {
   showAccountView();
 });
 
+// Auto-save input handlers
+DOM.inpTitle.addEventListener("input", saveDraft);
+DOM.inpTime.addEventListener("input", saveDraft);
+
+loadDraft();
 renderQuestionsList();
 wireAuthListeners();
 syncAuthView();

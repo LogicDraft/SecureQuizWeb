@@ -20,6 +20,8 @@ const DOM = {
   singleQuizView: document.getElementById("single-quiz-view"),
   quizzesGrid: document.getElementById("quizzes-grid"),
   btnExport: document.getElementById("btn-export"),
+  dashSearch: document.getElementById("dash-search"),
+  btnCopyLink: document.getElementById("btn-copy-link"),
 };
 
 let currentUser = null;
@@ -113,7 +115,7 @@ function getViolationClass(val, warnThreshold = 3, dangerThreshold = 5) {
   return "";
 }
 
-function renderRows(submissions) {
+function renderRows(submissions, searchQuery = "") {
   let filtered = submissions;
   if (currentFilter === 'flagged') {
     filtered = submissions.filter(sub => {
@@ -139,6 +141,15 @@ function renderRows(submissions) {
         : 0;
       return total > 0 && score === total;
     });
+  }
+
+  // Real-time search: further narrow by student name or ID
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(sub =>
+      (sub.student_name || sub.studentName || "").toLowerCase().includes(q) ||
+      (sub.student_id  || sub.studentId  || "").toLowerCase().includes(q)
+    );
   }
 
   // Sort high → low so row numbers reflect rank (1st = highest scorer)
@@ -371,7 +382,7 @@ async function init() {
         throw new Error(buildSupabaseDashboardError(submissionsError, "select", "submissions"));
       }
       currentSubmissions = submissions || [];
-      renderRows(currentSubmissions);
+      renderRows(currentSubmissions, DOM.dashSearch ? DOM.dashSearch.value.trim().toLowerCase() : "");
     };
 
     await loadSubmissions();
@@ -385,7 +396,21 @@ async function init() {
           void loadSubmissions();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          // Verify we haven't already appended it (React/Next JS double-render safety, etc.)
+          if (!document.querySelector(".live-indicator")) {
+            const indicator = document.createElement("div");
+            indicator.className = "live-indicator";
+            indicator.innerHTML = '<div class="live-dot"></div> Live Submissions';
+            indicator.style.marginLeft = "0.75rem";
+            indicator.style.marginTop = "0.5rem"; // Subtitle is usually a block element or part of header
+            
+            // Insert the indicator directly after the subtitle
+            DOM.subtitle.parentNode.insertBefore(indicator, DOM.subtitle.nextSibling);
+          }
+        }
+      });
 
   } catch (err) {
     console.error("[SecureQuiz] Dashboard init error:", err);
@@ -504,8 +529,40 @@ document.querySelectorAll('.btn-filter').forEach(btn => {
     document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
     currentFilter = e.target.getAttribute('data-filter') || 'all';
-    if (currentSubmissions) renderRows(currentSubmissions);
+    if (currentSubmissions) {
+      const query = DOM.dashSearch ? DOM.dashSearch.value.trim().toLowerCase() : "";
+      renderRows(currentSubmissions, query);
+    }
   });
 });
+
+// Real-time search: re-render on every keystroke
+if (DOM.dashSearch) {
+  DOM.dashSearch.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (currentSubmissions) renderRows(currentSubmissions, query);
+  });
+}
+
+// Copy Invite Link
+if (DOM.btnCopyLink) {
+  DOM.btnCopyLink.addEventListener('click', async () => {
+    try {
+      const shareUrl = window.location.origin + '/?quizId=' + QUIZ_ID;
+      await navigator.clipboard.writeText(shareUrl);
+      
+      const originalText = DOM.btnCopyLink.innerHTML;
+      DOM.btnCopyLink.innerHTML = '✅ Copied!';
+      DOM.btnCopyLink.classList.add('text-green-400');
+      
+      setTimeout(() => {
+        DOM.btnCopyLink.innerHTML = originalText;
+        DOM.btnCopyLink.classList.remove('text-green-400');
+      }, 2000);
+    } catch (e) {
+      console.error("Could not copy URL to clipboard", e);
+    }
+  });
+}
 
 checkAuth();

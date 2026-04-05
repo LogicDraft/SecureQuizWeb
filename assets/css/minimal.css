@@ -1,6 +1,6 @@
 /* Minimalist UI theme: Soft Sage + Deep Olive */
 
-body[data-ui="minimal"] {
+html[data-ui="minimal"] body {
   color-scheme: light;
   --primary: #1a2517;
   --primary-light: #31472b;
@@ -33,8 +33,8 @@ body[data-ui="minimal"] {
   isolation: isolate;
 }
 
-body[data-ui="minimal"]::before,
-body[data-ui="minimal"]::after {
+html[data-ui="minimal"] body::before,
+html[data-ui="minimal"] body::after {
   content: "";
   position: fixed;
   inset: -12% -10%;
@@ -42,7 +42,7 @@ body[data-ui="minimal"]::after {
   pointer-events: none;
 }
 
-body[data-ui="minimal"]::before {
+html[data-ui="minimal"] body::before {
   background:
     radial-gradient(circle at 0% 15%, rgba(26, 37, 23, 0.18) 0%, transparent 38%),
     radial-gradient(circle at 84% 8%, rgba(26, 37, 23, 0.1) 0%, transparent 42%),
@@ -51,7 +51,7 @@ body[data-ui="minimal"]::before {
   animation: minimal-sage-drift 18s ease-in-out infinite alternate;
 }
 
-body[data-ui="minimal"]::after {
+html[data-ui="minimal"] body::after {
   inset: auto 0 0 0;
   height: 40vh;
   background: linear-gradient(0deg, rgba(26, 37, 23, 0.24), rgba(26, 37, 23, 0));
@@ -62,291 +62,291 @@ body[data-ui="minimal"]::after {
   100% { transform: translate3d(1.8%, 1.6%, 0) scale(1.05); }
 }
 
-body[data-ui="minimal"] #canvas,
-body[data-ui="minimal"] #cursor {
+html[data-ui="minimal"] body #canvas,
+html[data-ui="minimal"] body #cursor {
   display: none !important;
 }
 
-body[data-ui="minimal"] * {
+html[data-ui="minimal"] body * {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-body[data-ui="minimal"] .card,
-body[data-ui="minimal"] .feature-card,
-body[data-ui="minimal"] .quiz-card,
-body[data-ui="minimal"] .profile-card,
-body[data-ui="minimal"] .question-item,
-body[data-ui="minimal"] .result-card,
-body[data-ui="minimal"] .quiz-header,
-body[data-ui="minimal"] .proctor-bar,
-body[data-ui="minimal"] .marketing-nav,
-body[data-ui="minimal"] .overlay-card,
-body[data-ui="minimal"] .site-footer {
+html[data-ui="minimal"] body .card,
+html[data-ui="minimal"] body .feature-card,
+html[data-ui="minimal"] body .quiz-card,
+html[data-ui="minimal"] body .profile-card,
+html[data-ui="minimal"] body .question-item,
+html[data-ui="minimal"] body .result-card,
+html[data-ui="minimal"] body .quiz-header,
+html[data-ui="minimal"] body .proctor-bar,
+html[data-ui="minimal"] body .marketing-nav,
+html[data-ui="minimal"] body .overlay-card,
+html[data-ui="minimal"] body .site-footer {
   background: var(--glass) !important;
   border: 1px solid var(--glass-border) !important;
   border-radius: 22px !important;
   box-shadow: var(--shadow) !important;
 }
 
-body[data-ui="minimal"] .feature-card,
-body[data-ui="minimal"] .quiz-card,
-body[data-ui="minimal"] .question-item,
-body[data-ui="minimal"] .profile-card {
+html[data-ui="minimal"] body .feature-card,
+html[data-ui="minimal"] body .quiz-card,
+html[data-ui="minimal"] body .question-item,
+html[data-ui="minimal"] body .profile-card {
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
-body[data-ui="minimal"] .feature-card:hover,
-body[data-ui="minimal"] .quiz-card:hover,
-body[data-ui="minimal"] .question-item:hover,
-body[data-ui="minimal"] .profile-card:hover {
+html[data-ui="minimal"] body .feature-card:hover,
+html[data-ui="minimal"] body .quiz-card:hover,
+html[data-ui="minimal"] body .question-item:hover,
+html[data-ui="minimal"] body .profile-card:hover {
   transform: translateY(-5px);
   border-color: rgba(26, 37, 23, 0.38) !important;
   box-shadow: 0 16px 34px rgba(15, 25, 14, 0.2) !important;
 }
 
-body[data-ui="minimal"] .card::before,
-body[data-ui="minimal"] .feature-card::before,
-body[data-ui="minimal"] .marks-card::before {
+html[data-ui="minimal"] body .card::before,
+html[data-ui="minimal"] body .feature-card::before,
+html[data-ui="minimal"] body .marks-card::before {
   display: none !important;
 }
 
-body[data-ui="minimal"] .marketing-brand,
-body[data-ui="minimal"] .hero h1,
-body[data-ui="minimal"] .card-title,
-body[data-ui="minimal"] .section-header h2,
-body[data-ui="minimal"] .result-title,
-body[data-ui="minimal"] .footer-brand-text {
+html[data-ui="minimal"] body .marketing-brand,
+html[data-ui="minimal"] body .hero h1,
+html[data-ui="minimal"] body .card-title,
+html[data-ui="minimal"] body .section-header h2,
+html[data-ui="minimal"] body .result-title,
+html[data-ui="minimal"] body .footer-brand-text {
   color: #111a0f !important;
   background: none !important;
   -webkit-text-fill-color: #111a0f !important;
   text-shadow: none !important;
 }
 
-body[data-ui="minimal"] .hero-eyebrow,
-body[data-ui="minimal"] .section-eyebrow,
-body[data-ui="minimal"] .footer-brand-tagline {
+html[data-ui="minimal"] body .hero-eyebrow,
+html[data-ui="minimal"] body .section-eyebrow,
+html[data-ui="minimal"] body .footer-brand-tagline {
   color: #2b3e25 !important;
 }
 
-body[data-ui="minimal"] .marketing-links a {
+html[data-ui="minimal"] body .marketing-links a {
   color: #21311d !important;
 }
 
-body[data-ui="minimal"] .marketing-links a:hover {
+html[data-ui="minimal"] body .marketing-links a:hover {
   background: #dcead5 !important;
   color: #111a0f !important;
 }
 
-body[data-ui="minimal"] .btn-primary,
-body[data-ui="minimal"] .btn-submit,
-body[data-ui="minimal"] .btn-submit-top,
-body[data-ui="minimal"] #download-report-btn {
+html[data-ui="minimal"] body .btn-primary,
+html[data-ui="minimal"] body .btn-submit,
+html[data-ui="minimal"] body .btn-submit-top,
+html[data-ui="minimal"] body #download-report-btn {
   background: linear-gradient(145deg, #263621 0%, #1a2517 52%, #111a0f 100%) !important;
   border: 1px solid rgba(12, 20, 10, 0.5) !important;
   color: #eef5ea !important;
   box-shadow: 0 10px 22px rgba(16, 23, 14, 0.28) !important;
 }
 
-body[data-ui="minimal"] .btn-primary:hover,
-body[data-ui="minimal"] .btn-submit:hover,
-body[data-ui="minimal"] .btn-submit-top:hover,
-body[data-ui="minimal"] #download-report-btn:hover {
+html[data-ui="minimal"] body .btn-primary:hover,
+html[data-ui="minimal"] body .btn-submit:hover,
+html[data-ui="minimal"] body .btn-submit-top:hover,
+html[data-ui="minimal"] body #download-report-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 28px rgba(12, 18, 10, 0.36) !important;
 }
 
-body[data-ui="minimal"] .btn-secondary {
+html[data-ui="minimal"] body .btn-secondary {
   background: #eff6eb !important;
   border: 1px solid rgba(26, 37, 23, 0.22) !important;
   color: #1d2a19 !important;
 }
 
-body[data-ui="minimal"] .btn-secondary:hover {
+html[data-ui="minimal"] body .btn-secondary:hover {
   background: #ddebd6 !important;
   border-color: rgba(26, 37, 23, 0.34) !important;
 }
 
-body[data-ui="minimal"] .form-group input,
-body[data-ui="minimal"] .form-group textarea,
-body[data-ui="minimal"] .form-group select {
+html[data-ui="minimal"] body .form-group input,
+html[data-ui="minimal"] body .form-group textarea,
+html[data-ui="minimal"] body .form-group select {
   background: var(--field-bg) !important;
   border: 1px solid rgba(26, 37, 23, 0.26) !important;
   color: #172213 !important;
   border-radius: 12px !important;
 }
 
-body[data-ui="minimal"] .form-group input:focus,
-body[data-ui="minimal"] .form-group textarea:focus,
-body[data-ui="minimal"] .form-group select:focus {
+html[data-ui="minimal"] body .form-group input:focus,
+html[data-ui="minimal"] body .form-group textarea:focus,
+html[data-ui="minimal"] body .form-group select:focus {
   border-color: #1a2517 !important;
   box-shadow: 0 0 0 3px rgba(172, 200, 162, 0.58) !important;
 }
 
-body[data-ui="minimal"] .form-group label,
-body[data-ui="minimal"] .card-subtitle,
-body[data-ui="minimal"] .result-subtitle,
-body[data-ui="minimal"] .footer-copy,
-body[data-ui="minimal"] .report-shell-subtitle,
-body[data-ui="minimal"] #report-generated-at,
-body[data-ui="minimal"] #report-quiz-title {
+html[data-ui="minimal"] body .form-group label,
+html[data-ui="minimal"] body .card-subtitle,
+html[data-ui="minimal"] body .result-subtitle,
+html[data-ui="minimal"] body .footer-copy,
+html[data-ui="minimal"] body .report-shell-subtitle,
+html[data-ui="minimal"] body #report-generated-at,
+html[data-ui="minimal"] body #report-quiz-title {
   color: #344a2d !important;
 }
 
-body[data-ui="minimal"] .notice-box,
-body[data-ui="minimal"] .step-item,
-body[data-ui="minimal"] .instruction-list li,
-body[data-ui="minimal"] .questions-empty,
-body[data-ui="minimal"] .agreement-box,
-body[data-ui="minimal"] .review-item,
-body[data-ui="minimal"] .review-option {
+html[data-ui="minimal"] body .notice-box,
+html[data-ui="minimal"] body .step-item,
+html[data-ui="minimal"] body .instruction-list li,
+html[data-ui="minimal"] body .questions-empty,
+html[data-ui="minimal"] body .agreement-box,
+html[data-ui="minimal"] body .review-item,
+html[data-ui="minimal"] body .review-option {
   background: #f4f9f2 !important;
   border: 1px solid rgba(26, 37, 23, 0.16) !important;
   color: #22311d !important;
 }
 
-body[data-ui="minimal"] .quiz-timer-wrap,
-body[data-ui="minimal"] .student-badge,
-body[data-ui="minimal"] .progress-label,
-body[data-ui="minimal"] .proctor-stat,
-body[data-ui="minimal"] .marks-pill,
-body[data-ui="minimal"] .marks-score-panel,
-body[data-ui="minimal"] .marks-metric-card {
+html[data-ui="minimal"] body .quiz-timer-wrap,
+html[data-ui="minimal"] body .student-badge,
+html[data-ui="minimal"] body .progress-label,
+html[data-ui="minimal"] body .proctor-stat,
+html[data-ui="minimal"] body .marks-pill,
+html[data-ui="minimal"] body .marks-score-panel,
+html[data-ui="minimal"] body .marks-metric-card {
   background: #e8f1e3 !important;
   border: 1px solid rgba(26, 37, 23, 0.2) !important;
   color: #1f2d1a !important;
 }
 
-body[data-ui="minimal"] .progress-bar-track,
-body[data-ui="minimal"] .timer-bar-track,
-body[data-ui="minimal"] .score-ring-bg {
+html[data-ui="minimal"] body .progress-bar-track,
+html[data-ui="minimal"] body .timer-bar-track,
+html[data-ui="minimal"] body .score-ring-bg {
   background: #d4e2cb !important;
 }
 
-body[data-ui="minimal"] .progress-bar-fill,
-body[data-ui="minimal"] .timer-bar-fill {
+html[data-ui="minimal"] body .progress-bar-fill,
+html[data-ui="minimal"] body .timer-bar-fill {
   background: linear-gradient(90deg, #3b5733, #1a2517) !important;
 }
 
-body[data-ui="minimal"] .option-btn {
+html[data-ui="minimal"] body .option-btn {
   background: #f6fbf4 !important;
   border: 1px solid rgba(26, 37, 23, 0.2) !important;
   color: #172213 !important;
 }
 
-body[data-ui="minimal"] .option-btn:hover {
+html[data-ui="minimal"] body .option-btn:hover {
   border-color: rgba(26, 37, 23, 0.42) !important;
   background: #e8f2e2 !important;
 }
 
-body[data-ui="minimal"] .option-btn.selected,
-body[data-ui="minimal"] .option-btn.correct {
+html[data-ui="minimal"] body .option-btn.selected,
+html[data-ui="minimal"] body .option-btn.correct {
   border-color: #1a2517 !important;
   background: #dce9d5 !important;
   color: #111a0f !important;
 }
 
-body[data-ui="minimal"] .overlay {
+html[data-ui="minimal"] body .overlay {
   background: rgba(11, 18, 10, 0.65) !important;
 }
 
-body[data-ui="minimal"] .overlay-card {
+html[data-ui="minimal"] body .overlay-card {
   background: #edf5e9 !important;
 }
 
-body[data-ui="minimal"] .result-fetching {
+html[data-ui="minimal"] body .result-fetching {
   background: var(--result-fetch-bg) !important;
   border: 1px solid rgba(26, 37, 23, 0.18) !important;
 }
 
-body[data-ui="minimal"] .result-fetching-core {
+html[data-ui="minimal"] body .result-fetching-core {
   background: var(--result-fetch-core) !important;
 }
 
-body[data-ui="minimal"] .marks-card {
+html[data-ui="minimal"] body .marks-card {
   background: #edf5e9 !important;
   border: 1px solid rgba(26, 37, 23, 0.22) !important;
 }
 
-body[data-ui="minimal"] .marks-status-pill {
+html[data-ui="minimal"] body .marks-status-pill {
   background: #dcead5 !important;
   border: 1px solid rgba(26, 37, 23, 0.22) !important;
   color: #1a2517 !important;
 }
 
-body[data-ui="minimal"] .marks-card.is-pending .marks-status-pill {
+html[data-ui="minimal"] body .marks-card.is-pending .marks-status-pill {
   background: #efe8ce !important;
   border: 1px solid #a18a4b !important;
   color: #5f4e20 !important;
 }
 
-body[data-ui="minimal"] .marks-watermark,
-body[data-ui="minimal"] .report-shell {
+html[data-ui="minimal"] body .marks-watermark,
+html[data-ui="minimal"] body .report-shell {
   color: rgba(26, 37, 23, 0.6) !important;
 }
 
-body[data-ui="minimal"] .btn-icon-toggle {
+html[data-ui="minimal"] body .btn-icon-toggle {
   background: #f2f8ef !important;
   border-color: rgba(26, 37, 23, 0.22) !important;
   color: #1a2517 !important;
   box-shadow: 0 6px 18px rgba(14, 21, 12, 0.16) !important;
 }
 
-body[data-ui="minimal"] .icon-sun {
+html[data-ui="minimal"] body .icon-sun {
   display: block;
 }
 
-body[data-ui="minimal"] .icon-moon {
+html[data-ui="minimal"] body .icon-moon {
   display: none;
 }
 
 @media (max-width: 768px) {
-  body[data-ui="minimal"] .marketing-nav {
+  html[data-ui="minimal"] body .marketing-nav {
     padding: 0.95rem 1rem !important;
     border-radius: 0 0 16px 16px !important;
   }
 
-  body[data-ui="minimal"] .marketing-links {
+  html[data-ui="minimal"] body .marketing-links {
     display: none !important;
   }
 
-  body[data-ui="minimal"] .hero h1 {
+  html[data-ui="minimal"] body .hero h1 {
     font-size: clamp(2rem, 8.2vw, 2.7rem) !important;
     line-height: 1.1 !important;
   }
 
-  body[data-ui="minimal"] .screen-inner {
+  html[data-ui="minimal"] body .screen-inner {
     padding-left: 0.95rem !important;
     padding-right: 0.95rem !important;
   }
 
-  body[data-ui="minimal"] .landing-actions,
-  body[data-ui="minimal"] .quiz-nav,
-  body[data-ui="minimal"] .overlay-actions {
+  html[data-ui="minimal"] body .landing-actions,
+  html[data-ui="minimal"] body .quiz-nav,
+  html[data-ui="minimal"] body .overlay-actions {
     flex-direction: column !important;
     gap: 0.65rem !important;
   }
 
-  body[data-ui="minimal"] .landing-actions .btn-primary,
-  body[data-ui="minimal"] .landing-actions .btn-secondary,
-  body[data-ui="minimal"] .quiz-nav .btn-primary,
-  body[data-ui="minimal"] .quiz-nav .btn-secondary,
-  body[data-ui="minimal"] .overlay-actions .btn-primary,
-  body[data-ui="minimal"] .overlay-actions .btn-secondary {
+  html[data-ui="minimal"] body .landing-actions .btn-primary,
+  html[data-ui="minimal"] body .landing-actions .btn-secondary,
+  html[data-ui="minimal"] body .quiz-nav .btn-primary,
+  html[data-ui="minimal"] body .quiz-nav .btn-secondary,
+  html[data-ui="minimal"] body .overlay-actions .btn-primary,
+  html[data-ui="minimal"] body .overlay-actions .btn-secondary {
     width: 100% !important;
   }
 
-  body[data-ui="minimal"] .landing-about-grid,
-  body[data-ui="minimal"] .landing-steps,
-  body[data-ui="minimal"] .features-grid,
-  body[data-ui="minimal"] .question-builder-grid,
-  body[data-ui="minimal"] .quizzes-grid {
+  html[data-ui="minimal"] body .landing-about-grid,
+  html[data-ui="minimal"] body .landing-steps,
+  html[data-ui="minimal"] body .features-grid,
+  html[data-ui="minimal"] body .question-builder-grid,
+  html[data-ui="minimal"] body .quizzes-grid {
     grid-template-columns: 1fr !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body[data-ui="minimal"]::before {
+  html[data-ui="minimal"] body::before {
     animation: none !important;
   }
 }

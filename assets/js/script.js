@@ -315,15 +315,18 @@ const DOM = {
   overlayFullscreen: document.getElementById("overlay-fullscreen"),
   overlayTabSwitch:  document.getElementById("overlay-tabswitch"),
   overlaySubmit:     document.getElementById("overlay-submit"),
+  overlaySuspicious: document.getElementById("overlay-suspicious"),
   tabswitchMsg:      document.getElementById("tabswitch-msg"),
   fullscreenMsg:     document.getElementById("fullscreen-msg"),
   submitUnansweredMsg: document.getElementById("submit-unanswered-msg"),
+  suspiciousMsg:     document.getElementById("suspicious-msg"),
 
   // Overlay buttons
-  btnReturnFullscreen:  document.getElementById("btn-return-fullscreen"),
-  btnDismissTabswitch:  document.getElementById("btn-dismiss-tabswitch"),
-  btnCancelSubmit:      document.getElementById("btn-cancel-submit"),
-  btnConfirmSubmit:     document.getElementById("btn-confirm-submit"),
+  btnReturnFullscreen:    document.getElementById("btn-return-fullscreen"),
+  btnDismissTabswitch:    document.getElementById("btn-dismiss-tabswitch"),
+  btnCancelSubmit:        document.getElementById("btn-cancel-submit"),
+  btnConfirmSubmit:       document.getElementById("btn-confirm-submit"),
+  btnDismissSuspicious:   document.getElementById("btn-dismiss-suspicious"),
 
   // Result
   resultIcon:      document.getElementById("result-icon"),
@@ -1651,22 +1654,17 @@ function initTabSwitchDetection() {
   };
 
   document.addEventListener("visibilitychange", () => {
-    if (!state.quizStarted || state.submitted) return;
-
-    if (document.hidden) {
+    if (document.visibilityState === "hidden" && state.quizStarted && !state.submitted) {
       state.tabSwitchCount++;
-      logEvent("tab_switch", `Count: ${state.tabSwitchCount}`);
-      updateProctoringBar();
+      logEvent("tab_switch", "Page became hidden");
+      updateProctoringBar(); // Updates the UI counter (DOM.statTabs)
 
       if (state.tabSwitchCount >= CONFIG.MAX_TAB_SWITCHES) {
         document.body.classList.remove("last-strike");
-        DOM.tabswitchMsg.innerHTML = `You have exceeded the maximum number of tab switches (${CONFIG.MAX_TAB_SWITCHES}).<br><strong>The quiz will now be auto-submitted.</strong>`;
-        DOM.btnDismissTabswitch.textContent = "Submit Quiz";
-        DOM.btnDismissTabswitch.onclick = () => {
-          hideOverlay(DOM.overlayTabSwitch);
-          confirmSubmit(true);
-        };
+        DOM.tabswitchMsg.innerHTML = "Maximum violations reached. Your quiz is being automatically submitted...";
+        DOM.btnDismissTabswitch.style.display = "none";
         showOverlay(DOM.overlayTabSwitch);
+        confirmSubmit(true, 'Max tab switches exceeded');
       } else if (state.tabSwitchCount === CONFIG.MAX_TAB_SWITCHES - 1) {
         document.body.classList.add("last-strike");
         DOM.btnDismissTabswitch.textContent = "I Understand";
@@ -1680,6 +1678,27 @@ function initTabSwitchDetection() {
           `You switched tabs or minimized the window. This has been recorded. (Total: ${state.tabSwitchCount}/${CONFIG.MAX_TAB_SWITCHES})`;
         showOverlay(DOM.overlayTabSwitch);
       }
+    }
+  });
+}
+/* ─────────────────────────────────────────────────────────────────
+   6b. ANTI-CHEAT: BLOCK SWIPE BACK GESTURES
+   Pushes a dummy history state to trap back-button/swipe navigation
+   during an active exam session.
+───────────────────────────────────────────────────────────────────*/
+function preventAccidentalNavigation() {
+  window.history.pushState(null, '', window.location.href);
+
+  window.addEventListener('popstate', (event) => {
+    if (state.quizStarted && !state.submitted) {
+      window.history.pushState(null, '', window.location.href);
+      
+      // Optional: Show brief warning overlay/toast instead of blocking JS execution
+      DOM.suspiciousMsg.textContent = "Navigation is locked during an active exam.";
+      showOverlay(DOM.overlaySuspicious);
+      setTimeout(() => hideOverlay(DOM.overlaySuspicious), 2000);
+      
+      logEvent('navigation_blocked', 'Attempted to swipe back or use back button');
     }
   });
 }
@@ -1756,8 +1775,9 @@ function initFullscreenEnforcement() {
         document.body.classList.remove("last-strike");
         resetFullscreenOverlayState();
         DOM.fullscreenMsg.parentElement.classList.add("warning");
-        DOM.fullscreenMsg.innerHTML = `You have exceeded the maximum number of fullscreen exits (${CONFIG.MAX_FULLSCREEN_EXITS}).<br><strong>The quiz will now be auto-submitted.</strong>`;
-        DOM.btnReturnFullscreen.textContent = "Submit Quiz";
+        DOM.fullscreenMsg.innerHTML = "Maximum violations reached. Your quiz is being automatically submitted...";
+        DOM.btnReturnFullscreen.style.display = "none";
+        confirmSubmit(true, 'Max fullscreen exits exceeded');
       } else if (state.fullscreenExitCount === CONFIG.MAX_FULLSCREEN_EXITS - 1) {
         document.body.classList.add("last-strike");
         resetFullscreenOverlayState();
@@ -1801,7 +1821,7 @@ function initCopyPasteDisable() {
   document.addEventListener("contextmenu", (e) => {
     if (state.quizStarted && !state.submitted) {
       e.preventDefault();
-      logEvent("right_click_attempt");
+      logEvent("context_menu", "Attempted to open right-click menu");
     }
   });
 
@@ -1834,9 +1854,36 @@ function initCopyPasteDisable() {
     }
   });
 
-  // Disable drag
+  // Disable drag and drop
   document.addEventListener("dragstart", (e) => {
-    if (state.quizStarted && !state.submitted) e.preventDefault();
+    if (state.quizStarted && !state.submitted) {
+      e.preventDefault();
+      logEvent("drag_attempt", "Attempted to drag text or elements");
+    }
+  });
+
+  document.addEventListener("drop", (e) => {
+    if (state.quizStarted && !state.submitted) {
+      e.preventDefault();
+      logEvent("drop_attempt", "Attempted to drop external files/text");
+    }
+  });
+
+  // Block Print-to-PDF loophole (Ctrl+P / Cmd+P / File → Print)
+  // CSS @media print hides all content; this JS layer logs the attempt and
+  // alerts the student before the dialog even opens.
+  window.addEventListener("beforeprint", () => {
+    if (state.quizStarted && !state.submitted) {
+      logEvent("print_attempt", "Student attempted to print / Print-to-PDF during exam");
+      alert("Printing is strictly disabled during this exam. This attempt has been recorded.");
+    }
+  });
+
+  window.addEventListener("afterprint", () => {
+    if (state.quizStarted && !state.submitted) {
+      // Re-focus the page in case the print dialog stole focus
+      window.focus();
+    }
   });
 }
 
@@ -1853,11 +1900,13 @@ function initScreenshotDetection() {
       logEvent("printscreen_key_pressed", `Count: ${state.screenshotAttempts}`);
       updateProctoringBar();
       
-      alert("Screenshot detected! This activity is recorded.");
+      DOM.suspiciousMsg.textContent = "Screenshot detected! This activity has been recorded.";
+      showOverlay(DOM.overlaySuspicious);
       navigator.clipboard.writeText("Screenshot disabled during exam").catch(() => {});
 
       if (state.screenshotAttempts >= CONFIG.MAX_SCREENSHOT_ATTEMPTS) {
-        alert("Multiple screenshot attempts detected. Submitting quiz.");
+        DOM.suspiciousMsg.textContent = "Multiple screenshot attempts detected. Your quiz is being submitted.";
+        showOverlay(DOM.overlaySuspicious);
         confirmSubmit(true);
       }
     }
@@ -1872,9 +1921,21 @@ function initScreenshotDetection() {
 
     // Block F12 / DevTools
     if (e.key === "F12") {
-      if (state.quizStarted && !state.submitted) {
+      e.preventDefault();
+      logEvent("f12_devtools_attempt");
+    }
+
+    // Block Ctrl/Cmd combinations (Copy, Paste, Save, Print, Source, specific DevTools shortcuts)
+    if (e.ctrlKey || e.metaKey) {
+      const key = e.key.toLowerCase();
+      if (
+        ["c", "v", "x", "a", "s", "u", "p"].includes(key) || // Data exfiltration & save/print
+        (e.shiftKey && key === "i") || // Block DevTools (Ctrl+Shift+I)
+        (e.shiftKey && key === "j") || // Block DevTools Console (Ctrl+Shift+J)
+        (e.shiftKey && key === "c")    // Block Inspect Element (Ctrl+Shift+C)
+      ) {
         e.preventDefault();
-        logEvent("f12_devtools_attempt");
+        logEvent("keyboard_cheat", `Attempted restricted keyboard shortcut (Key: ${key})`);
       }
     }
   });
@@ -1905,6 +1966,9 @@ function requestMediaPermissions() {
    11. ANTI-CHEAT: DEVTOOLS AND CIRCLE-TO-SEARCH DETECTION
 ───────────────────────────────────────────────────────────────────*/
 function initWindowBlurDetection() {
+  // Wire dismiss button for the suspicious-activity overlay
+  DOM.btnDismissSuspicious.onclick = () => hideOverlay(DOM.overlaySuspicious);
+
   window.addEventListener("blur", () => {
     if (!state.quizStarted || state.submitted) return;
     state.suspiciousBlur++;
@@ -1912,7 +1976,9 @@ function initWindowBlurDetection() {
     console.log("Possible Circle to Search usage");
 
     if (state.suspiciousBlur > CONFIG.SUSPICIOUS_BLUR_ALERT_THRESHOLD) {
-      alert("Suspicious screen activity detected");
+      DOM.suspiciousMsg.textContent =
+        `Suspicious screen activity detected (${state.suspiciousBlur} occurrences). This has been recorded.`;
+      showOverlay(DOM.overlaySuspicious);
     }
   });
 }
@@ -1949,8 +2015,13 @@ function initDevToolsDetection() {
 }
 function initAutoSubmitOnRefresh() {
   // Persist the latest view so refresh returns to the same screen.
-  window.addEventListener("beforeunload", () => {
+  window.addEventListener("beforeunload", (event) => {
     persistAppState();
+
+    if (state.quizStarted && !state.submitted) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
 
     if (state.quizStarted && !state.submissionPersisted) {
       try {
@@ -2053,6 +2124,12 @@ function _renderQuestionDOM(preserveTimer = false) {
   if (CONFIG.SECONDS_PER_QUESTION > 0) {
     startQuestionTimer(preserveTimer ? state.timeLeft : CONFIG.SECONDS_PER_QUESTION);
   }
+
+  // Scroll the card into view on initial / restore render (deferred one frame
+  // so layout is committed before scrollIntoView measures position)
+  requestAnimationFrame(() => {
+    DOM.questionCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
 }
 
 /**
@@ -2192,6 +2269,9 @@ function goToQuestion(index) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         DOM.questionCard.classList.remove("fade-in");
+        // Scroll the new card into view as it becomes visible — smooth on mobile,
+        // no-op on desktop where the card is already within the viewport
+        DOM.questionCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         // Nav buttons are re-enabled after the card finishes sliding in
         setTimeout(() => {
           DOM.btnPrev.disabled = state.currentIndex === 0;
@@ -2271,15 +2351,28 @@ function setupNavigation() {
 
   DOM.btnSubmitQuiz.addEventListener("click", openSubmitDialog);
 
-  DOM.btnCancelSubmit.addEventListener("click", () => hideOverlay(DOM.overlaySubmit));
+  DOM.btnCancelSubmit.addEventListener("click", () => {
+    hideOverlay(DOM.overlaySubmit);
+    // Reset the confirm button in case it was locked by a previous attempt
+    DOM.btnConfirmSubmit.disabled = false;
+    DOM.btnConfirmSubmit.textContent = "Yes, Submit";
+  });
 
   DOM.btnConfirmSubmit.addEventListener("click", () => {
+    // Immediately lock the button to prevent double-submission on rapid clicks
+    DOM.btnConfirmSubmit.disabled = true;
+    DOM.btnConfirmSubmit.textContent = "Submitting...";
     hideOverlay(DOM.overlaySubmit);
     confirmSubmit();
   });
 }
 
 function openSubmitDialog() {
+  if (!navigator.onLine) {
+    alert('You are currently offline. Please reconnect to the internet before submitting your quiz.');
+    return;
+  }
+
   const total    = state.questions.length;
   const answered = Object.keys(state.answers).length;
   const skipped  = total - answered;
@@ -2296,6 +2389,15 @@ function openSubmitDialog() {
 
 function confirmSubmit(isAuto = false, autoSubmitReason = null) {
   if (state.submitted) return;
+
+  if (!navigator.onLine) {
+    if (state.timeLeft <= 0) {
+      console.warn("Offline during auto-submit (Timer Expired). Attempting submission anyway.");
+    } else {
+      alert('You are currently offline. Please reconnect to the internet before submitting your quiz.');
+      return;
+    }
+  }
 
   // Once submit is confirmed, clear all refresh-recovery storage so
   // reloading cannot restore stale in-progress quiz data.
@@ -2815,17 +2917,45 @@ function init() {
       }
     }
 
-    // Duplicate attempt check
+    // Fast local check — avoids a network round-trip in the common case
     if (hasAlreadySubmitted(usn)) {
       return showRegError(
         "You have already submitted this quiz. Please wait 1 hour before attempting again."
       );
     }
 
-    // Store student info using entered values (no external registry dependency).
+    // Show loading state before the async Supabase verification
     DOM.btnStartText.classList.add("hidden");
     DOM.btnStartSpinner.classList.remove("hidden");
     DOM.btnStart.disabled = true;
+
+    // Backend check — verifies against Supabase so clearing localStorage
+    // or switching to Incognito cannot bypass the submission lock.
+    // Only submissions within the last 1 hour are counted (matches RETAKE_COOLDOWN_MS).
+    if (state.quizId) {
+      try {
+        const oneHourAgo = new Date(Date.now() - CONFIG.RETAKE_COOLDOWN_MS).toISOString();
+        const { data: existingSub } = await supabase
+          .from("submissions")
+          .select("id")
+          .eq("quiz_id", state.quizId)
+          .ilike("student_id", usn)
+          .gt("created_at", oneHourAgo)
+          .maybeSingle();
+
+        if (existingSub) {
+          showRegError("Our records show you have already submitted this quiz. Please wait 1 hour before attempting again.");
+          DOM.btnStartText.classList.remove("hidden");
+          DOM.btnStartSpinner.classList.add("hidden");
+          DOM.btnStart.disabled = false;
+          return;
+        }
+      } catch (e) {
+        // Non-fatal: if Supabase is unreachable, fall through and let the student proceed.
+        // The server-side submission handler will catch true duplicates on write.
+        console.warn("[SecureQuiz] Could not verify previous submissions via Supabase.", e);
+      }
+    }
 
     try {
       state.student = {
@@ -2842,6 +2972,7 @@ function init() {
       requestMediaPermissions();
       setupQuestions();
       showScreen(DOM.screenInst);
+      preventAccidentalNavigation();
     } catch (err) {
       console.error("[SecureQuiz] Failed to start quiz:", err);
       showRegError("Unable to start the quiz right now. Please try again.");

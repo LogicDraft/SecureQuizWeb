@@ -257,7 +257,10 @@
                 </div>
                 <div class="dashboard-meta-item">
                   <span class="meta-label">Quiz Title</span>
-                  <strong id="quiz-title">--</strong>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <strong id="quiz-title">--</strong>
+                    <button id="btn-copy-link" class="btn-icon-ghost" style="padding: 0.1rem 0.5rem; font-size: 0.75rem; background: rgba(99,102,241,0.1); color: var(--accent); border: 1px solid rgba(99,102,241,0.2); border-radius: 4px; cursor: pointer; transition: all 0.2s;">🔗 Copy Invite Link</button>
+                  </div>
                 </div>
                 <div class="dashboard-meta-item">
                   <span class="meta-label">Submissions</span>
@@ -272,10 +275,19 @@
 
             <div id="dash-error" class="error-msg hidden"></div>
 
-            <div class="dashboard-filters">
-              <button class="btn-filter active bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="all">All Submissions</button>
-              <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="auto">Auto-Submitted</button>
-              <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="perfect">Out of out</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+              <div class="dashboard-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0;">
+                <button class="btn-filter active bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="all">All Submissions</button>
+                <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="auto">Auto-Submitted</button>
+                <button class="btn-filter text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 ease-out hover:-translate-y-0.5" data-filter="perfect">Out of out</button>
+              </div>
+              
+              <div style="position: relative; max-width: 100%; width: 280px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-3); pointer-events: none;">
+                  <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="dash-search" placeholder="Search by Name or ID..." class="bg-white/5 border border-white/10 rounded-xl py-2 pr-3 pl-9 text-white text-sm focus:outline-none focus:border-indigo-500 focus:bg-white/10 transition-all duration-300 w-full placeholder-slate-500" />
+              </div>
             </div>
 
           <div class="dashboard-table-wrap">
