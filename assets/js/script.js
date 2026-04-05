@@ -787,6 +787,16 @@ function showScreen(target) {
 function showRegError(msg) {
   DOM.regError.textContent = msg;
   DOM.regError.classList.remove("hidden");
+
+  // Shake the registration card to draw attention to the error
+  const card = DOM.regError.closest(".card") || DOM.regError.parentElement;
+  if (card) {
+    card.classList.remove("animate-shake");
+    // Force reflow so removing+re-adding the class always replays the animation
+    void card.offsetWidth;
+    card.classList.add("animate-shake");
+    setTimeout(() => card.classList.remove("animate-shake"), 400);
+  }
 }
 function clearRegError() { DOM.regError.classList.add("hidden"); }
 
@@ -1905,9 +1915,37 @@ function initWindowBlurDetection() {
       alert("Suspicious screen activity detected");
     }
   });
+}
 
-  // Developer Tools trap removed as requested to avoid false positives. 
-  // We strictly rely on the existing F12 keydown listener.
+/* ─────────────────────────────────────────────────────────────────
+   11b. ANTI-CHEAT: DEVTOOLS SIZE-BASED DETECTION
+   Compares outer vs. inner window dimensions on every resize.
+   A large gap (> DEVTOOLS_SIZE_THRESHOLD px) typically means the
+   browser DevTools panel is docked alongside the viewport.
+───────────────────────────────────────────────────────────────────*/
+function initDevToolsDetection() {
+  let rafPending = false;
+
+  window.addEventListener("resize", () => {
+    if (rafPending) return;
+    rafPending = true;
+
+    requestAnimationFrame(() => {
+      rafPending = false;
+
+      if (!state.quizStarted || state.submitted) return;
+
+      const widthDiff  = window.outerWidth  - window.innerWidth;
+      const heightDiff = window.outerHeight - window.innerHeight;
+
+      if (widthDiff > CONFIG.DEVTOOLS_SIZE_THRESHOLD || heightDiff > CONFIG.DEVTOOLS_SIZE_THRESHOLD) {
+        logEvent(
+          "devtools_detected",
+          `Developer tools or split screen opened (widthDiff=${widthDiff}px, heightDiff=${heightDiff}px)`
+        );
+      }
+    });
+  }, { passive: true });
 }
 function initAutoSubmitOnRefresh() {
   // Persist the latest view so refresh returns to the same screen.
@@ -1974,22 +2012,24 @@ function setupQuestions() {
   state.questions = pool;
 }
 
-/** Render the current question */
-function renderQuestion(preserveTimer = false) {
-  const q   = state.questions[state.currentIndex];
-  const idx = state.currentIndex;
+/**
+ * Low-level DOM update — writes question content & updates UI chrome.
+ * Does NOT handle transition animations; call goToQuestion for animated nav.
+ */
+function _renderQuestionDOM(preserveTimer = false) {
+  const q     = state.questions[state.currentIndex];
+  const idx   = state.currentIndex;
   const total = state.questions.length;
 
-  // Update header
+  // Header
   DOM.quizProgressLabel.textContent = `Question ${idx + 1} of ${total}`;
   DOM.questionNumber.textContent    = `Q${idx + 1}`;
   DOM.questionText.textContent      = q.q;
 
-  // Update progress bar
-  const pct = ((idx) / total) * 100;
-  DOM.progressBarFill.style.width = pct + "%";
+  // Progress bar
+  DOM.progressBarFill.style.width = `${(idx / total) * 100}%`;
 
-  // Render options
+  // Options
   DOM.optionsList.innerHTML = "";
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
@@ -1998,27 +2038,31 @@ function renderQuestion(preserveTimer = false) {
     btn.setAttribute("aria-checked", state.answers[idx] === opt ? "true" : "false");
     btn.textContent = opt;
     if (state.answers[idx] === opt) btn.classList.add("selected");
-
     btn.addEventListener("click", () => selectOption(idx, opt));
     DOM.optionsList.appendChild(btn);
   });
 
-  // Nav buttons
+  // Nav buttons (restored after transition lock)
   DOM.btnPrev.disabled = idx === 0;
   DOM.btnNext.textContent = idx === total - 1 ? "Review →" : "Next →";
 
   // Nav dots
   renderNavDots(idx, total);
 
-  // Trigger animation
-  DOM.questionCard.classList.remove("slide-in");
-  void DOM.questionCard.offsetWidth; // reflow
-  DOM.questionCard.classList.add("slide-in");
-
-  // Reset timer for this question
+  // Timer
   if (CONFIG.SECONDS_PER_QUESTION > 0) {
     startQuestionTimer(preserveTimer ? state.timeLeft : CONFIG.SECONDS_PER_QUESTION);
   }
+}
+
+/**
+ * Render the current question with a cross-fade transition.
+ * Pass preserveTimer=true only for the very first load / restore
+ * where no outgoing card should be faded.
+ */
+function renderQuestion(preserveTimer = false) {
+  // First render — no outgoing card, just paint and done
+  _renderQuestionDOM(preserveTimer);
 }
 
 /** Record selected option */
@@ -2118,12 +2162,44 @@ function renderNavDots(current, total) {
   }
 }
 
-/** Navigate to question by index */
+/** Navigate to question by index with a smooth cross-fade transition */
 function goToQuestion(index) {
   if (index < 0 || index >= state.questions.length) return;
-  state.currentIndex = index;
-  saveStateToLocalStorage(true);
-  renderQuestion();
+
+  const FADE_MS = 200;
+
+  // Lock nav buttons to prevent rapid double-clicks during the transition
+  DOM.btnPrev.disabled = true;
+  DOM.btnNext.disabled = true;
+
+  // Phase 1 — fade the current card out (slide left)
+  DOM.questionCard.classList.add("fade-out");
+
+  setTimeout(() => {
+    // Update state after the card has disappeared
+    state.currentIndex = index;
+    saveStateToLocalStorage(true);
+
+    // Prepare the card off-screen to the right before it becomes visible
+    DOM.questionCard.classList.remove("fade-out");
+    DOM.questionCard.classList.add("fade-in");
+
+    // Write the new question content while the card is invisible
+    _renderQuestionDOM();
+
+    // Phase 2 — trigger fade-in on the very next paint (requestAnimationFrame
+    // ensures the browser has committed the fade-in starting styles first)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        DOM.questionCard.classList.remove("fade-in");
+        // Nav buttons are re-enabled after the card finishes sliding in
+        setTimeout(() => {
+          DOM.btnPrev.disabled = state.currentIndex === 0;
+          DOM.btnNext.disabled = false;
+        }, FADE_MS);
+      });
+    });
+  }, FADE_MS);
 }
 
 
@@ -2137,20 +2213,26 @@ function startQuestionTimer(nextTimeLeft = CONFIG.SECONDS_PER_QUESTION) {
   DOM.quizTimer.textContent = state.timeLeft;
   DOM.quizTimer.classList.remove("urgent");
   if (state.timeLeft <= 10) DOM.quizTimer.classList.add("urgent");
-  DOM.timerBarFill.style.width = "100%";
-  DOM.timerBarFill.style.transition = "none";
-
-  void DOM.timerBarFill.offsetWidth; // reflow
 
   const totalSeconds = Math.max(CONFIG.SECONDS_PER_QUESTION, 1);
-  const remainingRatio = Math.max(0, Math.min(1, state.timeLeft / totalSeconds));
-  DOM.timerBarFill.style.width = `${remainingRatio * 100}%`;
-  void DOM.timerBarFill.offsetWidth;
+
+  // Initialise the CSS progress bar at the correct starting ratio
+  DOM.timerBarFill.style.transition = "none";
+  void DOM.timerBarFill.offsetWidth; // reflow — flush the transition reset
+  const startRatio = Math.max(0, Math.min(1, state.timeLeft / totalSeconds));
+  DOM.timerBarFill.style.width = `${startRatio * 100}%`;
+  void DOM.timerBarFill.offsetWidth; // reflow — flush the width set
   DOM.timerBarFill.style.transition = `width ${Math.max(state.timeLeft, 0)}s linear`;
   DOM.timerBarFill.style.width = "0%";
 
+  // Anchor to wall-clock time so browser tab-throttling cannot cause drift
+  const questionStartTime = Date.now();
+
   state.timerInterval = setInterval(() => {
-    state.timeLeft--;
+    // True elapsed seconds since this question's timer started
+    const elapsedSeconds = Math.floor((Date.now() - questionStartTime) / 1000);
+    state.timeLeft = Math.max(0, nextTimeLeft - elapsedSeconds);
+
     DOM.quizTimer.textContent = state.timeLeft;
     saveStateToLocalStorage();
 
@@ -2619,6 +2701,7 @@ function init() {
   initCopyPasteDisable();
   initScreenshotDetection();
   initWindowBlurDetection();
+  initDevToolsDetection();
   initAutoSubmitOnRefresh();
 
   // Setup navigation buttons

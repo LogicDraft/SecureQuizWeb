@@ -312,6 +312,16 @@ textarea:focus-visible, select:focus-visible, .option-btn:focus-visible {
 /* ─── Utility ─── */
 .hidden { display: none !important; }
 
+/* Shake animation — triggered on form validation errors */
+@keyframes shake {
+  0%,  100% { transform: translateX(0); }
+  25%       { transform: translateX(-8px); }
+  75%       { transform: translateX(8px); }
+}
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
 /* ─── Screens ─── */
 /* ─── "How it Works" Grid ─── */
 .section-header {
@@ -1393,11 +1403,22 @@ body.page-with-footer .screen-inner {
 .question-card {
   max-width: 100%;
   padding: 1.8rem;
-  animation: slide-in 0.35s ease;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  will-change: opacity, transform;
 }
-@keyframes slide-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+
+/* Cross-fade transition states driven by JS */
+.question-card.fade-out {
+  opacity: 0;
+  transform: translateX(-28px);
+  pointer-events: none; /* block clicks while hidden */
+}
+.question-card.fade-in {
+  opacity: 0;
+  transform: translateX(28px);
+  /* JS removes this class on the next frame to trigger the transition back */
 }
 .question-number {
   font-size: 1rem;
@@ -1516,6 +1537,8 @@ body.page-with-footer .screen-inner {
   font-size: 0.78rem;
   color: var(--text-3);
   flex-wrap: wrap;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .proctor-stat { display: flex; align-items: center; gap: 0.25rem; }
 
@@ -2203,6 +2226,22 @@ body.page-with-footer .screen-inner {
   }
   .marketing-links {
     display: none;
+  }
+
+  /* Proctor bar — compact 3-column grid on narrow screens */
+  .proctor-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .proctor-stat {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    font-size: 0.7rem;
+    text-align: center;
   }
 }
 
