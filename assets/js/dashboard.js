@@ -548,7 +548,7 @@ if (DOM.dashSearch) {
 if (DOM.btnCopyLink) {
   DOM.btnCopyLink.addEventListener('click', async () => {
     try {
-      const shareUrl = window.location.origin + '/?quizId=' + QUIZ_ID;
+      const shareUrl = window.location.origin + '/quiz?quizId=' + QUIZ_ID;
       await navigator.clipboard.writeText(shareUrl);
       
       const originalText = DOM.btnCopyLink.innerHTML;
