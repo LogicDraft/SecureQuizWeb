@@ -31,8 +31,6 @@ const CONFIG = {
   // ⚠️  Paste your Google Apps Script Web App URL here after deploying
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbylYb8OizYN_4kPzD3aLTThICqRSN85vSsYFFhBpxeROQGO_WrmLs6bztrGe9q0wIXAIQ/exec",
 
-  QUIZ_TITLE: "Quantum Quiz",
-
   // Number of seconds per question (0 = no per-question timer)
   SECONDS_PER_QUESTION: 60,
 
